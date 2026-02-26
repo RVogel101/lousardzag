@@ -122,6 +122,7 @@ Usage hint — to process this deck, run:
         sys.exit(1)
 
 
+def run_demo():
     """Run a demonstration of the morphology engine without requiring Anki."""
     print("=" * 80)
     print("  Armenian Morphology Engine — Demo")
@@ -141,7 +142,7 @@ Usage hint — to process this deck, run:
     _t = ARM["t"]         # dles (WA: t)
 
     word_book = _k + _i + _r + _k_asp               # delays (kirk' = book)
-    word_house = _d + _vo + _yiwn + _n               # տouն (dun = house; WA: տ = ARM["d"])
+    word_house = _d + _vo + _yiwn + _n               # տուն (dun = house; WA: տ = ARM["d"])
 
     print("\n--- Noun Declension ---")
     for word, trans in [(word_book, "book"), (word_house, "house")]:
