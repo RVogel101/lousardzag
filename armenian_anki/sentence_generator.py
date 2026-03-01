@@ -143,8 +143,8 @@ def _noun_sentence_templates(decl: NounDeclension) -> list[tuple[str, str, str]]
     trans = decl.translation or "___"
     sentences = []
 
-    # 1. Nominative — subject of sentence
-    # "The ___ is beautiful"
+    # ── Nominative ────────────────────────────────────────────────────
+    # 1. "The ___ is beautiful"
     _gegh = _k + _ye + _gh + _ye + _dz + _i + _g  # keghedzig
     arm_sent = decl.nom_sg_def + " " + _gegh + " " + COPULA
     sentences.append((
@@ -153,8 +153,24 @@ def _noun_sentence_templates(decl: NounDeclension) -> list[tuple[str, str, str]]
         f"The {trans} is beautiful.",
     ))
 
-    # 2. Nominative indefinite — with indefinite article
-    # "A ___ is here"
+    # 2. "The ___ is new"
+    arm_sent = decl.nom_sg_def + " " + NEW + " " + COPULA
+    sentences.append((
+        "nominative",
+        arm_sent,
+        f"The {trans} is new.",
+    ))
+
+    # 3. "This __ is good"
+    arm_sent = THIS + " " + decl.nom_sg_def + " " + GOOD + " " + COPULA
+    sentences.append((
+        "nominative",
+        arm_sent,
+        f"This {trans} is good.",
+    ))
+
+    # ── Nominative indefinite ─────────────────────────────────────────
+    # 4. "A ___ is here"
     _hso = _h + _vo + _s
     arm_sent = decl.nom_sg_indef + " " + _hso + " " + COPULA
     sentences.append((
@@ -163,8 +179,24 @@ def _noun_sentence_templates(decl: NounDeclension) -> list[tuple[str, str, str]]
         f"A {trans} is here.",
     ))
 
-    # 3. Accusative definite — direct object
-    # "I see the ___"
+    # 5. "I want a ___"
+    arm_sent = PRON_I + " " + decl.nom_sg_indef + " " + VERB_WANT
+    sentences.append((
+        "nominative (indefinite)",
+        arm_sent,
+        f"I want a {trans}.",
+    ))
+
+    # 6. "I have a ___"
+    arm_sent = PRON_I + " " + decl.nom_sg_indef + " " + VERB_HAVE
+    sentences.append((
+        "nominative (indefinite)",
+        arm_sent,
+        f"I have a {trans}.",
+    ))
+
+    # ── Accusative ────────────────────────────────────────────────────
+    # 7. "I see the ___"
     _tes = _g + _schwa + " " + _d + _ye + _s + _n + _ye + _m  # gə desnem
     arm_sent = PRON_I + " " + decl.acc_sg_def + " " + _tes
     sentences.append((
@@ -173,8 +205,24 @@ def _noun_sentence_templates(decl: NounDeclension) -> list[tuple[str, str, str]]
         f"I see the {trans}.",
     ))
 
-    # 4. Genitive-Dative — possession
-    # "The ___'s color is beautiful" / "I give to the ___"
+    # 8. "I love the ___"
+    arm_sent = PRON_I + " " + decl.acc_sg_def + " " + VERB_LOVE
+    sentences.append((
+        "accusative",
+        arm_sent,
+        f"I love the {trans}.",
+    ))
+
+    # 9. "I want the ___"
+    arm_sent = PRON_I + " " + decl.acc_sg_def + " " + VERB_WANT
+    sentences.append((
+        "accusative",
+        arm_sent,
+        f"I want the {trans}.",
+    ))
+
+    # ── Genitive-Dative ──────────────────────────────────────────────
+    # 10. "The ___'s color is beautiful"
     _kounk = _k + _vo + _yiwn + _n + _k_asp + _schwa  # kounk'ə (color-DEF)
     arm_sent = decl.gen_dat_sg_def + " " + _kounk + " " + _gegh + " " + COPULA
     sentences.append((
@@ -183,8 +231,26 @@ def _noun_sentence_templates(decl: NounDeclension) -> list[tuple[str, str, str]]
         f"The {trans}'s color is beautiful.",
     ))
 
-    # 5. Ablative — origin/source
-    # "I come from the ___"
+    # 11. "I give to the ___"
+    _gdam = _g + _schwa + " " + _d + _a + _m  # gə dam (I give)
+    arm_sent = PRON_I + " " + decl.gen_dat_sg_def + " " + _gdam
+    sentences.append((
+        "genitive-dative",
+        arm_sent,
+        f"I give to the {trans}.",
+    ))
+
+    # 12. "The ___'s name is beautiful"
+    _anounk = _a + _n + _vo + _yiwn + _n + _schwa  # anounə (name-DEF)
+    arm_sent = decl.gen_dat_sg_def + " " + _anounk + " " + _gegh + " " + COPULA
+    sentences.append((
+        "genitive-dative",
+        arm_sent,
+        f"The {trans}'s name is beautiful.",
+    ))
+
+    # ── Ablative ──────────────────────────────────────────────────────
+    # 13. "I come from the ___"
     _gam = _g + _schwa + " " + _k + _a + _m  # gə kam (I come)
     arm_sent = PRON_I + " " + decl.abl_sg_def + " " + _gam
     sentences.append((
@@ -193,8 +259,26 @@ def _noun_sentence_templates(decl: NounDeclension) -> list[tuple[str, str, str]]
         f"I come from the {trans}.",
     ))
 
-    # 6. Instrumental — means
-    # "I write with the ___"
+    # 14. "He/she comes from the ___"
+    _ga = _g + _schwa + " " + _k + _a  # gə ka (he/she comes)
+    arm_sent = PRON_HE + " " + decl.abl_sg_def + " " + _ga
+    sentences.append((
+        "ablative",
+        arm_sent,
+        f"He/she comes from the {trans}.",
+    ))
+
+    # 15. "I am far from the ___"
+    _herou = _h + _ye + _rr + _vo + _yiwn  # heṙou (far)
+    arm_sent = PRON_I + " " + decl.abl_sg_def + " " + _herou + " " + _ye + _m
+    sentences.append((
+        "ablative",
+        arm_sent,
+        f"I am far from the {trans}.",
+    ))
+
+    # ── Instrumental ──────────────────────────────────────────────────
+    # 16. "I write with the ___"
     _grem = _g + _schwa + " " + _k + _r + _ye + _m  # gə krem (I write)
     arm_sent = PRON_I + " " + decl.instr_sg_def + " " + _grem
     sentences.append((
@@ -203,14 +287,46 @@ def _noun_sentence_templates(decl: NounDeclension) -> list[tuple[str, str, str]]
         f"I write with the {trans}.",
     ))
 
-    # 7. Plural nominative
-    # "The ___s are big"
+    # 17. "He/she comes with the ___"
+    arm_sent = PRON_HE + " " + decl.instr_sg_def + " " + WITH_WORD + " " + _ga
+    sentences.append((
+        "instrumental",
+        arm_sent,
+        f"He/she comes with the {trans}.",
+    ))
+
+    # 18. "We go with the ___"
+    arm_sent = PRON_WE + " " + decl.instr_sg_def + " " + WITH_WORD + " " + VERB_GO
+    sentences.append((
+        "instrumental",
+        arm_sent,
+        f"We go with the {trans}.",
+    ))
+
+    # ── Plural nominative ────────────────────────────────────────────
+    # 19. "The ___s are big"
     _medz = _m + _ye + _dz  # medz (big)
     arm_sent = decl.nom_pl_def + " " + _medz + " " + _ye + _n
     sentences.append((
         "plural nominative",
         arm_sent,
         f"The {trans}s are big.",
+    ))
+
+    # 20. "The ___s are good"
+    arm_sent = decl.nom_pl_def + " " + GOOD + " " + _ye + _n
+    sentences.append((
+        "plural nominative",
+        arm_sent,
+        f"The {trans}s are good.",
+    ))
+
+    # 21. "The ___s are beautiful"
+    arm_sent = decl.nom_pl_def + " " + _gegh + " " + _ye + _n
+    sentences.append((
+        "plural nominative",
+        arm_sent,
+        f"The {trans}s are beautiful.",
     ))
 
     return sentences
@@ -226,6 +342,7 @@ def _verb_sentence_templates(conj: VerbConjugation) -> list[tuple[str, str, str]
     trans = conj.translation or "___"
     sentences = []
 
+    # ── Present tense ────────────────────────────────────────────────
     # 1. Present 1sg — "I ___"
     if "1sg" in conj.present:
         arm_sent = PRON_I + " " + conj.present["1sg"]
@@ -244,34 +361,16 @@ def _verb_sentence_templates(conj: VerbConjugation) -> list[tuple[str, str, str]
             f"He/she {trans}s.",
         ))
 
-    # 3. Past 1sg — "I ___ed"
-    if "1sg" in conj.past_aorist:
-        arm_sent = PRON_I + " " + conj.past_aorist["1sg"]
+    # 3. Present 2sg — "You ___"
+    if "2sg" in conj.present:
+        arm_sent = PRON_YOU_SG + " " + conj.present["2sg"]
         sentences.append((
-            "past 1sg",
+            "present 2sg",
             arm_sent,
-            f"I {_en_past(trans)}.",
+            f"You {trans}.",
         ))
 
-    # 4. Future 1sg — "I will ___"
-    if "1sg" in conj.future:
-        arm_sent = PRON_I + " " + conj.future["1sg"]
-        sentences.append((
-            "future 1sg",
-            arm_sent,
-            f"I will {trans}.",
-        ))
-
-    # 5. Imperative — "___!"
-    if conj.imperative_sg:
-        arm_sent = conj.imperative_sg + "!"
-        sentences.append((
-            "imperative 2sg",
-            arm_sent,
-            f"{trans.capitalize()}!",
-        ))
-
-    # 6. Present 1pl — "We ___"
+    # 4. Present 1pl — "We ___"
     if "1pl" in conj.present:
         arm_sent = PRON_WE + " " + conj.present["1pl"]
         sentences.append((
@@ -280,13 +379,116 @@ def _verb_sentence_templates(conj: VerbConjugation) -> list[tuple[str, str, str]
             f"We {trans}.",
         ))
 
-    # 7. Imperfect 1sg — "I was ___ing"
+    # 5. Present 3pl — "They ___"
+    if "3pl" in conj.present:
+        arm_sent = PRON_THEY + " " + conj.present["3pl"]
+        sentences.append((
+            "present 3pl",
+            arm_sent,
+            f"They {trans}.",
+        ))
+
+    # ── Past tense ───────────────────────────────────────────────────
+    # 6. Past 1sg — "I ___ed"
+    if "1sg" in conj.past_aorist:
+        arm_sent = PRON_I + " " + conj.past_aorist["1sg"]
+        sentences.append((
+            "past 1sg",
+            arm_sent,
+            f"I {_en_past(trans)}.",
+        ))
+
+    # 7. Past 3sg — "He/she ___ed"
+    if "3sg" in conj.past_aorist:
+        arm_sent = PRON_HE + " " + conj.past_aorist["3sg"]
+        sentences.append((
+            "past 3sg",
+            arm_sent,
+            f"He/she {_en_past(trans)}.",
+        ))
+
+    # 8. Past 1pl — "We ___ed"
+    if "1pl" in conj.past_aorist:
+        arm_sent = PRON_WE + " " + conj.past_aorist["1pl"]
+        sentences.append((
+            "past 1pl",
+            arm_sent,
+            f"We {_en_past(trans)}.",
+        ))
+
+    # ── Future tense ─────────────────────────────────────────────────
+    # 9. Future 1sg — "I will ___"
+    if "1sg" in conj.future:
+        arm_sent = PRON_I + " " + conj.future["1sg"]
+        sentences.append((
+            "future 1sg",
+            arm_sent,
+            f"I will {trans}.",
+        ))
+
+    # 10. Future 3sg — "He/she will ___"
+    if "3sg" in conj.future:
+        arm_sent = PRON_HE + " " + conj.future["3sg"]
+        sentences.append((
+            "future 3sg",
+            arm_sent,
+            f"He/she will {trans}.",
+        ))
+
+    # 11. Future 1pl — "We will ___"
+    if "1pl" in conj.future:
+        arm_sent = PRON_WE + " " + conj.future["1pl"]
+        sentences.append((
+            "future 1pl",
+            arm_sent,
+            f"We will {trans}.",
+        ))
+
+    # ── Imperative ───────────────────────────────────────────────────
+    # 12. Imperative 2sg — "___!"
+    if conj.imperative_sg:
+        arm_sent = conj.imperative_sg + "!"
+        sentences.append((
+            "imperative 2sg",
+            arm_sent,
+            f"{trans.capitalize()}!",
+        ))
+
+    # 13. Imperative 2pl — "___! (plural)"
+    if conj.imperative_pl:
+        arm_sent = conj.imperative_pl + "!"
+        sentences.append((
+            "imperative 2pl",
+            arm_sent,
+            f"{trans.capitalize()}! (you all)",
+        ))
+
+    # ── Imperfect ────────────────────────────────────────────────────
+    # 14. Imperfect 1sg — "I was ___ing"
     if "1sg" in conj.imperfect:
         arm_sent = PRON_I + " " + conj.imperfect["1sg"]
         sentences.append((
             "imperfect 1sg",
             arm_sent,
             f"I was {_en_progressive(trans)}.",
+        ))
+
+    # 15. Imperfect 3sg — "He/she was ___ing"
+    if "3sg" in conj.imperfect:
+        arm_sent = PRON_HE + " " + conj.imperfect["3sg"]
+        sentences.append((
+            "imperfect 3sg",
+            arm_sent,
+            f"He/she was {_en_progressive(trans)}.",
+        ))
+
+    # 16. Imperfect 1pl — "We were ___ing"
+    if "1pl" in conj.imperfect:
+        arm_sent = PRON_WE + " " + conj.imperfect["1pl"]
+        sentences.append((
+            "imperfect 1pl",
+            arm_sent,
+            f"We were {_en_progressive(trans)}.",
         ))
 
     return sentences
@@ -298,7 +500,7 @@ def generate_noun_sentences(
     word: str,
     declension_class: str = "i_class",
     translation: str = "",
-    max_sentences: int = 7,
+    max_sentences: int = 21,
 ) -> list[tuple[str, str, str]]:
     """Generate example sentences demonstrating case usage for a noun.
 
@@ -320,7 +522,7 @@ def generate_verb_sentences(
     infinitive: str,
     verb_class: str = "e_class",
     translation: str = "",
-    max_sentences: int = 7,
+    max_sentences: int = 16,
 ) -> list[tuple[str, str, str]]:
     """Generate example sentences demonstrating tense usage for a verb.
 
