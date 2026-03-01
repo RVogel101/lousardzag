@@ -389,8 +389,8 @@ class CardGenerator:
 
     def get_source_words(
         self,
-        deck: str = None,
-        field_overrides: dict | None = None,
+        deck: Optional[str] = None,
+        field_overrides: Optional[dict] = None,
         default_pos: str = "noun",
     ) -> list[dict]:
         """Read vocabulary words from the source Anki deck.
@@ -483,9 +483,9 @@ class CardGenerator:
         return words
 
     def generate_noun_card(self, word: str, translation: str = "",
-                           declension_class: str = None,
-                           extra_tags: list = None,
-                           deck: str = None) -> Optional[int]:
+                           declension_class: Optional[str] = None,
+                           extra_tags: Optional[list] = None,
+                           deck: Optional[str] = None) -> Optional[int]:
         """Generate and add a noun declension card to Anki."""
         cls = declension_class or DEFAULT_NOUN_DECLENSION
         decl = decline_noun(word, cls, translation)
@@ -542,9 +542,9 @@ class CardGenerator:
         return note_id
 
     def generate_verb_card(self, infinitive: str, translation: str = "",
-                           verb_class: str = None,
-                           extra_tags: list = None,
-                           deck: str = None) -> Optional[int]:
+                           verb_class: Optional[str] = None,
+                           extra_tags: Optional[list] = None,
+                           deck: Optional[str] = None) -> Optional[int]:
         """Generate and add a verb conjugation card to Anki."""
         cls = verb_class or DEFAULT_VERB_CLASS
         conj = conjugate_verb(infinitive, cls, translation)
@@ -611,12 +611,12 @@ class CardGenerator:
         word: str,
         pos: str,
         translation: str = "",
-        declension_class: str = None,
-        verb_class: str = None,
-        grammar_filter: str = None,
-        max_sentences: int = None,
-        extra_tags: list = None,
-        deck: str = None,
+        declension_class: Optional[str] = None,
+        verb_class: Optional[str] = None,
+        grammar_filter: Optional[str] = None,
+        max_sentences: Optional[int] = None,
+        extra_tags: Optional[list] = None,
+        deck: Optional[str] = None,
     ) -> list[int]:
         """Generate sentence practice cards for a vocabulary word.
 
@@ -709,7 +709,7 @@ class CardGenerator:
         logger.info(f"Created {len(note_ids)} sentence cards for: {word}")
         return note_ids
 
-    def process_all(self, source_deck: str = None, field_overrides: dict = None,
+    def process_all(self, source_deck: Optional[str] = None, field_overrides: Optional[dict] = None,
                     default_pos: str = "noun") -> dict:
         """Process all words in the source deck and generate morphology cards.
 
