@@ -38,7 +38,11 @@ from armenian_anki.config import SOURCE_DECK, TARGET_DECK
 from armenian_anki.progression import (
     ProgressionPlan, WordEntry, VocabBatch, PhraseBatch,
     level_tag, batch_tag, grammar_tag, syllable_tag,
-    assign_due_positions,
+    assign_due_positions, sentence_filter_for, fill_plan_sentences,
+)
+from armenian_anki.ocr_vocab_bridge import (
+    extract_vocab_from_file, vocab_to_csv, vocab_to_json,
+    vocab_to_word_entries,
 )
 
 logger = logging.getLogger(__name__)
@@ -347,6 +351,15 @@ def run_progression_pipeline(source_deck: str = None, dry_run: bool = False,
                 print(f"      … and {len(coverage['uncovered']) - 10} more")
 
         if dry_run:
+            # Fill phrase sentences so the dry-run output shows actual text
+            fill_plan_sentences(plan)
+            for segment in plan.ordered_segments():
+                if isinstance(segment, PhraseBatch):
+                    for phrase in segment.phrases:
+                        if phrase.armenian_sentence:
+                            print(f"    [{phrase.grammar_type}] {phrase.target_word}")
+                            print(f"      ARM: {phrase.armenian_sentence}")
+                            print(f"      ENG: {phrase.english_sentence}")
             print("\n[dry-run] Plan printed. No cards pushed to Anki.")
             return
 
@@ -426,7 +439,7 @@ def run_progression_pipeline(source_deck: str = None, dry_run: bool = False,
                             target_entry.translation,
                             target_entry.declension_class or None,
                             target_entry.verb_class or None,
-                            grammar_filter=phrase.grammar_type,
+                            grammar_filter=sentence_filter_for(phrase.grammar_type),
                             max_sentences=1,
                             extra_tags=tags,
                             deck=PROGRESSION_DECK,
@@ -458,6 +471,57 @@ def run_progression_pipeline(source_deck: str = None, dry_run: bool = False,
         sys.exit(1)
 
 
+def run_ocr_bridge(input_path: str, output_path: str = None, output_format: str = "csv"):
+    """Extract vocabulary from OCR output and write a structured vocab list.
+
+    Args:
+        input_path: Path to an extracted OCR JSON or CSV file.
+        output_path: Where to write the output. If None, auto-generates.
+        output_format: "csv" or "json".
+    """
+    from pathlib import Path
+
+    inp = Path(input_path)
+    if not inp.exists():
+        print(f"✗ Input file not found: {input_path}")
+        sys.exit(1)
+
+    print(f"Extracting vocabulary from: {inp.name}")
+    entries = extract_vocab_from_file(inp)
+
+    if not entries:
+        print("✗ No vocabulary entries found in the OCR data.")
+        sys.exit(1)
+
+    # Filter to entries with both word and translation
+    complete = [e for e in entries if e.armenian_word and e.translation]
+    partial = [e for e in entries if e.armenian_word and not e.translation]
+
+    print(f"\nExtracted {len(entries)} total entries:")
+    print(f"  Complete (word + translation): {len(complete)}")
+    print(f"  Partial (word only):           {len(partial)}")
+
+    # Show sample entries
+    print(f"\nSample entries (first 10):")
+    for entry in complete[:10]:
+        pos_str = f" ({entry.pos})" if entry.pos else ""
+        translit_str = f" [{entry.transliteration}]" if entry.transliteration else ""
+        print(f"  {entry.armenian_word}{translit_str}{pos_str} — {entry.translation}")
+
+    # Write output
+    if output_path is None:
+        output_path = inp.parent / f"vocab_{inp.stem}.{output_format}"
+    else:
+        output_path = Path(output_path)
+
+    if output_format == "json":
+        vocab_to_json(entries, output_path)
+    else:
+        vocab_to_csv(entries, output_path)
+
+    print(f"\n✓ Vocabulary list written to: {output_path}")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Generate Armenian morphology cards for Anki",
@@ -474,6 +538,7 @@ Examples:
   %(prog)s --word գրել --pos verb --translation write --no-anki
   %(prog)s --progression                       Build phrase-chunking progression deck
   %(prog)s --progression --dry-run             Preview progression plan without pushing
+  %(prog)s --ocr-bridge extracted_text.json    Extract vocab from OCR output
         """,
     )
     parser.add_argument("--demo", action="store_true",
@@ -511,6 +576,13 @@ Examples:
                         help="Run the phrase-chunking progression pipeline")
     parser.add_argument("--dry-run", action="store_true",
                         help="With --progression: print the plan without pushing cards")
+    parser.add_argument("--ocr-bridge", type=str, metavar="FILE",
+                        help="Extract vocabulary from an OCR-extracted JSON or CSV file")
+    parser.add_argument("--ocr-output", type=str, default=None, metavar="FILE",
+                        help="Output path for --ocr-bridge (default: auto-generated)")
+    parser.add_argument("--ocr-format", type=str, default="csv",
+                        choices=["csv", "json"],
+                        help="Output format for --ocr-bridge (default: csv)")
     parser.add_argument("-v", "--verbose", action="store_true",
                         help="Enable debug logging")
 
@@ -532,6 +604,8 @@ Examples:
         run_list_decks()
     elif args.inspect:
         run_inspect_deck(args.inspect)
+    elif args.ocr_bridge:
+        run_ocr_bridge(args.ocr_bridge, args.ocr_output, args.ocr_format)
     elif args.progression:
         run_progression_pipeline(args.source_deck, dry_run=args.dry_run,
                                  field_overrides=field_overrides or None,
