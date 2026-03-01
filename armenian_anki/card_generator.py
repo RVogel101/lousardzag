@@ -22,6 +22,7 @@ from .database import CardDatabase
 from .morphology.nouns import decline_noun, NounDeclension, CASE_LABELS_EN
 from .morphology.verbs import conjugate_verb, VerbConjugation, PERSONS, PERSON_LABELS
 from .morphology.articles import add_definite, add_indefinite
+from .morphology.detect import detect_verb_class, detect_noun_class, detect_pos_and_class
 from .sentence_generator import generate_noun_sentences, generate_verb_sentences
 
 logger = logging.getLogger(__name__)
@@ -313,15 +314,10 @@ class CardGenerator:
     def _detect_pos(word: str) -> str:
         """Heuristically detect POS from an Armenian word's suffix.
 
-        Verb infinitive endings in Western Armenian:
-          -el (U+0565 U+056C)  e-class (most common)
-          -al (U+0561 U+056C)  a-class
-          -il (U+056B U+056C)  reflexive / middle
+        Uses the detect module for accurate verb-class-aware detection.
         """
-        w = re.sub(r'[\u055b-\u055e\u0589\u02bc]', '', word).strip()
-        if w.endswith('\u0565\u056c') or w.endswith('\u0561\u056c') or w.endswith('\u056b\u056c'):
-            return 'verb'
-        return 'noun'
+        pos, _ = detect_pos_and_class(word)
+        return pos
 
     @staticmethod
     def _extract_syllable_count(html: str) -> int:
@@ -487,7 +483,7 @@ class CardGenerator:
                            extra_tags: Optional[list] = None,
                            deck: Optional[str] = None) -> Optional[int]:
         """Generate and add a noun declension card to Anki."""
-        cls = declension_class or DEFAULT_NOUN_DECLENSION
+        cls = declension_class or detect_noun_class(word)
         decl = decline_noun(word, cls, translation)
 
         fields = {
@@ -546,7 +542,7 @@ class CardGenerator:
                            extra_tags: Optional[list] = None,
                            deck: Optional[str] = None) -> Optional[int]:
         """Generate and add a verb conjugation card to Anki."""
-        cls = verb_class or DEFAULT_VERB_CLASS
+        cls = verb_class or detect_verb_class(infinitive)
         conj = conjugate_verb(infinitive, cls, translation)
 
         fields = {
