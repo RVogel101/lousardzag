@@ -335,7 +335,7 @@ class TestParseTitleCard(unittest.TestCase):
             "Centre for Western Armenian Studies, and any use of it."
         )
         result = _parse_title_card(text)
-        self.assertIsNotNone(result)
+        assert result is not None
         self.assertEqual(result["armenian_word"], "\u053f\u0561\u0575\u056c\u0561\u056f")
         self.assertEqual(result["transliteration"], "gay-lag")
         self.assertEqual(result["pos"], "noun")
@@ -351,7 +351,7 @@ class TestParseTitleCard(unittest.TestCase):
             "Centre for Western Armenian Studies, and any use of it."
         )
         result = _parse_title_card(text)
-        self.assertIsNotNone(result)
+        assert result is not None
         self.assertEqual(result["pos"], "verb")
         self.assertIn("extort", result["translation"].lower())
 
@@ -366,7 +366,7 @@ class TestParseTitleCard(unittest.TestCase):
         )
         result = _parse_title_card(text)
         # Should still succeed with transliteration even without Armenian word
-        self.assertIsNotNone(result)
+        assert result is not None
         self.assertEqual(result["transliteration"], "a-del")
 
     def test_empty_text_returns_none(self):
@@ -448,7 +448,7 @@ class TestExtractVocabFromRecords(unittest.TestCase):
         records = self._make_records()
         entries = extract_vocab_from_records(records)
         noun_entry = next((e for e in entries if e.cwas_number == "0012"), None)
-        self.assertIsNotNone(noun_entry)
+        assert noun_entry is not None
         self.assertEqual(noun_entry.armenian_word, "\u053f\u0561\u0575\u056c\u0561\u056f")
         self.assertEqual(noun_entry.pos, "noun")
 
@@ -456,7 +456,7 @@ class TestExtractVocabFromRecords(unittest.TestCase):
         records = self._make_records()
         entries = extract_vocab_from_records(records)
         verb_entry = next((e for e in entries if e.cwas_number == "0015"), None)
-        self.assertIsNotNone(verb_entry)
+        assert verb_entry is not None
         self.assertEqual(verb_entry.pos, "verb")
 
     def test_extract_with_empty_records(self):
