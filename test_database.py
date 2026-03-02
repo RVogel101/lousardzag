@@ -80,6 +80,22 @@ class TestCardDatabase(unittest.TestCase):
         self.assertEqual(card["word"], "test_noun")
         self.assertEqual(card["morphology"], morphology)
 
+    def test_template_version_and_metadata_roundtrip(self):
+        metadata = {
+            "loanword_origin": "french",
+            "loanword_badge_class": "origin-french",
+        }
+        card_id = self.db.upsert_card(
+            word="test_meta",
+            translation="menu",
+            card_type="noun_declension",
+            template_version="v2",
+            metadata=metadata,
+        )
+        card = self.db.get_card(card_id)
+        self.assertEqual(card["template_version"], "v2")
+        self.assertEqual(card["metadata"], metadata)
+
     def test_get_card_not_found(self):
         self.assertIsNone(self.db.get_card(99999))
 
