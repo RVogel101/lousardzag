@@ -45,7 +45,9 @@ from itertools import cycle
 from typing import Iterator
 
 from .morphology.core import count_syllables
+from .morphology.difficulty import score_word_difficulty
 from .sentence_generator import generate_noun_sentences, generate_verb_sentences
+
 
 logger = logging.getLogger(__name__)
 
@@ -172,14 +174,26 @@ class WordEntry:
 
     # Computed on construction; may be seeded from the Anki Syllable Guide
     syllable_count: int = field(default=0)
+    
+    # Morphological difficulty score (1.0–10.0, where higher = harder)
+    # Computed from phonological and morphological complexity
+    difficulty_score: float = field(default=0.0)
 
     def __post_init__(self):
         if self.syllable_count == 0:
             self.syllable_count = count_syllables(self.word)
+        if self.difficulty_score == 0.0:
+            self.difficulty_score = score_word_difficulty(
+                self.word,
+                self.pos,
+                self.declension_class if self.declension_class else None,
+                self.verb_class if self.verb_class else None,
+            )
 
     def __repr__(self) -> str:
         return (f"WordEntry({self.word!r}, rank={self.frequency_rank}, "
-                f"syl={self.syllable_count}, pos={self.pos})")
+                f"syl={self.syllable_count}, difficulty={self.difficulty_score:.2f}, "
+                f"pos={self.pos})")
 
 
 # ─── Batch / Level Structures ─────────────────────────────────────────
@@ -315,8 +329,10 @@ class ProgressionPlan:
         """Primary sort: by frequency rank (ascending = most frequent first).
         Secondary sort: by syllable count (ascending = simplest first) within
         words of equal frequency rank.
+        Tertiary sort: by difficulty score (ascending = least complex morphologically)
+        within words of equal frequency and syllable count.
         """
-        return sorted(words, key=lambda w: (w.frequency_rank, w.syllable_count))
+        return sorted(words, key=lambda w: (w.frequency_rank, w.syllable_count, w.difficulty_score))
 
     @staticmethod
     def _gate_by_syllables(words: list[WordEntry]) -> list[WordEntry]:
@@ -325,7 +341,7 @@ class ProgressionPlan:
 
         This works in passes:
           1. Assign each word a minimum level based on its syllable count.
-          2. Within each level band, sort by frequency rank.
+          2. Within each level band, sort by frequency rank and difficulty score.
         """
         def min_level_for_word(w: WordEntry) -> int:
             syl = w.syllable_count
@@ -344,9 +360,9 @@ class ProgressionPlan:
             ml = min_level_for_word(w)
             buckets.setdefault(ml, []).append(w)
 
-        # Sort each bucket by frequency rank
+        # Sort each bucket by frequency rank, then by difficulty score
         for ml in buckets:
-            buckets[ml].sort(key=lambda w: (w.frequency_rank, w.syllable_count))
+            buckets[ml].sort(key=lambda w: (w.frequency_rank, w.difficulty_score))
 
         # Flatten in level order
         result: list[WordEntry] = []
