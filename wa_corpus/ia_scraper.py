@@ -112,8 +112,30 @@ def search_items(
     return all_items[:max_items]
 
 
+def _contains_armenian(text) -> bool:
+    """Return True if the input (usually a string) has any Armenian characters.
+
+    The IA metadata sometimes has lists or other non-str values in the title/
+    description fields, so we coerce to str first and then scan character-by-
+    character.  This avoids the 'ord() expected a character' TypeError.
+    """
+    if not text:
+        return False
+    s = str(text)
+    for c in s:
+        code = ord(c)
+        if 0x0531 <= code <= 0x0587:
+            return True
+    return False
+
+
 def catalog_all_armenian(max_per_query: int = 200) -> list[dict]:
     """Run all WA search queries and deduplicate results.
+
+    Applies a basic Armenian-script filter on titles/descriptions so that
+    items without any Armenian characters are dropped early.  This helps reduce
+    the chance of Eastern-Armenian or non‑Armenian results slipping through the
+    query.
 
     Returns deduplicated list of item metadata.
     """
@@ -126,6 +148,13 @@ def catalog_all_armenian(max_per_query: int = 200) -> list[dict]:
 
         new_count = 0
         for item in items:
+            # basic filter: require Armenian characters in title or description
+            title = item.get("title", "") or ""
+            desc = item.get("description", "") or ""
+            if not (_contains_armenian(title) or _contains_armenian(desc)):
+                # skip non‑Armenian items returned by the broad query
+                continue
+
             ident = item["identifier"]
             if ident not in seen_ids:
                 seen_ids.add(ident)
