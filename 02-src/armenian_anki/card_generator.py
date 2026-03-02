@@ -23,7 +23,7 @@ from .morphology.verbs import conjugate_verb, VerbConjugation, PERSONS, PERSON_L
 from .morphology.articles import add_definite, add_indefinite
 from .morphology.detect import detect_verb_class, detect_noun_class, detect_pos_and_class
 from .renderer import load_card_model_assets, build_loanword_metadata
-from .sentence_generator import generate_noun_sentences, generate_verb_sentences
+from .sentence_generator import generate_noun_sentences, generate_verb_sentences, extract_vocabulary
 
 logger = logging.getLogger(__name__)
 
@@ -694,12 +694,17 @@ class CardGenerator:
                 )
             else:
                 db_card_id = db_card["id"]
+            
+            # Extract vocabulary from the sentence for prerequisite tracking
+            vocabulary_used = extract_vocabulary(arm_sentence)
+            
             sentence_id = self.db.add_sentence(
                 card_id=db_card_id,
                 form_label=form_label,
                 armenian_text=arm_sentence,
                 english_text=en_sentence,
                 grammar_type=grammar_filter or "",
+                vocabulary_used=vocabulary_used,
             )
             if not push_to_anki:
                 note_ids.append(sentence_id)

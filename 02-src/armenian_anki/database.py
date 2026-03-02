@@ -72,6 +72,7 @@ CREATE TABLE IF NOT EXISTS sentences (
     armenian_text    TEXT    NOT NULL DEFAULT '',
     english_text     TEXT    NOT NULL DEFAULT '',
     grammar_type     TEXT    NOT NULL DEFAULT '',
+    vocabulary_used  TEXT    NOT NULL DEFAULT '[]',  -- JSON list of all Armenian words in sentence
     created_at       TEXT    NOT NULL
 );
 
@@ -166,6 +167,7 @@ class CardDatabase:
 
     def _apply_schema_migrations(self, conn: sqlite3.Connection) -> None:
         """Apply additive schema migrations for existing local databases."""
+        # Check cards table columns
         cols = {
             row["name"]
             for row in conn.execute("PRAGMA table_info(cards)").fetchall()
@@ -180,6 +182,18 @@ class CardDatabase:
             conn.execute(
                 "ALTER TABLE cards ADD COLUMN metadata_json TEXT NOT NULL DEFAULT '{}'"
             )
+
+        # Check sentences table columns
+        sent_cols = {
+            row["name"]
+            for row in conn.execute("PRAGMA table_info(sentences)").fetchall()
+        }
+
+        if "vocabulary_used" not in sent_cols:
+            conn.execute(
+                "ALTER TABLE sentences ADD COLUMN vocabulary_used TEXT NOT NULL DEFAULT '[]'"
+            )
+            logger.info("Applied migration: Added vocabulary_used column to sentences table")
 
     @contextmanager
     def _connect(self):
@@ -348,17 +362,28 @@ class CardDatabase:
         armenian_text: str,
         english_text: str,
         grammar_type: str = "",
+        vocabulary_used: list[str] | None = None,
     ) -> int:
-        """Insert a sentence row and return its ``id``."""
+        """Insert a sentence row and return its ``id``.
+        
+        Args:
+            card_id: ID of the parent card.
+            form_label: Case/tense label for the sentence.
+            armenian_text: Armenian sentence text.
+            english_text: English translation.
+            grammar_type: Grammar category (optional).
+            vocabulary_used: List of Armenian words used in the sentence (for prerequisite tracking).
+        """
         now = _now_iso()
+        vocab_json = json.dumps(vocabulary_used or [], ensure_ascii=False)
         with self._connect() as conn:
             cur = conn.execute(
                 """
                 INSERT INTO sentences
-                    (card_id, form_label, armenian_text, english_text, grammar_type, created_at)
-                VALUES (?, ?, ?, ?, ?, ?)
+                    (card_id, form_label, armenian_text, english_text, grammar_type, vocabulary_used, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
-                (card_id, form_label, armenian_text, english_text, grammar_type, now),
+                (card_id, form_label, armenian_text, english_text, grammar_type, vocab_json, now),
             )
         return cur.lastrowid
 

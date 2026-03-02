@@ -13,6 +13,13 @@ Can generate sentences in multiple styles:
   - With romanization: "(yes) gardam"
 """
 
+import sys
+from pathlib import Path
+
+# Import tokenizer from wa_corpus for vocabulary extraction
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from wa_corpus.tokenizer import tokenize_armenian
+
 from .morphology.core import ARM, romanize
 from .morphology.nouns import decline_noun, NounDeclension
 from .morphology.verbs import conjugate_verb, VerbConjugation
@@ -564,6 +571,19 @@ def _romanize_sentence(armenian_sentence: str) -> str:
     words = armenian_sentence.split(" ")
     romanized_words = [romanize(w) if w else "" for w in words]
     return " ".join(romanized_words)
+
+
+def extract_vocabulary(armenian_sentence: str) -> list[str]:
+    """Extract all Armenian vocabulary words from a sentence.
+    
+    Returns a list of unique Armenian words (normalized, lowercase) for
+    vocabulary tracking and prerequisite analysis.
+    
+    Example:
+        >>> extract_vocabulary("Մայրը գեղեցիկ է")
+        ['մայր', 'գեղեցիկ', 'է']
+    """
+    return tokenize_armenian(armenian_sentence)
 
 
 # ─── Sentence Pair Generation (Armenian + Romanized) ───────────────────
