@@ -51,7 +51,10 @@ WA_SEARCH_QUERIES = [
 
 # Formats we want to download, in priority order
 IMAGE_FORMATS = ["Single Page Processed JP2 ZIP", "Single Page Original JP2 Tar"]
-TEXT_FORMATS = ["DjVuTXT", "OCR Search Text", "hOCR", "chOCR"]
+# Only DjVuTXT by default — it's plain text, ~100KB per file.
+# hOCR/chOCR are multi-MB HTML with layout coordinates we don't need.
+TEXT_FORMATS_DEFAULT = ["DjVuTXT"]
+TEXT_FORMATS_ALL = ["DjVuTXT", "OCR Search Text", "hOCR", "chOCR"]
 
 
 # ─── Catalog ──────────────────────────────────────────────────────────
@@ -152,11 +155,18 @@ def get_item_files(identifier: str) -> list[dict]:
         return []
 
 
-def classify_item_files(files: list[dict]) -> dict:
+def classify_item_files(files: list[dict], text_formats: list[str] | None = None) -> dict:
     """Classify available files by type.
 
-    Returns dict with keys: 'images', 'ocr_text', 'pdf', 'other'
+    Args:
+        files: Raw file list from IA metadata API.
+        text_formats: Which OCR text formats to include. Defaults to DjVuTXT only.
+
+    Returns dict with keys: 'images', 'ocr_text', 'pdf', 'formats'
     """
+    if text_formats is None:
+        text_formats = TEXT_FORMATS_DEFAULT
+
     result = {"images": [], "ocr_text": [], "pdf": [], "formats": set()}
 
     for f in files:
@@ -169,7 +179,7 @@ def classify_item_files(files: list[dict]) -> dict:
 
         if fmt in IMAGE_FORMATS:
             result["images"].append(entry)
-        elif fmt in TEXT_FORMATS:
+        elif fmt in text_formats:
             result["ocr_text"].append(entry)
         elif "PDF" in fmt:
             result["pdf"].append(entry)
