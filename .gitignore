@@ -36,7 +36,7 @@ data/_wa_source_extract/
 !data/.gitkeep
 
 # Generated corpus data (IA downloads, newspaper scrapes, wiki dumps, etc.)
-src/wa_corpus/data/
+02-src/wa_corpus/data/
 
 # Images
 *.jpg

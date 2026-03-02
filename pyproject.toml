@@ -43,7 +43,7 @@ anki-build-corpus = "wa_corpus.cli:build_corpus_main"
 
 [tool.setuptools]
 packages = ["armenian_anki", "wa_corpus"]
-package-dir = { "" = "src" }
+package-dir = { "" = "02-src" }
 
 [tool.setuptools.package-data]
 armenian_anki = ["templates/**/*"]
