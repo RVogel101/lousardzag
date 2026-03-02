@@ -11,7 +11,7 @@ from .morphology.detect import detect_noun_class, detect_verb_class
 from .morphology.nouns import decline_noun
 from .morphology.verbs import PERSONS, conjugate_verb
 from .renderer import build_loanword_metadata, load_card_model_assets, render_card_preview
-from .sentence_generator import generate_noun_sentences, generate_verb_sentences
+from .sentence_generator import generate_noun_sentences, generate_verb_sentences, extract_vocabulary
 
 
 def _first_vocab_by_pos(
@@ -131,12 +131,16 @@ def _sentence_fields(word: str, translation: str, pos: str) -> dict[str, str]:
             max_sentences=1,
         )[0]
 
+    # Extract all vocabulary used in the sentence for prerequisite tracking
+    vocabulary_used = extract_vocabulary(arm)
+
     return {
         "Word": word,
         "Translation": translation,
         "FormLabel": label,
         "ArmenianSentence": arm,
         "EnglishSentence": eng,
+        "VocabularyUsed": vocabulary_used,
         "LoanwordOrigin": loan["loanword_origin"],
         "LoanwordOriginLabel": loan["loanword_origin_label"],
         "LoanwordBadgeClass": loan["loanword_badge_class"],
