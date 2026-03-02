@@ -201,3 +201,113 @@ def count_syllables(word: str) -> int:
             i += 1
 
     return max(count, 1) if any(is_armenian(c) for c in word) else count
+
+
+# ─── Romanization (Armenian → Latin script transliteration) ────────────
+
+# Reverse mapping: Unicode character → transliteration key
+_CHAR_TO_TRANSLIT = {v: k for k, v in ARM.items()}
+_CHAR_TO_TRANSLIT_UPPER = {v: k for k, v in ARM_UPPER.items()}
+
+# Common digraphs and multi-character transliterations
+_DIGRAPH_TRANSLIT = {
+    ARM["vo"] + ARM["yiwn"]: "ou",  # ու → ou (WA /u/)
+    ARM["t_asp"]: "t'",              # թ → t'
+    ARM["ch_asp"]: "ch'",            # ճ → ch'
+    ARM["p_asp"]: "p'",              # փ → p'
+    ARM["k_asp"]: "k'",              # կ' → k'
+    ARM["c_asp"]: "ts'",             # ծ' → ts'
+}
+
+# Post-processing: convert transliteration keys to proper Latin output
+_KEY_TO_LATIN = {
+    "ye": "ye",
+    "e": "e",
+    "i": "i",
+    "a": "a",
+    "o": "o",
+    "vo": "ou",
+    "yiwn": "w",    # ւ as standalone is rarely used, often part of ու
+    "y_schwa": "ə",  # ə (schwa)
+    "zh": "zh",
+    "kh": "kh",
+    "sh": "sh",
+    "ch": "ch",
+    "ts": "ts",
+    "dz": "dz",
+    "j": "j",
+    "g": "g",
+    "k": "k",
+    "p": "p",
+    "b": "b",
+    "d": "d",
+    "t": "t",
+    "gh": "gh",
+    "h": "h",
+    "v": "v",
+    "m": "m",
+    "n": "n",
+    "s": "s",
+    "z": "z",
+    "r": "r",
+    "rr": "ṙ",
+    "l": "l",
+    "y": "y",
+    "f": "f",
+    "t_asp": "t'",
+    "ch_asp": "ch'",
+    "p_asp": "p'",
+    "k_asp": "k'",
+    "c_asp": "ts'",
+}
+
+
+def romanize(word: str, capitalize: bool = False) -> str:
+    """Convert Armenian script to Western Armenian romanized transliteration.
+
+    Args:
+        word: Armenian text to romanize.
+        capitalize: If True, capitalize the first letter of the output.
+
+    Returns:
+        Romanized transliteration (e.g., "կարդամ" → "gartam").
+
+    Examples:
+        romanize("ես") → "yes"
+        romanize("կարդամ") → "gartam"
+    """
+    if not word:
+        return ""
+
+    result = []
+    i = 0
+    while i < len(word):
+        # Check digraphs first
+        if i + 1 < len(word):
+            digraph = word[i:i+2]
+            if digraph in _DIGRAPH_TRANSLIT:
+                result.append(_DIGRAPH_TRANSLIT[digraph])
+                i += 2
+                continue
+
+        # Single character
+        ch = word[i]
+        if ch in _CHAR_TO_TRANSLIT:
+            key = _CHAR_TO_TRANSLIT[ch]
+            # Convert transliteration key to readable Latin character
+            latin = _KEY_TO_LATIN.get(key, key)
+            result.append(latin)
+        elif ch in _CHAR_TO_TRANSLIT_UPPER:
+            key = _CHAR_TO_TRANSLIT_UPPER[ch]
+            # Convert transliteration key to readable Latin character
+            latin = _KEY_TO_LATIN.get(key, key).upper()
+            result.append(latin)
+        else:
+            # Keep non-Armenian characters as-is (spaces, punctuation, etc.)
+            result.append(ch)
+        i += 1
+
+    text = "".join(result)
+    if capitalize and text:
+        text = text[0].upper() + text[1:]
+    return text
