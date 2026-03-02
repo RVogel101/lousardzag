@@ -260,9 +260,24 @@ def _push_to_anki_single(word, pos, translation, declension_class, verb_class):
 
 
 def run_full_pipeline(source_deck: str = None, field_overrides: dict = None,
-                      default_pos: str = "noun"):
+                      default_pos: str = "noun", local_only: bool = False):
     """Process all words in the source deck."""
     try:
+        if local_only:
+            print("Running in local-only mode (no Anki connections/writes).")
+            gen = CardGenerator()
+            stats = gen.process_all(source_deck, field_overrides, default_pos, local_only=True)
+            print("\n" + "=" * 60)
+            print("  Local-Only Generation Complete")
+            print("=" * 60)
+            print(f"  Total words processed: {stats['total']}")
+            print(f"  Noun declension rows:  {stats['nouns']}")
+            print(f"  Verb conjugation rows: {stats['verbs']}")
+            print(f"  Sentence rows:         {stats['sentences']}")
+            print(f"  Errors:                {stats['errors']}")
+            print("=" * 60)
+            return
+
         anki = AnkiConnect()
         if not anki.ping():
             print("✗ Cannot connect to AnkiConnect. Is Anki running with the AnkiConnect plugin?")
@@ -443,6 +458,7 @@ def run_progression_pipeline(source_deck: str = None, dry_run: bool = False,
                             max_sentences=1,
                             extra_tags=tags,
                             deck=PROGRESSION_DECK,
+                            supporting_words=phrase.supporting_words,
                         )
                         for note_id in sentence_ids:
                             phrase_key = f"phrase::{phrase.target_word}"
@@ -522,6 +538,56 @@ def run_ocr_bridge(input_path: str, output_path: str = None, output_format: str 
     print(f"\n✓ Vocabulary list written to: {output_path}")
 
 
+def run_sync_vocabulary(source_deck: str = None, field_overrides: dict = None):
+    """Sync vocabulary from Anki deck to local SQLite cache.
+    
+    After syncing, the vocabulary cache can be used with --no-anki flag
+    or by setting use_cache=True in CardGenerator.
+    """
+    try:
+        anki = AnkiConnect()
+        if not anki.ping():
+            print("✗ Cannot connect to AnkiConnect. Is Anki running with the AnkiConnect plugin?")
+            print("  Install AnkiConnect: Tools → Add-ons → Get Add-ons → Code: 2055492159")
+            sys.exit(1)
+
+        from armenian_anki.database import CardDatabase
+        db = CardDatabase()
+        
+        source_deck = source_deck or SOURCE_DECK
+        print(f"Syncing vocabulary from deck: {source_deck}")
+        print("-" * 60)
+        
+        stats = db.sync_vocabulary_from_anki(
+            anki,
+            deck=source_deck,
+            field_overrides=field_overrides or None,
+        )
+        
+        print("\n" + "=" * 60)
+        print("  Vocabulary Sync Complete")
+        print("=" * 60)
+        print(f"  Added:       {stats['added']}")
+        print(f"  Updated:     {stats['updated']}")
+        print(f"  Skipped:     {stats['skipped']}")
+        print(f"  Total:       {stats['total_processed']}")
+        print("=" * 60)
+        
+        if stats['added'] + stats['updated'] > 0:
+            print("\n✓ Vocabulary cache is now ready for offline use!")
+            print("  Use --use-cache or use_cache=True to use the local cache instead of AnkiConnect")
+        else:
+            print("\n⚠ No vocabulary was synced. Check deck name and try again.")
+    
+    except AnkiConnectError as exc:
+        print(f"✗ AnkiConnect error: {exc}")
+        sys.exit(1)
+    except Exception as exc:
+        print(f"✗ Error: {exc}")
+        logger.exception("Vocabulary sync failed")
+        sys.exit(1)
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Generate Armenian morphology cards for Anki",
@@ -572,12 +638,16 @@ Examples:
                         help="POS to assume when the pos field is missing (default: noun)")
     parser.add_argument("--no-anki", action="store_true",
                         help="Display output only, don't push to Anki")
+    parser.add_argument("--local-only", action="store_true",
+                        help="Strict local mode: use SQLite cache only and never connect/write to Anki")
     parser.add_argument("--progression", action="store_true",
                         help="Run the phrase-chunking progression pipeline")
     parser.add_argument("--dry-run", action="store_true",
                         help="With --progression: print the plan without pushing cards")
     parser.add_argument("--ocr-bridge", type=str, metavar="FILE",
                         help="Extract vocabulary from an OCR-extracted JSON or CSV file")
+    parser.add_argument("--sync-vocabulary", action="store_true",
+                        help="Sync vocabulary from source deck to local SQLite cache for offline access")
     parser.add_argument("--ocr-output", type=str, default=None, metavar="FILE",
                         help="Output path for --ocr-bridge (default: auto-generated)")
     parser.add_argument("--ocr-format", type=str, default="csv",
@@ -600,6 +670,8 @@ Examples:
 
     if args.demo:
         run_demo()
+    elif args.sync_vocabulary:
+        run_sync_vocabulary(args.source_deck, field_overrides=field_overrides or None)
     elif args.list_decks:
         run_list_decks()
     elif args.inspect:
@@ -620,7 +692,8 @@ Examples:
     else:
         run_full_pipeline(args.source_deck,
                           field_overrides=field_overrides or None,
-                          default_pos=args.default_pos)
+                          default_pos=args.default_pos,
+                          local_only=args.local_only)
 
 
 if __name__ == "__main__":
