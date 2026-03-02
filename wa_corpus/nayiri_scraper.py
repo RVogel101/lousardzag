@@ -16,12 +16,14 @@ from __future__ import annotations
 
 import json
 import logging
+import random
 import re
 import time
 from pathlib import Path
+from urllib import robotparser
 
-from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -45,13 +47,19 @@ NAYIRI_BROWSE_URL = "http://nayiri.com/imagepage.php?dt={dict_type}&p={page}"
 # Armenian lowercase alphabet via Unicode range: ա (U+0561) through ֆ (U+0586)
 ARMENIAN_LOWER = [chr(c) for c in range(0x0561, 0x0587)]  # 38 letters
 
-# Rate limiting
-REQUEST_DELAY = 1.5
+# Conservative defaults to reduce request pressure and ban risk.
+REQUEST_DELAY_MIN = 2.5
+REQUEST_DELAY_MAX = 4.5
+MAX_RETRIES = 3
+RETRY_BACKOFF = 2.0
+COOLDOWN_EVERY = 60
+COOLDOWN_SECONDS = 20.0
+USER_AGENT = "ArmenianCorpusResearchBot/1.0 (respectful scraping for linguistic research)"
 
 
 # ─── Browser Setup ───────────────────────────────────────────────────
 
-def _create_driver() -> webdriver.Chrome:
+def _create_driver() -> Chrome:
     """Create a headless Chrome driver."""
     options = Options()
     options.add_argument("--headless=new")
@@ -59,24 +67,89 @@ def _create_driver() -> webdriver.Chrome:
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1080")
-    options.add_argument(
-        "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    )
-    options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    options.add_experimental_option("useAutomationExtension", False)
+    options.add_argument(f"--user-agent={USER_AGENT}")
 
-    driver = webdriver.Chrome(options=options)
-    driver.execute_cdp_cmd(
-        "Page.addScriptToEvaluateOnNewDocument",
-        {"source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"},
-    )
+    driver = Chrome(options=options)  # type: ignore[operator]
     return driver
+
+
+def _is_allowed_by_robots() -> bool:
+    """Check whether Nayiri allows crawling via robots.txt."""
+    parser = robotparser.RobotFileParser()
+    parser.set_url("http://nayiri.com/robots.txt")
+    try:
+        parser.read()
+    except Exception as exc:
+        logger.warning("Could not read robots.txt (%s); continuing cautiously", exc)
+        return True
+
+    allowed = parser.can_fetch(USER_AGENT, "/search")
+    if not allowed:
+        allowed = parser.can_fetch("*", "/search")
+    return allowed
+
+
+class PoliteNavigator:
+    """Coordinates request pacing, cooldown, and retries."""
+
+    def __init__(
+        self,
+        driver: Chrome,
+        delay_min: float,
+        delay_max: float,
+        max_retries: int,
+        retry_backoff: float,
+        cooldown_every: int,
+        cooldown_seconds: float,
+    ):
+        self.driver = driver
+        self.delay_min = delay_min
+        self.delay_max = delay_max
+        self.max_retries = max_retries
+        self.retry_backoff = retry_backoff
+        self.cooldown_every = cooldown_every
+        self.cooldown_seconds = cooldown_seconds
+        self.request_count = 0
+
+    def _sleep_between_requests(self) -> None:
+        delay = random.uniform(self.delay_min, self.delay_max)
+        time.sleep(delay)
+
+        if self.cooldown_every > 0 and self.request_count % self.cooldown_every == 0:
+            logger.info(
+                "Polite cooldown after %d requests: %.1fs",
+                self.request_count,
+                self.cooldown_seconds,
+            )
+            time.sleep(self.cooldown_seconds)
+
+    def get(self, url: str) -> bool:
+        for attempt in range(1, self.max_retries + 1):
+            try:
+                self.driver.get(url)
+                self.request_count += 1
+                self._sleep_between_requests()
+                return True
+            except Exception as exc:
+                if attempt == self.max_retries:
+                    logger.warning("Request failed after %d attempts: %s", attempt, url)
+                    logger.debug("Last request error: %s", exc)
+                    return False
+                backoff = self.retry_backoff ** attempt
+                logger.info(
+                    "Transient fetch failure (%s). Retrying in %.1fs (%d/%d)",
+                    type(exc).__name__,
+                    backoff,
+                    attempt,
+                    self.max_retries,
+                )
+                time.sleep(backoff)
+        return False
 
 
 # ─── Dictionary Entry Extraction ─────────────────────────────────────
 
-def _extract_entries_from_page(driver: webdriver.Chrome) -> list[dict]:
+def _extract_entries_from_page(driver: Chrome) -> list[dict]:
     """Extract dictionary entries from the current Nayiri page.
 
     Returns list of dicts with 'headword', 'definition', 'pos' (if available).
@@ -167,7 +240,7 @@ def _extract_entries_from_page(driver: webdriver.Chrome) -> list[dict]:
 # ─── Search-Based Scraping ───────────────────────────────────────────
 
 def search_letter(
-    driver: webdriver.Chrome,
+    navigator: PoliteNavigator,
     letter: str,
     dict_type: str = "HaysttseainBararan",
 ) -> list[dict]:
@@ -182,11 +255,14 @@ def search_letter(
     logger.info("Searching letter '%s': %s", letter, url)
 
     try:
-        driver.get(url)
+        if not navigator.get(url):
+            logger.warning("Failed to load search for letter '%s'", letter)
+            return entries
+        driver = navigator.driver
         WebDriverWait(driver, 15).until(
             EC.presence_of_element_located((By.TAG_NAME, "body"))
         )
-        time.sleep(2)  # Allow dynamic content to render
+        time.sleep(1.5)  # Allow dynamic content to render
     except Exception:
         logger.warning("Failed to load search for letter '%s'", letter)
         return entries
@@ -220,7 +296,7 @@ def search_letter(
 
 
 def search_two_letter_prefixes(
-    driver: webdriver.Chrome,
+    navigator: PoliteNavigator,
     letter: str,
     dict_type: str = "HaysttseainBararan",
 ) -> list[dict]:
@@ -236,12 +312,10 @@ def search_two_letter_prefixes(
         prefix = letter + second_letter
         url = NAYIRI_SEARCH_URL.format(dict_type=dict_type, query=prefix)
 
-        try:
-            driver.get(url)
-            time.sleep(1.5)
-        except Exception:
+        if not navigator.get(url):
             continue
 
+        driver = navigator.driver
         page_entries = _extract_entries_from_page(driver)
 
         new_count = 0
@@ -253,8 +327,6 @@ def search_two_letter_prefixes(
 
         if new_count > 0:
             logger.debug("  Prefix '%s': %d new entries", prefix, new_count)
-
-        time.sleep(REQUEST_DELAY)
 
     logger.info("  Letter '%s': %d total entries via 2-letter prefixes",
                 letter, len(entries))
@@ -296,7 +368,7 @@ def _save_entries(output_dir: Path, entries: list[dict]) -> None:
 # ─── English Translation Scraping ────────────────────────────────────
 
 def enrich_with_translations(
-    driver: webdriver.Chrome,
+    navigator: PoliteNavigator,
     entries: dict[str, dict],
     output_dir: Path,
 ) -> None:
@@ -322,8 +394,9 @@ def enrich_with_translations(
         url = NAYIRI_SEARCH_URL.format(dict_type=dict_type, query=hw)
 
         try:
-            driver.get(url)
-            time.sleep(1.0)
+            if not navigator.get(url):
+                continue
+            driver = navigator.driver
 
             # Look for English text in the result
             body_text = driver.find_element(By.TAG_NAME, "body").text
@@ -339,8 +412,6 @@ def enrich_with_translations(
         except Exception:
             continue
 
-        time.sleep(REQUEST_DELAY)
-
     logger.info("Enriched %d entries with English translations", enriched_count)
 
     # Save enriched entries
@@ -354,8 +425,15 @@ def enrich_with_translations(
 def scrape_nayiri(
     output_dir: Path = DEFAULT_OUTPUT_DIR,
     start_letter_idx: int = 0,
+    max_letters: int | None = None,
     use_two_letter: bool = True,
     enrich_english: bool = True,
+    delay_min: float = REQUEST_DELAY_MIN,
+    delay_max: float = REQUEST_DELAY_MAX,
+    max_retries: int = MAX_RETRIES,
+    cooldown_every: int = COOLDOWN_EVERY,
+    cooldown_seconds: float = COOLDOWN_SECONDS,
+    check_robots: bool = True,
 ) -> dict[str, dict]:
     """Run the full Nayiri dictionary scraping pipeline.
 
@@ -364,19 +442,40 @@ def scrape_nayiri(
     output_dir.mkdir(parents=True, exist_ok=True)
     seen, entries = _load_checkpoint(output_dir)
 
+    if check_robots and not _is_allowed_by_robots():
+        raise RuntimeError(
+            "robots.txt disallows /search for this scraper user-agent; "
+            "set check_robots=False only if you have explicit permission"
+        )
+
     driver = _create_driver()
+    navigator = PoliteNavigator(
+        driver=driver,
+        delay_min=delay_min,
+        delay_max=delay_max,
+        max_retries=max_retries,
+        retry_backoff=RETRY_BACKOFF,
+        cooldown_every=cooldown_every,
+        cooldown_seconds=cooldown_seconds,
+    )
     try:
+        processed_letters = 0
+
         # Scrape headwords letter by letter
         for idx, letter in enumerate(ARMENIAN_LOWER):
             if idx < start_letter_idx:
                 continue
 
+            if max_letters is not None and processed_letters >= max_letters:
+                logger.info("Reached max_letters=%d; stopping this batch", max_letters)
+                break
+
             logger.info("═══ Letter %d/%d: %s ═══", idx + 1, len(ARMENIAN_LOWER), letter)
 
             if use_two_letter:
-                new_entries = search_two_letter_prefixes(driver, letter)
+                new_entries = search_two_letter_prefixes(navigator, letter)
             else:
-                new_entries = search_letter(driver, letter)
+                new_entries = search_letter(navigator, letter)
 
             # Filter to truly new entries
             novel = [e for e in new_entries if e["headword"] not in seen]
@@ -387,11 +486,11 @@ def scrape_nayiri(
                     entries[e["headword"]] = e
 
             logger.info("  New: %d, Total: %d", len(novel), len(entries))
-            time.sleep(REQUEST_DELAY)
+            processed_letters += 1
 
         # Optionally enrich with English translations
         if enrich_english:
-            enrich_with_translations(driver, entries, output_dir)
+            enrich_with_translations(navigator, entries, output_dir)
 
     finally:
         driver.quit()
@@ -426,6 +525,7 @@ def load_nayiri_dictionary(output_dir: Path = DEFAULT_OUTPUT_DIR) -> dict[str, d
 
 def main():
     import argparse
+    import sys
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
@@ -433,24 +533,58 @@ def main():
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--start-letter", type=int, default=0,
                         help="Index of letter to start from (0-based, for resume)")
+    parser.add_argument("--max-letters", type=int, default=None,
+                        help="Process at most N letters in this run (for small batches)")
     parser.add_argument("--no-two-letter", action="store_true",
                         help="Use single-letter search only (faster, less complete)")
     parser.add_argument("--no-english", action="store_true",
                         help="Skip English translation enrichment")
+    parser.add_argument("--delay-min", type=float, default=REQUEST_DELAY_MIN,
+                        help="Minimum delay between requests in seconds")
+    parser.add_argument("--delay-max", type=float, default=REQUEST_DELAY_MAX,
+                        help="Maximum delay between requests in seconds")
+    parser.add_argument("--max-retries", type=int, default=MAX_RETRIES,
+                        help="Retries for failed page loads")
+    parser.add_argument("--cooldown-every", type=int, default=COOLDOWN_EVERY,
+                        help="Take a long pause every N requests (0 disables)")
+    parser.add_argument("--cooldown-seconds", type=float, default=COOLDOWN_SECONDS,
+                        help="Length of periodic cooldown pauses in seconds")
+    parser.add_argument("--ignore-robots", action="store_true",
+                        help="Skip robots.txt check (only use with explicit permission)")
     args = parser.parse_args()
+
+    if args.delay_min <= 0 or args.delay_max <= 0 or args.delay_max < args.delay_min:
+        parser.error("Invalid delay range: require 0 < delay-min <= delay-max")
+    if args.max_letters is not None and args.max_letters < 1:
+        parser.error("--max-letters must be >= 1")
+    if args.max_retries < 1:
+        parser.error("--max-retries must be >= 1")
+    if args.cooldown_every < 0:
+        parser.error("--cooldown-every must be >= 0")
+    if args.cooldown_seconds < 0:
+        parser.error("--cooldown-seconds must be >= 0")
 
     entries = scrape_nayiri(
         output_dir=args.output_dir,
         start_letter_idx=args.start_letter,
+        max_letters=args.max_letters,
         use_two_letter=not args.no_two_letter,
         enrich_english=not args.no_english,
+        delay_min=args.delay_min,
+        delay_max=args.delay_max,
+        max_retries=args.max_retries,
+        cooldown_every=args.cooldown_every,
+        cooldown_seconds=args.cooldown_seconds,
+        check_robots=not args.ignore_robots,
     )
 
     print(f"\nTotal headwords: {len(entries):,}")
     # Show sample
     sample = list(entries.values())[:10]
     for e in sample:
-        print(f"  {e['headword']}: {e.get('definition', '')[:60]}...")
+        line = f"  {e['headword']}: {e.get('definition', '')[:60]}..."
+        encoding = sys.stdout.encoding or "utf-8"
+        print(line.encode(encoding, errors="replace").decode(encoding, errors="replace"))
 
 
 if __name__ == "__main__":
