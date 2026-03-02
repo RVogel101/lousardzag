@@ -39,7 +39,8 @@ _r   = ARM["r"]        # dles (r)
 _n   = ARM["n"]        # dles (n)
 _m   = ARM["m"]        # dles (m)
 _s   = ARM["s"]        # dles (s)
-_g   = ARM["g"]        # dles (WA: g) — note: EA would call this "k"
+_k   = ARM["k"]        # dles (WA: k — unvoiced velar)
+_g   = ARM["g"]        # dles (WA: g — voiced velar; note: EA would call this "k")
 _d   = ARM["d"]        # dles (WA: d) — note: EA would call this "t"
 _l   = ARM["l"]        # dles (l)
 _k_asp = ARM["k_asp"]  # dles (k')
@@ -80,14 +81,18 @@ PERSON_LABELS = {
 }
 
 TENSES = [
+    "infinitive",
+    "subjunctive",
     "present",
+    "future",
+    "conditional",
     "past_aorist",
     "imperfect",
-    "future",
-    "subjunctive",
+    "perfect",
+    "pluperfect",
     "imperative",
     "past_participle",
-    "infinitive",
+    "present_participle",
 ]
 
 
@@ -151,12 +156,37 @@ IMPERFECT_ENDINGS_A_CLASS = {
     "3pl": _a + _i + _n,        # dles = ain
 }
 
+# Conditional endings — in WA, formed with conditional particle կ (ka) + subjunctive
+# Alternative: using a suffix pattern [-ի/-ար/-ե for singular/plural variations]
+# Simple approach: just show the subjunctive form with conditional framing
+CONDITIONAL_ENDINGS_E_CLASS = {
+    "1sg": _ye + _m,              # dles = em (would be: կ em)
+    "2sg": _ye + _s,              # dles = es (would be: կ es)
+    "3sg": _e,                    # dles = ē (would be: կ ē)
+    "1pl": _ye + _n + _k_asp,    # dles = enk' (would be: կ enk')
+    "2pl": _ye + _k_asp,         # dles = ek' (would be: կ ek')
+    "3pl": _ye + _n,             # dles = en (would be: կ en)
+}
+
+CONDITIONAL_ENDINGS_A_CLASS = {
+    "1sg": _a + _m,              # dles = am (would be: կ am)
+    "2sg": _a + _s,              # dles = as (would be: կ as)
+    "3sg": _a,                   # dles = a (would be: կ a)
+    "1pl": _a + _n + _k_asp,    # dles = ank' (would be: կ ank')
+    "2pl": _a + _k_asp,         # dles = ak' (would be: կ ak')
+    "3pl": _a + _n,             # dles = an (would be: կ an)
+}
+
+# Western Armenian conditional particle
+CONDITIONAL_PARTICLE = _k + _a  # dles = ka
+
 
 VERB_CLASSES = {
     "e_class": {
         "label": f"{_ye}{_l}-conjugation",
         "infinitive_suffix": INF_EL,
         "subjunctive": SUBJ_ENDINGS_E_CLASS,
+        "conditional": CONDITIONAL_ENDINGS_E_CLASS,
         "aorist": AORIST_ENDINGS_E_CLASS,
         "imperfect": IMPERFECT_ENDINGS_E_CLASS,
         "imperative_sg": _e,               # dles (ē) — 2sg imperative
@@ -168,6 +198,7 @@ VERB_CLASSES = {
         "label": f"{_a}{_l}-conjugation",
         "infinitive_suffix": INF_AL,
         "subjunctive": SUBJ_ENDINGS_A_CLASS,
+        "conditional": CONDITIONAL_ENDINGS_A_CLASS,
         "aorist": AORIST_ENDINGS_A_CLASS,
         "imperfect": IMPERFECT_ENDINGS_A_CLASS,
         "imperative_sg": _a,               # dles (a) — 2sg imperative
@@ -193,7 +224,12 @@ class VerbConjugation:
     past_aorist: dict[str, str] = None
     imperfect: dict[str, str] = None
     future: dict[str, str] = None
+    conditional: dict[str, str] = None
     subjunctive: dict[str, str] = None
+
+    # Perfect tenses (compound: past_participle + auxiliary "to be")
+    perfect: dict[str, str] = None       # have done (past participle + present of "to be")
+    pluperfect: dict[str, str] = None    # had done (past participle + past of "to be")
 
     # Imperative (2nd person only)
     imperative_sg: str = ""
@@ -212,8 +248,14 @@ class VerbConjugation:
             self.imperfect = {}
         if self.future is None:
             self.future = {}
+        if self.conditional is None:
+            self.conditional = {}
         if self.subjunctive is None:
             self.subjunctive = {}
+        if self.perfect is None:
+            self.perfect = {}
+        if self.pluperfect is None:
+            self.pluperfect = {}
 
     def as_dict(self) -> dict:
         """Return all forms as a nested dictionary."""
@@ -226,7 +268,10 @@ class VerbConjugation:
             "past_aorist": dict(self.past_aorist),
             "imperfect": dict(self.imperfect),
             "future": dict(self.future),
+            "conditional": dict(self.conditional),
             "subjunctive": dict(self.subjunctive),
+            "perfect": dict(self.perfect),
+            "pluperfect": dict(self.pluperfect),
             "imperative_sg": self.imperative_sg,
             "imperative_pl": self.imperative_pl,
             "past_participle": self.past_participle,
@@ -246,7 +291,10 @@ class VerbConjugation:
             ("Past (Aorist)", self.past_aorist),
             ("Imperfect", self.imperfect),
             ("Future", self.future),
+            ("Conditional", self.conditional),
             ("Subjunctive", self.subjunctive),
+            ("Perfect", self.perfect),
+            ("Pluperfect", self.pluperfect),
         ]:
             lines.append(f"  {tense_name}:")
             for person in PERSONS:
@@ -315,6 +363,10 @@ def conjugate_verb(
     for person, subj_form in result.subjunctive.items():
         result.present[person] = PRESENT_PARTICLE + " " + subj_form
 
+    # ── Conditional = conditional particle + subjunctive ──
+    for person, cond_form in cls["conditional"].items():
+        result.conditional[person] = CONDITIONAL_PARTICLE + " " + root + cond_form
+
     # ── Past / Aorist ──
     for person, ending in cls["aorist"].items():
         result.past_aorist[person] = root + ending
@@ -326,6 +378,21 @@ def conjugate_verb(
     # ── Future = future particle + subjunctive ──
     for person, subj_form in result.subjunctive.items():
         result.future[person] = FUTURE_PARTICLE + " " + subj_form
+
+    # ── Perfect (compound: past_participle + present of "to be") ──
+    # NOTE: Perfect forms combine the past participle with present tense of auxiliary "to be".
+    # We provide the base construction; full forms require "to be" auxiliaries.
+    # Example: past_participle + ém/es/e... (from "to be")
+    for person in PERSONS:
+        # Placeholder note: in real usage, conjugate_verb("ել") separately for "to be"
+        result.perfect[person] = f"{result.past_participle} + [auxiliary: {person}]"
+
+    # ── Pluperfect (compound: past_participle + past of "to be") ──
+    # Similar to perfect but with past forms of "to be"
+    # Example: past_participle + (ի)ր/ութ... (from past of "to be")
+    for person in PERSONS:
+        # Placeholder note: in real usage, use past_aorist or imperfect of "to be"
+        result.pluperfect[person] = f"{result.past_participle} + [was/{person}]"
 
     # ── Imperative ──
     result.imperative_sg = root + cls["imperative_sg"]
@@ -340,6 +407,8 @@ def conjugate_verb(
     if overrides is not None:
         if "present" in overrides:
             result.present.update(overrides["present"])
+        if "conditional" in overrides:
+            result.conditional.update(overrides["conditional"])
         if "past_aorist" in overrides:
             result.past_aorist.update(overrides["past_aorist"])
         if "imperfect" in overrides:
@@ -348,6 +417,10 @@ def conjugate_verb(
             result.future.update(overrides["future"])
         if "subjunctive" in overrides:
             result.subjunctive.update(overrides["subjunctive"])
+        if "perfect" in overrides:
+            result.perfect.update(overrides["perfect"])
+        if "pluperfect" in overrides:
+            result.pluperfect.update(overrides["pluperfect"])
         if "imperative_sg" in overrides:
             result.imperative_sg = overrides["imperative_sg"]
         if "imperative_pl" in overrides:
