@@ -8,7 +8,6 @@ via AnkiConnect.
 
 import logging
 import re
-from pathlib import Path
 from typing import Optional
 
 from .anki_connect import AnkiConnect, AnkiConnectError
@@ -23,157 +22,17 @@ from .morphology.nouns import decline_noun, NounDeclension, CASE_LABELS_EN
 from .morphology.verbs import conjugate_verb, VerbConjugation, PERSONS, PERSON_LABELS
 from .morphology.articles import add_definite, add_indefinite
 from .morphology.detect import detect_verb_class, detect_noun_class, detect_pos_and_class
+from .renderer import load_card_model_assets, build_loanword_metadata
 from .sentence_generator import generate_noun_sentences, generate_verb_sentences
 
 logger = logging.getLogger(__name__)
-
-
-# ─── Note Type CSS ────────────────────────────────────────────────────
-ARMENIAN_CSS = """
-.card {
-    font-family: 'Noto Sans Armenian', 'DejaVu Sans', sans-serif;
-    font-size: 20px;
-    text-align: center;
-    color: #333;
-    background-color: #fafafa;
-    padding: 20px;
-}
-.armenian {
-    font-size: 28px;
-    font-weight: bold;
-    color: #1a237e;
-    margin: 10px 0;
-}
-.translation {
-    font-size: 18px;
-    color: #555;
-    font-style: italic;
-}
-.case-label, .tense-label {
-    font-size: 14px;
-    color: #888;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-table {
-    margin: 15px auto;
-    border-collapse: collapse;
-    font-size: 16px;
-}
-td, th {
-    padding: 8px 16px;
-    border: 1px solid #ddd;
-}
-th {
-    background-color: #e8eaf6;
-    font-weight: bold;
-}
-.highlight {
-    color: #d32f2f;
-    font-weight: bold;
-}
-.sentence {
-    margin: 8px 0;
-    font-size: 18px;
-}
-.sentence-arm {
-    font-size: 22px;
-    color: #1a237e;
-}
-.sentence-en {
-    font-size: 16px;
-    color: #666;
-}
-"""
-
-
-# ─── Note Type Definitions ───────────────────────────────────────────
-
-def _noun_declension_templates() -> list[dict]:
-    """Card templates for the noun declension model."""
-    # Front: show the word and ask for the declension table
-    # Back: show the full declension table
-    return [{
-        "Name": "Declension Table",
-        "Front": """
-            <div class="case-label">Noun Declension</div>
-            <div class="armenian">{{Word}}</div>
-            <div class="translation">{{Translation}}</div>
-            <br>
-            <div>Decline this noun (all cases, singular & plural)</div>
-        """,
-        "Back": """
-            {{FrontSide}}
-            <hr id="answer">
-            <div class="case-label">{{DeclensionClass}}</div>
-            <table>
-                <tr><th>Case</th><th>Singular</th><th>Sg Definite</th><th>Plural</th><th>Pl Definite</th></tr>
-                <tr><td>Nominative</td><td>{{NomSg}}</td><td>{{NomSgDef}}</td><td>{{NomPl}}</td><td>{{NomPlDef}}</td></tr>
-                <tr><td>Accusative</td><td>{{AccSg}}</td><td>{{AccSgDef}}</td><td>{{AccPl}}</td><td>{{AccPlDef}}</td></tr>
-                <tr><td>Gen-Dative</td><td>{{GenDatSg}}</td><td>{{GenDatSgDef}}</td><td>{{GenDatPl}}</td><td>{{GenDatPlDef}}</td></tr>
-                <tr><td>Ablative</td><td>{{AblSg}}</td><td>{{AblSgDef}}</td><td>{{AblPl}}</td><td>{{AblPlDef}}</td></tr>
-                <tr><td>Instrumental</td><td>{{InstrSg}}</td><td>{{InstrSgDef}}</td><td>{{InstrPl}}</td><td>{{InstrPlDef}}</td></tr>
-            </table>
-            <div class="translation">Indefinite: {{NomSgIndef}}</div>
-        """,
-    }]
-
-
-def _verb_conjugation_templates() -> list[dict]:
-    """Card templates for the verb conjugation model."""
-    return [{
-        "Name": "Conjugation Table",
-        "Front": """
-            <div class="tense-label">Verb Conjugation</div>
-            <div class="armenian">{{Infinitive}}</div>
-            <div class="translation">{{Translation}}</div>
-            <br>
-            <div>Conjugate this verb (present, past, future)</div>
-        """,
-        "Back": """
-            {{FrontSide}}
-            <hr id="answer">
-            <div class="tense-label">{{VerbClass}}</div>
-            <table>
-                <tr><th>Person</th><th>Present</th><th>Past</th><th>Future</th><th>Imperfect</th></tr>
-                <tr><td>I</td><td>{{Pres1sg}}</td><td>{{Past1sg}}</td><td>{{Fut1sg}}</td><td>{{Imp1sg}}</td></tr>
-                <tr><td>you</td><td>{{Pres2sg}}</td><td>{{Past2sg}}</td><td>{{Fut2sg}}</td><td>{{Imp2sg}}</td></tr>
-                <tr><td>he/she</td><td>{{Pres3sg}}</td><td>{{Past3sg}}</td><td>{{Fut3sg}}</td><td>{{Imp3sg}}</td></tr>
-                <tr><td>we</td><td>{{Pres1pl}}</td><td>{{Past1pl}}</td><td>{{Fut1pl}}</td><td>{{Imp1pl}}</td></tr>
-                <tr><td>you(pl)</td><td>{{Pres2pl}}</td><td>{{Past2pl}}</td><td>{{Fut2pl}}</td><td>{{Imp2pl}}</td></tr>
-                <tr><td>they</td><td>{{Pres3pl}}</td><td>{{Past3pl}}</td><td>{{Fut3pl}}</td><td>{{Imp3pl}}</td></tr>
-            </table>
-            <div class="translation">
-                Imperative (sg): {{ImperSg}} &nbsp;|&nbsp; Imperative (pl): {{ImperPl}}<br>
-                Past Participle: {{PastPart}} &nbsp;|&nbsp; Present Participle: {{PresPart}}
-            </div>
-        """,
-    }]
-
-
-def _vocab_sentences_templates() -> list[dict]:
-    """Card templates for vocab sentence cards."""
-    return [{
-        "Name": "Sentence Practice",
-        "Front": """
-            <div class="case-label">{{FormLabel}}</div>
-            <div class="sentence-en">{{EnglishSentence}}</div>
-            <br>
-            <div>Translate to Armenian:</div>
-        """,
-        "Back": """
-            {{FrontSide}}
-            <hr id="answer">
-            <div class="sentence-arm">{{ArmenianSentence}}</div>
-            <div class="armenian">{{Word}} — {{Translation}}</div>
-        """,
-    }]
 
 
 # ─── Model Field Lists ───────────────────────────────────────────────
 
 NOUN_FIELDS = [
     "Word", "Translation", "DeclensionClass",
+    "LoanwordOrigin", "LoanwordOriginLabel", "LoanwordBadgeClass",
     "NomSg", "NomSgDef", "NomSgIndef",
     "AccSg", "AccSgDef",
     "GenDatSg", "GenDatSgDef",
@@ -188,6 +47,7 @@ NOUN_FIELDS = [
 
 VERB_FIELDS = [
     "Infinitive", "Translation", "VerbClass", "Root",
+    "LoanwordOrigin", "LoanwordOriginLabel", "LoanwordBadgeClass",
     "Pres1sg", "Pres2sg", "Pres3sg", "Pres1pl", "Pres2pl", "Pres3pl",
     "Past1sg", "Past2sg", "Past3sg", "Past1pl", "Past2pl", "Past3pl",
     "Fut1sg", "Fut2sg", "Fut3sg", "Fut1pl", "Fut2pl", "Fut3pl",
@@ -197,6 +57,7 @@ VERB_FIELDS = [
 
 SENTENCE_FIELDS = [
     "Word", "Translation", "FormLabel", "ArmenianSentence", "EnglishSentence",
+    "LoanwordOrigin", "LoanwordOriginLabel", "LoanwordBadgeClass",
 ]
 
 
@@ -220,30 +81,30 @@ class CardGenerator:
         self.anki = anki or AnkiConnect()
         from .database import DEFAULT_DB_PATH
         self.db: CardDatabase = db or CardDatabase(db_path if db_path else DEFAULT_DB_PATH)
+        self.assets = load_card_model_assets()
 
     def setup_models(self) -> None:
         """Create the Anki note types (models) if they don't exist."""
         logger.info("Setting up Anki note types...")
-
         self.anki.create_model(
             name=NOUN_DECLENSION_MODEL,
             fields=NOUN_FIELDS,
-            card_templates=_noun_declension_templates(),
-            css=ARMENIAN_CSS,
+            card_templates=self.assets.noun_templates,
+            css=self.assets.css,
         )
 
         self.anki.create_model(
             name=VERB_CONJUGATION_MODEL,
             fields=VERB_FIELDS,
-            card_templates=_verb_conjugation_templates(),
-            css=ARMENIAN_CSS,
+            card_templates=self.assets.verb_templates,
+            css=self.assets.css,
         )
 
         self.anki.create_model(
             name=VOCAB_SENTENCES_MODEL,
             fields=SENTENCE_FIELDS,
-            card_templates=_vocab_sentences_templates(),
-            css=ARMENIAN_CSS,
+            card_templates=self.assets.sentence_templates,
+            css=self.assets.css,
         )
 
         logger.info("Note types ready")
@@ -580,11 +441,15 @@ class CardGenerator:
         """Generate a noun declension card and persist morphology locally."""
         cls = declension_class or detect_noun_class(word)
         decl = decline_noun(word, cls, translation)
+        loanword_meta = build_loanword_metadata(word, translation)
 
         fields = {
             "Word": decl.word,
             "Translation": decl.translation,
             "DeclensionClass": cls,
+            "LoanwordOrigin": loanword_meta["loanword_origin"],
+            "LoanwordOriginLabel": loanword_meta["loanword_origin_label"],
+            "LoanwordBadgeClass": loanword_meta["loanword_badge_class"],
             "NomSg": decl.nom_sg,
             "NomSgDef": decl.nom_sg_def,
             "NomSgIndef": decl.nom_sg_indef,
@@ -621,13 +486,21 @@ class CardGenerator:
                 logger.info(f"Created noun declension card: {word} (ID: {note_id})")
 
         # ── Persist to local SQLite ──────────────────────────────────
-        morphology_data = {k: v for k, v in fields.items() if k not in ("Word", "Translation", "DeclensionClass")}
+        morphology_data = {
+            k: v for k, v in fields.items()
+            if k not in (
+                "Word", "Translation", "DeclensionClass",
+                "LoanwordOrigin", "LoanwordOriginLabel", "LoanwordBadgeClass",
+            )
+        }
         card_id = self.db.upsert_card(
             word=word,
             translation=translation,
             pos="noun",
             card_type="noun_declension",
             declension_class=cls,
+            template_version=self.assets.template_version,
+            metadata=loanword_meta,
             morphology=morphology_data,
             anki_note_id=note_id,
         )
@@ -641,12 +514,16 @@ class CardGenerator:
         """Generate a verb conjugation card and persist morphology locally."""
         cls = verb_class or detect_verb_class(infinitive)
         conj = conjugate_verb(infinitive, cls, translation)
+        loanword_meta = build_loanword_metadata(infinitive, translation)
 
         fields = {
             "Infinitive": conj.infinitive,
             "Translation": conj.translation,
             "VerbClass": cls,
             "Root": conj.root,
+            "LoanwordOrigin": loanword_meta["loanword_origin"],
+            "LoanwordOriginLabel": loanword_meta["loanword_origin_label"],
+            "LoanwordBadgeClass": loanword_meta["loanword_badge_class"],
         }
 
         # Present tense
@@ -688,13 +565,21 @@ class CardGenerator:
                 logger.info(f"Created verb conjugation card: {infinitive} (ID: {note_id})")
 
         # ── Persist to local SQLite ──────────────────────────────────
-        morphology_data = {k: v for k, v in fields.items() if k not in ("Infinitive", "Translation", "VerbClass", "Root")}
+        morphology_data = {
+            k: v for k, v in fields.items()
+            if k not in (
+                "Infinitive", "Translation", "VerbClass", "Root",
+                "LoanwordOrigin", "LoanwordOriginLabel", "LoanwordBadgeClass",
+            )
+        }
         card_id = self.db.upsert_card(
             word=infinitive,
             translation=translation,
             pos="verb",
             card_type="verb_conjugation",
             verb_class=cls,
+            template_version=self.assets.template_version,
+            metadata=loanword_meta,
             morphology=morphology_data,
             anki_note_id=note_id,
         )
@@ -771,6 +656,7 @@ class CardGenerator:
 
         sentences = sentences[:limit]
         tags = [TAG_GENERATED, TAG_SENTENCES] + (extra_tags or [])
+        loanword_meta = build_loanword_metadata(word, translation)
 
         for form_label, arm_sentence, en_sentence in sentences:
             if push_to_anki:
@@ -780,6 +666,9 @@ class CardGenerator:
                     "FormLabel": form_label,
                     "ArmenianSentence": arm_sentence,
                     "EnglishSentence": en_sentence,
+                    "LoanwordOrigin": loanword_meta["loanword_origin"],
+                    "LoanwordOriginLabel": loanword_meta["loanword_origin_label"],
+                    "LoanwordBadgeClass": loanword_meta["loanword_badge_class"],
                 }
                 note_id = self.anki.add_note(
                     deck=deck or TARGET_DECK,
@@ -800,6 +689,8 @@ class CardGenerator:
                     translation=translation,
                     pos=pos,
                     card_type=card_type,
+                    template_version=self.assets.template_version,
+                    metadata=loanword_meta,
                 )
             else:
                 db_card_id = db_card["id"]

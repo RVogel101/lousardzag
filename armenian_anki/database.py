@@ -56,6 +56,8 @@ CREATE TABLE IF NOT EXISTS cards (
     level            INTEGER NOT NULL DEFAULT 1,    -- progression level
     batch_index      INTEGER NOT NULL DEFAULT 0,    -- 0-based batch number
     card_type        TEXT    NOT NULL DEFAULT '',   -- noun_declension | verb_conjugation | sentence
+    template_version TEXT    NOT NULL DEFAULT 'v1', -- card style schema version for migrations
+    metadata_json    TEXT    NOT NULL DEFAULT '{}', -- presentational metadata (loanword, UI flags)
     morphology_json  TEXT    NOT NULL DEFAULT '{}', -- full declension / conjugation blob
     anki_note_id     INTEGER,                       -- Anki note ID if pushed via AnkiConnect
     created_at       TEXT    NOT NULL,
@@ -159,7 +161,25 @@ class CardDatabase:
         """Create tables and indexes if they do not exist."""
         with self._connect() as conn:
             conn.executescript(_SCHEMA_SQL)
+            self._apply_schema_migrations(conn)
         logger.debug("Database initialised at %s", self.db_path)
+
+    def _apply_schema_migrations(self, conn: sqlite3.Connection) -> None:
+        """Apply additive schema migrations for existing local databases."""
+        cols = {
+            row["name"]
+            for row in conn.execute("PRAGMA table_info(cards)").fetchall()
+        }
+
+        if "template_version" not in cols:
+            conn.execute(
+                "ALTER TABLE cards ADD COLUMN template_version TEXT NOT NULL DEFAULT 'v1'"
+            )
+
+        if "metadata_json" not in cols:
+            conn.execute(
+                "ALTER TABLE cards ADD COLUMN metadata_json TEXT NOT NULL DEFAULT '{}'"
+            )
 
     @contextmanager
     def _connect(self):
@@ -189,6 +209,8 @@ class CardDatabase:
         syllable_count: int = 0,
         level: int = 1,
         batch_index: int = 0,
+        template_version: str = "v1",
+        metadata: dict | None = None,
         morphology: dict | None = None,
         anki_note_id: int | None = None,
     ) -> int:
@@ -198,6 +220,7 @@ class CardDatabase:
         it is updated in place so that re-running the pipeline is idempotent.
         """
         morphology_json = json.dumps(morphology or {}, ensure_ascii=False)
+        metadata_json = json.dumps(metadata or {}, ensure_ascii=False)
         now = _now_iso()
         with self._connect() as conn:
             conn.execute(
@@ -205,11 +228,13 @@ class CardDatabase:
                 INSERT INTO cards
                     (word, translation, pos, declension_class, verb_class,
                      frequency_rank, syllable_count, level, batch_index,
-                     card_type, morphology_json, anki_note_id, created_at)
+                     card_type, template_version, metadata_json, morphology_json,
+                     anki_note_id, created_at)
                 VALUES
                     (:word, :translation, :pos, :declension_class, :verb_class,
                      :frequency_rank, :syllable_count, :level, :batch_index,
-                     :card_type, :morphology_json, :anki_note_id, :created_at)
+                     :card_type, :template_version, :metadata_json,
+                     :morphology_json, :anki_note_id, :created_at)
                 ON CONFLICT(word, card_type) DO UPDATE SET
                     translation      = excluded.translation,
                     pos              = excluded.pos,
@@ -219,6 +244,8 @@ class CardDatabase:
                     syllable_count   = excluded.syllable_count,
                     level            = excluded.level,
                     batch_index      = excluded.batch_index,
+                    template_version = excluded.template_version,
+                    metadata_json    = excluded.metadata_json,
                     morphology_json  = excluded.morphology_json,
                     anki_note_id     = COALESCE(excluded.anki_note_id, cards.anki_note_id)
                 """,
@@ -233,6 +260,8 @@ class CardDatabase:
                     "level": level,
                     "batch_index": batch_index,
                     "card_type": card_type,
+                    "template_version": template_version,
+                    "metadata_json": metadata_json,
                     "morphology_json": morphology_json,
                     "anki_note_id": anki_note_id,
                     "created_at": now,
@@ -255,6 +284,7 @@ class CardDatabase:
         if row is None:
             return None
         result = dict(row)
+        result["metadata"] = json.loads(result.pop("metadata_json", "{}"))
         result["morphology"] = json.loads(result.pop("morphology_json", "{}"))
         return result
 
@@ -273,6 +303,7 @@ class CardDatabase:
         if row is None:
             return None
         result = dict(row)
+        result["metadata"] = json.loads(result.pop("metadata_json", "{}"))
         result["morphology"] = json.loads(result.pop("morphology_json", "{}"))
         return result
 
@@ -303,6 +334,7 @@ class CardDatabase:
         results = []
         for row in rows:
             d = dict(row)
+            d["metadata"] = json.loads(d.pop("metadata_json", "{}"))
             d["morphology"] = json.loads(d.pop("morphology_json", "{}"))
             results.append(d)
         return results
@@ -532,6 +564,7 @@ class CardDatabase:
         results = []
         for row in rows:
             d = dict(row)
+            d["metadata"] = json.loads(d.pop("metadata_json", "{}"))
             d["morphology"] = json.loads(d.pop("morphology_json", "{}"))
             results.append(d)
         return results
