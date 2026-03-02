@@ -6,6 +6,12 @@ regular e_class / a_class conjugation patterns.  This module provides
 full or partial override paradigms so that ``conjugate_verb()`` can
 produce correct output for these high-frequency words.
 
+Western Armenian Infinitive Forms
+----------------------------------
+- **-ել (-el) verbs**: Active verb forms (e.g., կտրել "to cut")
+- **-իլ (-il) verbs**: Passive/stative verb forms (e.g., կտրիլ "to be cut")
+- **-ալ (-al) verbs**: Infinitive forms, often for irregular or high-frequency verbs
+
 Usage
 -----
 ::
@@ -141,7 +147,7 @@ INF_WANT = _vo + _yiwn + _z + _ye + _l
 _IRREGULAR_TABLE: dict[str, dict] = {
     # ── ëllal: "to be" ────────────────────────────────────────────
     INF_BE: {
-        "translation": "be",
+        "translation": "to be",
         "verb_class": "a_class",
         "root": _schwa + _l + _l,
         "present": {
@@ -167,7 +173,7 @@ _IRREGULAR_TABLE: dict[str, dict] = {
 
     # ── ounil: "to have" ──────────────────────────────────────────
     INF_HAVE: {
-        "translation": "have",
+        "translation": "to have",
         "verb_class": "e_class",
         "root": _vo + _yiwn + _n,
         "present": {
@@ -192,7 +198,7 @@ _IRREGULAR_TABLE: dict[str, dict] = {
 
     # ── dal: "to give" ────────────────────────────────────────────
     INF_GIVE: {
-        "translation": "give",
+        "translation": "to give",
         "verb_class": "a_class",
         "root": _d,
         "past_aorist": {
@@ -209,7 +215,7 @@ _IRREGULAR_TABLE: dict[str, dict] = {
 
     # ── kal: "to come" ────────────────────────────────────────────
     INF_COME: {
-        "translation": "come",
+        "translation": "to come",
         "verb_class": "a_class",
         "root": _k,
         "present": {
@@ -234,7 +240,7 @@ _IRREGULAR_TABLE: dict[str, dict] = {
 
     # ── yert'al: "to go" ──────────────────────────────────────────
     INF_GO: {
-        "translation": "go",
+        "translation": "to go",
         "verb_class": "a_class",
         "root": _ye + _r + _t_asp,
         "past_aorist": {
@@ -251,7 +257,7 @@ _IRREGULAR_TABLE: dict[str, dict] = {
 
     # ── ënel: "to do / make" ──────────────────────────────────────
     INF_DO: {
-        "translation": "do",
+        "translation": "to do",
         "verb_class": "e_class",
         "root": _schwa + _n,
         "past_aorist": {
@@ -267,7 +273,7 @@ _IRREGULAR_TABLE: dict[str, dict] = {
 
     # ── ësel: "to say" ────────────────────────────────────────────
     INF_SAY: {
-        "translation": "say",
+        "translation": "to say",
         "verb_class": "e_class",
         "root": _schwa + _s,
         "past_aorist": {
@@ -284,7 +290,7 @@ _IRREGULAR_TABLE: dict[str, dict] = {
 
     # ── desnil: "to see" ──────────────────────────────────────────
     INF_SEE: {
-        "translation": "see",
+        "translation": "to see",
         "verb_class": "e_class",
         "root": _d + _ye + _s + _n,
         "past_aorist": {
@@ -300,7 +306,7 @@ _IRREGULAR_TABLE: dict[str, dict] = {
 
     # ── kidnal: "to know" ─────────────────────────────────────────
     INF_KNOW: {
-        "translation": "know",
+        "translation": "to know",
         "verb_class": "a_class",
         "root": _k + _i + _d + _n,
         "past_aorist": {
@@ -316,7 +322,7 @@ _IRREGULAR_TABLE: dict[str, dict] = {
 
     # ── outel: "to eat" ───────────────────────────────────────────
     INF_EAT: {
-        "translation": "eat",
+        "translation": "to eat",
         "verb_class": "e_class",
         "root": _vo + _yiwn + _d,
         "past_aorist": {
@@ -332,7 +338,7 @@ _IRREGULAR_TABLE: dict[str, dict] = {
 
     # ── khëmel: "to drink" ────────────────────────────────────────
     INF_DRINK: {
-        "translation": "drink",
+        "translation": "to drink",
         "verb_class": "e_class",
         "root": ARM["kh"] + _schwa + _m,
         "past_aorist": {
@@ -347,7 +353,7 @@ _IRREGULAR_TABLE: dict[str, dict] = {
 
     # ── arnel: "to take" ──────────────────────────────────────────
     INF_TAKE: {
-        "translation": "take",
+        "translation": "to take",
         "verb_class": "e_class",
         "root": _a + _rr + _n,
         "past_aorist": {
@@ -363,7 +369,7 @@ _IRREGULAR_TABLE: dict[str, dict] = {
 
     # ── tnel: "to put" ────────────────────────────────────────────
     INF_PUT: {
-        "translation": "put",
+        "translation": "to put",
         "verb_class": "e_class",
         "root": _d + _n,
         "past_aorist": {
@@ -379,7 +385,7 @@ _IRREGULAR_TABLE: dict[str, dict] = {
 
     # ── perel: "to bring" ─────────────────────────────────────────
     INF_BRING: {
-        "translation": "bring",
+        "translation": "to bring",
         "verb_class": "e_class",
         "root": _b + _ye + _r,
         "past_aorist": {
@@ -395,21 +401,21 @@ _IRREGULAR_TABLE: dict[str, dict] = {
 
     # ── gartal: "to read" ─────────────────────────────────────────
     INF_READ: {
-        "translation": "read",
+        "translation": "to read",
         "verb_class": "a_class",
         "root": _k + _a + _r + _d,
     },
 
     # ── krel: "to write" ──────────────────────────────────────────
     INF_WRITE: {
-        "translation": "write",
+        "translation": "to write",
         "verb_class": "e_class",
         "root": _k + _r,
     },
 
     # ── nësdil: "to sit" ──────────────────────────────────────────
     INF_SIT: {
-        "translation": "sit",
+        "translation": "to sit",
         "verb_class": "e_class",
         "root": _n + _schwa + _s + _d,
         "past_aorist": {
@@ -425,7 +431,7 @@ _IRREGULAR_TABLE: dict[str, dict] = {
 
     # ── meṙnil: "to die" ──────────────────────────────────────────
     INF_DIE: {
-        "translation": "die",
+        "translation": "to die",
         "verb_class": "e_class",
         "root": _m + _ye + _rr + _n,
         "past_aorist": {
@@ -441,7 +447,7 @@ _IRREGULAR_TABLE: dict[str, dict] = {
 
     # ── ouzel: "to want" ──────────────────────────────────────────
     INF_WANT: {
-        "translation": "want",
+        "translation": "to want",
         "verb_class": "e_class",
         "root": _vo + _yiwn + _z,
     },
