@@ -1,4 +1,4 @@
-"""
+﻿"""
 Core Armenian character utilities — Western Armenian transliteration.
 
 Provides the Armenian alphabet mapping, vowel/consonant classification,

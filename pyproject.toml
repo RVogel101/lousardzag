@@ -3,13 +3,13 @@ requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "armenian-anki-pipelines"
+name = "lousardzag"
 version = "0.2.0"
-description = "Armenian language morphology and vocabulary progression for Anki"
+description = "Western Armenian language learning platform with morphology analysis and vocabulary progression"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
-    { name = "Armenian Anki Contributors" }
+    { name = "Lousardzag Contributors" }
 ]
 license = { text = "MIT" }
 
@@ -33,20 +33,20 @@ dev = [
 ]
 
 [project.urls]
-Repository = "https://github.com/yourusername/armenian-anki-pipelines"
+Repository = "https://github.com/yourusername/lousardzag"
 
 [project.scripts]
-anki-generate-cards = "armenian_anki.cli:generate_cards_main"
-anki-preview-server = "armenian_anki.cli:preview_server_main"
-anki-pull-data = "armenian_anki.cli:pull_data_main"
-anki-build-corpus = "wa_corpus.cli:build_corpus_main"
+lousardzag-generate-cards = "lousardzag.cli:generate_cards_main"
+lousardzag-preview-server = "lousardzag.cli:preview_server_main"
+lousardzag-pull-data = "lousardzag.cli:pull_data_main"
+lousardzag-build-corpus = "wa_corpus.cli:build_corpus_main"
 
 [tool.setuptools]
-packages = ["armenian_anki", "wa_corpus"]
+packages = ["lousardzag", "wa_corpus"]
 package-dir = { "" = "02-src" }
 
 [tool.setuptools.package-data]
-armenian_anki = ["templates/**/*"]
+lousardzag = ["templates/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

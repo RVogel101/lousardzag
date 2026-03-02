@@ -1,4 +1,4 @@
-"""
+﻿"""
 Logging Configuration for CWAS Facebook Image Processing Pipeline
 
 This module provides centralized logging configuration for both the scraper

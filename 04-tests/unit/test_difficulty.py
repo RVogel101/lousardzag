@@ -1,11 +1,11 @@
-"""
+﻿"""
 Tests for morphological and phonological difficulty analysis.
 """
 
 import unittest
 
-from armenian_anki.morphology.core import ARM
-from armenian_anki.morphology.difficulty import (
+from lousardzag.morphology.core import ARM
+from lousardzag.morphology.difficulty import (
     count_syllables_with_context,
     score_noun_difficulty,
     score_verb_difficulty,

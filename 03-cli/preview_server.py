@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """Render sample noun/verb/sentence cards from local real data."""
 
 from __future__ import annotations
@@ -11,8 +11,8 @@ from pathlib import Path
 # Add 02-src directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent / '02-src'))
 
-from armenian_anki.database import CardDatabase, DEFAULT_DB_PATH
-from armenian_anki.preview import build_preview_payload
+from lousardzag.database import CardDatabase, DEFAULT_DB_PATH
+from lousardzag.preview import build_preview_payload
 
 
 def main() -> None:

@@ -1,7 +1,7 @@
-"""Pytest configuration and fixtures.
+﻿"""Pytest configuration and fixtures.
 
 Automatically adds the 02-src directory to Python path so tests can import
-from armenian_anki and wa_corpus packages.
+from lousardzag and wa_corpus packages.
 """
 
 import sys

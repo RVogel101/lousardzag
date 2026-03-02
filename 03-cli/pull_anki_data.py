@@ -1,4 +1,4 @@
-"""Read-only export of all Anki data to a local JSON file.
+﻿"""Read-only export of all Anki data to a local JSON file.
 Does NOT modify anything in Anki — only reads.
 
 Uses exportPackage (single API call per deck) to avoid connection drops,
@@ -20,7 +20,7 @@ from pathlib import Path
 # Add 02-src directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent / '02-src'))
 
-from armenian_anki.anki_connect import AnkiConnect, AnkiConnectError
+from lousardzag.anki_connect import AnkiConnect, AnkiConnectError
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_DIR / "08-data"

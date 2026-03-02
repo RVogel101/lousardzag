@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 Tests for expanded verb templates (conditional, perfect, pluperfect).
 
@@ -6,7 +6,7 @@ Run with: python -m pytest test_expanded_verbs.py -v
 """
 
 import unittest
-from armenian_anki.morphology.verbs import conjugate_verb, TENSES
+from lousardzag.morphology.verbs import conjugate_verb, TENSES
 
 
 class TestExpandedVerbTenses(unittest.TestCase):

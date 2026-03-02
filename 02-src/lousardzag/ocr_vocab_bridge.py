@@ -1,4 +1,4 @@
-"""
+﻿"""
 OCR-to-Vocabulary Bridge.
 
 Parses extracted OCR text (JSON/CSV) from CWAS Word-of-the-Day images
@@ -293,7 +293,7 @@ def extract_vocab_from_file(path: str | Path) -> list[VocabEntry]:
 def vocab_to_word_entries(entries: list[VocabEntry]) -> list:
     """Convert VocabEntry list to WordEntry list for the progression pipeline.
 
-    Returns a list of armenian_anki.progression.WordEntry objects,
+    Returns a list of lousardzag.progression.WordEntry objects,
     ready to be fed into ProgressionPlan.
     """
     from .progression import WordEntry

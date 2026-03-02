@@ -1,4 +1,4 @@
-# Enhanced Logging for CWAS Facebook Image Processing Pipeline
+﻿# Enhanced Logging for CWAS Facebook Image Processing Pipeline
 
 This document explains the enhanced logging system that has been added to improve diagnostics and troubleshooting capabilities.
 

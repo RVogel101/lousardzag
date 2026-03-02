@@ -1,4 +1,4 @@
-"""
+﻿"""
 Nayiri.com dictionary scraper for Western Armenian headwords and definitions.
 
 Scrapes the Hayerēn-Hayerēn (Armenian-Armenian) and Hayerēn-Angleren

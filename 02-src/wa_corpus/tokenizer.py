@@ -1,4 +1,4 @@
-"""
+﻿"""
 Armenian text tokenizer for frequency analysis.
 
 Tokenizes Armenian text on word boundaries, normalizes characters,

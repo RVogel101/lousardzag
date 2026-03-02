@@ -1,4 +1,4 @@
-"""Minimal FastAPI surface for standalone card preview rendering."""
+﻿"""Minimal FastAPI surface for standalone card preview rendering."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 Tests for auto-detection (detect.py) and irregular verb support.
 
@@ -11,13 +11,13 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(__file__))
 
-from armenian_anki.morphology.core import ARM, DIGRAPH_U
-from armenian_anki.morphology.detect import (
+from lousardzag.morphology.core import ARM, DIGRAPH_U
+from lousardzag.morphology.detect import (
     detect_verb_class,
     detect_noun_class,
     detect_pos_and_class,
 )
-from armenian_anki.morphology.irregular_verbs import (
+from lousardzag.morphology.irregular_verbs import (
     get_irregular_overrides,
     is_irregular,
     list_irregular_infinitives,
@@ -26,7 +26,7 @@ from armenian_anki.morphology.irregular_verbs import (
     INF_DRINK, INF_TAKE, INF_PUT, INF_BRING,
     INF_READ, INF_WRITE, INF_SIT, INF_DIE, INF_WANT,
 )
-from armenian_anki.morphology.verbs import conjugate_verb
+from lousardzag.morphology.verbs import conjugate_verb
 
 
 # ─── Auto-detection ──────────────────────────────────────────────────

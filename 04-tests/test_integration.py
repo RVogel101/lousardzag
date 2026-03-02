@@ -1,5 +1,5 @@
-"""
-Integration tests for the full Armenian Anki pipeline.
+﻿"""
+Integration tests for the full Lousardzag pipeline.
 
 Tests corpus loading → vocabulary extraction → card generation → Anki sync.
 """
@@ -10,10 +10,10 @@ import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch, MagicMock
 
-from armenian_anki.morphology.core import romanize
-from armenian_anki.morphology.verbs import conjugate_verb, PERSONS
-from armenian_anki.morphology.irregular_verbs import list_irregular_infinitives
-from armenian_anki.card_generator import CardGenerator
+from lousardzag.morphology.core import romanize
+from lousardzag.morphology.verbs import conjugate_verb, PERSONS
+from lousardzag.morphology.irregular_verbs import list_irregular_infinitives
+from lousardzag.card_generator import CardGenerator
 
 
 class TestCorpusVocabularyPipeline(unittest.TestCase):
@@ -127,7 +127,7 @@ class TestVerbConjugationPipeline(unittest.TestCase):
 class TestFullPipelineIntegration(unittest.TestCase):
     """Test full pipeline from corpus to Anki."""
 
-    @patch('armenian_anki.card_generator.AnkiConnect')
+    @patch('lousardzag.card_generator.AnkiConnect')
     def test_vocab_to_anki_sync(self, mock_anki_class):
         """Test vocabulary cards sync to Anki."""
         mock_anki = MagicMock()

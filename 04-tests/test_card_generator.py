@@ -1,4 +1,4 @@
-"""
+﻿"""
 Unit tests for card_generator module.
 
 Tests card generation with mocked Anki data.
@@ -10,16 +10,16 @@ from pathlib import Path
 import tempfile
 import json
 
-from armenian_anki.card_generator import CardGenerator
-from armenian_anki.morphology.core import romanize
-from armenian_anki.morphology.nouns import decline_noun
-from armenian_anki.morphology.verbs import conjugate_verb
+from lousardzag.card_generator import CardGenerator
+from lousardzag.morphology.core import romanize
+from lousardzag.morphology.nouns import decline_noun
+from lousardzag.morphology.verbs import conjugate_verb
 
 
 class TestVocabLoading(unittest.TestCase):
     """Test vocabulary loading from Anki and cache."""
 
-    @patch('armenian_anki.card_generator.AnkiConnect')
+    @patch('lousardzag.card_generator.AnkiConnect')
     def setUp(self, mock_anki_class):
         """Set up CardGenerator with mocked AnkiConnect."""
         self.mock_anki = MagicMock()
@@ -70,7 +70,7 @@ class TestVocabLoading(unittest.TestCase):
 class TestNounCardGeneration(unittest.TestCase):
     """Test noun declension card generation."""
 
-    @patch('armenian_anki.card_generator.AnkiConnect')
+    @patch('lousardzag.card_generator.AnkiConnect')
     def setUp(self, mock_anki_class):
         """Set up CardGenerator."""
         self.mock_anki = MagicMock()
@@ -112,7 +112,7 @@ class TestNounCardGeneration(unittest.TestCase):
 class TestVerbCardGeneration(unittest.TestCase):
     """Test verb conjugation card generation."""
 
-    @patch('armenian_anki.card_generator.AnkiConnect')
+    @patch('lousardzag.card_generator.AnkiConnect')
     def setUp(self, mock_anki_class):
         """Set up CardGenerator."""
         self.mock_anki = MagicMock()
@@ -156,7 +156,7 @@ class TestVerbCardGeneration(unittest.TestCase):
 class TestCardGenerationEdgeCases(unittest.TestCase):
     """Test edge cases in card generation."""
 
-    @patch('armenian_anki.card_generator.AnkiConnect')
+    @patch('lousardzag.card_generator.AnkiConnect')
     def setUp(self, mock_anki_class):
         """Set up CardGenerator."""
         self.mock_anki = MagicMock()
@@ -180,7 +180,7 @@ class TestCardGenerationEdgeCases(unittest.TestCase):
         self.assertIsNotNone(romanized)
         self.assertGreater(len(romanized), 0)
 
-    @patch('armenian_anki.card_generator.AnkiConnect')
+    @patch('lousardzag.card_generator.AnkiConnect')
     def test_duplicate_words_handled(self, mock_anki_class):
         """Test that duplicate words are properly handled."""
         mock_anki = MagicMock()

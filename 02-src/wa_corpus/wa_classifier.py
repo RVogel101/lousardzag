@@ -1,4 +1,4 @@
-"""Western Armenian dialect classifier.
+﻿"""Western Armenian dialect classifier.
 
 Scores a text document using five weighted signal categories to determine
 whether it is Western Armenian (WA), Eastern Armenian (EA), or Classical

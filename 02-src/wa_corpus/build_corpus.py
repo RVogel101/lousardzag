@@ -1,4 +1,4 @@
-"""
+﻿"""
 Western Armenian Corpus Builder — main pipeline runner.
 
 Orchestrates all three data sources and produces the final frequency list.

@@ -1,5 +1,5 @@
-"""
-Phrase-chunking progression system for Armenian Anki card generation.
+﻿"""
+Phrase-chunking progression system for Lousardzag card generation.
 
 Implements a linguistically-grounded learning progression based on the
 "phrase chunking" methodology:
@@ -281,7 +281,7 @@ class ProgressionPlan:
         """Return a human-readable summary of the progression plan."""
         lines = [
             "═" * 70,
-            "  Armenian Anki — Phrase-Chunking Progression Plan",
+            "  Lousardzag — Phrase-Chunking Progression Plan",
             "═" * 70,
             f"  Total words:   {len(self._raw_words)}",
             f"  Total batches: {len(self._vocab_batches)}",

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Demo script showing the component analysis system in action.
 
 Demonstrates:
@@ -8,13 +8,13 @@ Demonstrates:
   4. Integration with progression system sorting
 """
 
-from armenian_anki.morphology.core import ARM
-from armenian_anki.morphology.difficulty import (
+from lousardzag.morphology.core import ARM
+from lousardzag.morphology.difficulty import (
     count_syllables_with_context,
     score_word_difficulty,
     analyze_word,
 )
-from armenian_anki.progression import WordEntry, ProgressionPlan
+from lousardzag.progression import WordEntry, ProgressionPlan
 
 # ─── Hidden Vowel Demo ────────────────────────────────────────────────
 

@@ -1,4 +1,4 @@
-# Project Restructuring Summary
+﻿# Project Restructuring Summary
 
 ## Date
 March 2, 2026
@@ -23,7 +23,7 @@ anki-note-generation-pipelines/
 │   └── logging.md
 │
 ├── 02-src/                        [Core packages]
-│   ├── armenian_anki/
+│   ├── lousardzag/
 │   │   ├── card_generator.py
 │   │   ├── database.py
 │   │   ├── api.py
@@ -79,7 +79,7 @@ anki-note-generation-pipelines/
 ### Key Improvements
 
 #### 1. **Package Organization**
-- Main packages (`armenian_anki`, `wa_corpus`) now in `src/` directory
+- Main packages (`lousardzag`, `wa_corpus`) now in `src/` directory
 - Enables proper Python package distribution via pip
 - Supports `pip install -e .` for development mode
 
@@ -111,7 +111,7 @@ anki-note-generation-pipelines/
   - Package discovery from `src/`
 
 ### Files Moved
-- **Packages**: `armenian_anki/`, `wa_corpus/` → `src/`
+- **Packages**: `lousardzag/`, `wa_corpus/` → `src/`
 - **CLI Scripts**: `generate_anki_cards.py`, `render_preview.py`, `_pull_anki_data.py` → `cli/`
 - **Core Tests**: `test_*.py` from root → `tests/ `organized by type
 - **Utilities**: `scrape_fb_images.py`, OCR tools → `tools/`

@@ -1,4 +1,4 @@
-"""
+﻿"""
 FSRS-4 (Free Spaced Repetition Scheduler) implementation.
 
 Implements the FSRS v4 algorithm for spaced repetition scheduling.

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Western Armenian Wikipedia dump processor.
 
 Downloads and extracts text from the hyw.wikipedia.org database dump,

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Word difficulty component analysis for Armenian vocabulary progression.
 
 Scores word complexity based on morphological and phonological factors:

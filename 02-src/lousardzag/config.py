@@ -1,5 +1,5 @@
-"""
-Configuration for the Armenian Anki card generation pipeline.
+﻿"""
+Configuration for the Lousardzag card generation pipeline.
 """
 
 # ─── AnkiConnect Settings ─────────────────────────────────────────────

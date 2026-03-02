@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
-Tests for armenian_anki.progression — phrase-chunking progression system.
+Tests for lousardzag.progression — phrase-chunking progression system.
 
 Covers:
   - WordEntry syllable counting
@@ -21,7 +21,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(__file__))
 
-from armenian_anki.progression import (
+from lousardzag.progression import (
     ProgressionPlan,
     WordEntry,
     VocabBatch,
@@ -155,7 +155,7 @@ class TestWordEntry(unittest.TestCase):
 
     def test_auto_syllable_count_from_armenian(self):
         """Armenian word should get auto-counted syllables when count=0."""
-        from armenian_anki.morphology.core import ARM
+        from lousardzag.morphology.core import ARM
         word = ARM["k"] + ARM["i"] + ARM["r"] + ARM["k_asp"]  # girk' = 1 syl
         w = WordEntry(word, "book", "noun")
         self.assertGreater(w.syllable_count, 0)

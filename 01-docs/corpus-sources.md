@@ -1,5 +1,5 @@
-"""
-TRANSLATION SOURCES IN THE ARMENIAN ANKI PIPELINE
+﻿"""
+TRANSLATION SOURCES IN THE Lousardzag PIPELINE
 ==================================================
 
 There are TWO sources for verb translations:
@@ -22,7 +22,7 @@ There are TWO sources for verb translations:
    ────────────────────────────────────────────────────────────────
    For built-in example/test code and irregular verb definitions:
    
-   → File: armenian_anki/morphology/irregular_verbs.py
+   → File: lousardzag/morphology/irregular_verbs.py
    → Purpose: Hard-coded translations for the 19 most irregular Armenian verbs
    → When used: When conjugate_verb() encounters an irregular infinitive
    → How overrides work:
@@ -105,7 +105,7 @@ KEY INSIGHTS
 CONFIGURATION
 ==============
 
-Default configuration in armenian_anki/config.py:
+Default configuration in lousardzag/config.py:
    SOURCE_DECK = "Armenian Vocabulary"
    SOURCE_FIELDS = {
        "word": "Word",

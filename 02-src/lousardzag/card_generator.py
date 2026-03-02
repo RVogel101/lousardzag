@@ -1,4 +1,4 @@
-"""
+﻿"""
 Anki card generation pipeline.
 
 Reads vocabulary from an existing Anki deck, generates morphological forms

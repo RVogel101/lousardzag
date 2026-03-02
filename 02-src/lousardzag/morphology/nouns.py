@@ -1,4 +1,4 @@
-"""
+﻿"""
 Western Armenian noun declension system.
 
 Generates all case forms for Armenian nouns across singular/plural

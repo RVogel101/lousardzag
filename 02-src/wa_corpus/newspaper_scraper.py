@@ -1,4 +1,4 @@
-"""
+﻿"""
 Western Armenian newspaper scraper — multi-source.
 
 Scrapes Armenian-language articles from accessible WA news sources:

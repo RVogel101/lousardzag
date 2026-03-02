@@ -1,5 +1,5 @@
-"""
-Local SQLite database for Armenian Anki card data storage.
+﻿"""
+Local SQLite database for Lousardzag card data storage.
 
 Schema overview:
   cards        — generated card data (word, morphology, progression metadata)

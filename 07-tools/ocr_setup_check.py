@@ -1,4 +1,4 @@
-"""
+﻿"""
 Test OCR Setup - Quick Test Script
 Tests OCR functionality with a few sample images before running the full extraction.
 """

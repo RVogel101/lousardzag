@@ -1,4 +1,4 @@
-"""
+﻿"""
 AnkiConnect API client.
 
 Communicates with the AnkiConnect plugin (https://foosoft.net/projects/anki-connect/)

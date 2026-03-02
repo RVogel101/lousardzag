@@ -1,4 +1,4 @@
-"""Tests for the Western Armenian tokenizer and corpus pipeline components."""
+﻿"""Tests for the Western Armenian tokenizer and corpus pipeline components."""
 
 import pytest
 from collections import Counter

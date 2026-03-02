@@ -1,4 +1,4 @@
-"""
+﻿"""
 Auto-detection of noun declension class and verb conjugation class.
 
 Western Armenian heuristics:

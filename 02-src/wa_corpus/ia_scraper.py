@@ -1,4 +1,4 @@
-"""
+﻿"""
 Internet Archive scraper for Western Armenian scanned books and periodicals.
 
 Searches archive.org for Armenian-language texts from diaspora publishers

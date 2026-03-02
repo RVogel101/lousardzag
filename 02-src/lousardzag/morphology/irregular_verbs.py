@@ -1,4 +1,4 @@
-"""
+﻿"""
 Irregular verb exception table for Western Armenian.
 
 The ~20 most common irregular WA verbs have forms that deviate from the

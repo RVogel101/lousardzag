@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """Demonstrate Western Armenian infinitive form distinctions."""
 
-from armenian_anki.morphology.verbs import conjugate_verb
+from lousardzag.morphology.verbs import conjugate_verb
 
 print('=== Western Armenian Infinitive Forms ===\n')
 

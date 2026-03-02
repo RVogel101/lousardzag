@@ -1,4 +1,4 @@
-"""Template renderer utilities for Anki model CSS and card templates.
+﻿"""Template renderer utilities for Anki model CSS and card templates.
 
 This module externalizes note type presentation (HTML/CSS) so formatting can
 be iterated without editing generation logic in ``card_generator.py``.

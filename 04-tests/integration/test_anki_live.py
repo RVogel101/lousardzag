@@ -1,4 +1,4 @@
-"""
+﻿"""
 Live smoke tests for AnkiConnect integration.
 
 These tests require:
@@ -10,7 +10,7 @@ Skipped automatically when Anki is not reachable.
 
 import unittest
 
-from armenian_anki.anki_connect import AnkiConnect, AnkiConnectError
+from lousardzag.anki_connect import AnkiConnect, AnkiConnectError
 
 TEST_DECK = "___TestSmokeDeck___"
 TEST_MODEL = "Basic"

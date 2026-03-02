@@ -1,4 +1,4 @@
-"""
+﻿"""
 Western Armenian verb conjugation system.
 
 Generates conjugated forms across tenses and persons for Armenian verbs.

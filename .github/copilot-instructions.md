@@ -1,4 +1,4 @@
-# Project: Armenian Anki Note Generation Pipelines
+﻿# Project: Lousardzag (Western Armenian Learning Platform)
 
 ## Environment & Running Commands
 
@@ -28,12 +28,12 @@
 - REST API on **localhost:8765** (Anki desktop must be running with AnkiConnect add-on)
 - Profile name: `armenians_global`
 - Anki data directory: `%APPDATA%\Anki2\` (standard location, NOT on OneDrive)
-- Wrapper: `armenian_anki/anki_connect.py`
+- Wrapper: `lousardzag/anki_connect.py`
 - **READ-ONLY by default** — do not modify Anki data without explicit user permission
 
 ## Key Directories
 
-- `armenian_anki/` — Core package (morphology, card gen, progression, DB, AnkiConnect)
+- `lousardzag/` — Core package (morphology, card gen, progression, DB, AnkiConnect)
 - `wa_corpus/` — Western Armenian frequency corpus tools (wiki, newspapers, IA, nayiri scrapers)
 - `wa_corpus/data/` — Downloaded corpus data (gitignored, large)
 - `anki_media/` — Exported media files from Anki (gitignored)

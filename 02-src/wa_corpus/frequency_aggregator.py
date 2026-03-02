@@ -1,4 +1,4 @@
-"""
+﻿"""
 Frequency aggregator — combines all Western Armenian corpus sources
 into a unified, ranked frequency list.
 

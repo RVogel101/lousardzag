@@ -1,4 +1,4 @@
-"""Generate ordered flashcards with prerequisite-aware sentence generation.
+﻿"""Generate ordered flashcards with prerequisite-aware sentence generation.
 
 This tool generates cards in proper difficulty order, ensuring that sentence
 cards only use vocabulary that has already been taught in previous word cards.
@@ -15,15 +15,15 @@ if hasattr(sys.stdout, 'reconfigure'):
 
 sys.path.insert(0, '02-src')
 
-from armenian_anki.database import CardDatabase
-from armenian_anki.progression import ProgressionPlan, WordEntry, max_syllables_for_level
-from armenian_anki.sentence_generator import (
+from lousardzag.database import CardDatabase
+from lousardzag.progression import ProgressionPlan, WordEntry, max_syllables_for_level
+from lousardzag.sentence_generator import (
     generate_noun_sentences,
     generate_verb_sentences,
     extract_vocabulary
 )
-from armenian_anki.morphology.core import count_syllables
-from armenian_anki.morphology.detect import detect_noun_class, detect_verb_class
+from lousardzag.morphology.core import count_syllables
+from lousardzag.morphology.detect import detect_noun_class, detect_verb_class
 
 
 ARMENIAN_WORD_RE = re.compile(r"^[\u0531-\u0556\u0561-\u0587]+$")

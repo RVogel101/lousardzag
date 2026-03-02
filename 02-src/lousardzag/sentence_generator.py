@@ -1,4 +1,4 @@
-"""
+﻿"""
 Armenian sentence generator.
 
 Creates template-based example sentences using different morphological forms

@@ -1,4 +1,4 @@
-"""Armenian morphology sub-package."""
+﻿"""Armenian morphology sub-package."""
 
 from .core import ARM, VOWELS, is_vowel, ends_in_vowel
 from .nouns import decline_noun, NounDeclension, DECLENSION_CLASSES

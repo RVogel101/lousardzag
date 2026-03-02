@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 """Quick test of new sentence generation features."""
 
-from armenian_anki.sentence_generator import generate_verb_sentences, generate_noun_sentences
-from armenian_anki.morphology.core import romanize
+from lousardzag.sentence_generator import generate_verb_sentences, generate_noun_sentences
+from lousardzag.morphology.core import romanize
 
 print("=" * 70)
 print("Testing New Sentence Generation Features")

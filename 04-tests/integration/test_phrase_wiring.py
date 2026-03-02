@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 Tests for phrase generation wiring and OCR-to-vocab bridge.
 
@@ -20,7 +20,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(__file__))
 
-from armenian_anki.progression import (
+from lousardzag.progression import (
     ProgressionPlan,
     WordEntry,
     PhraseEntry,
@@ -33,7 +33,7 @@ from armenian_anki.progression import (
     fill_plan_sentences,
     VOCAB_BATCH_SIZE,
 )
-from armenian_anki.ocr_vocab_bridge import (
+from lousardzag.ocr_vocab_bridge import (
     VocabEntry,
     _is_title_card,
     _parse_title_card,
@@ -48,7 +48,7 @@ from armenian_anki.ocr_vocab_bridge import (
 
 def _make_noun_entry(word="test", translation="test_word", rank=1):
     """Create a noun WordEntry using i_class characters."""
-    from armenian_anki.morphology.core import ARM
+    from lousardzag.morphology.core import ARM
     _k = ARM["k"]
     _i = ARM["i"]
     _r = ARM["r"]
@@ -64,7 +64,7 @@ def _make_noun_entry(word="test", translation="test_word", rank=1):
 
 def _make_verb_entry(rank=1):
     """Create a verb WordEntry."""
-    from armenian_anki.morphology.core import ARM
+    from lousardzag.morphology.core import ARM
     _k = ARM["k"]
     _r = ARM["r"]
     _ye = ARM["ye"]
@@ -226,7 +226,7 @@ class TestFillPlanSentences(unittest.TestCase):
 
     def _make_plan_words(self, count=20):
         """Create noun WordEntry objects for plan building."""
-        from armenian_anki.morphology.core import ARM
+        from lousardzag.morphology.core import ARM
         words = []
         for i in range(count):
             # Use a simple pattern: alternate between two real word stems

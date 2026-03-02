@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
-Tests for the FSRS v4 scheduler (armenian_anki.fsrs).
+Tests for the FSRS v4 scheduler (lousardzag.fsrs).
 
 Run with:  python -m pytest test_fsrs.py -v
 """
@@ -13,8 +13,8 @@ from datetime import datetime, timedelta, timezone
 
 sys.path.insert(0, os.path.dirname(__file__))
 
-from armenian_anki.fsrs import FSRSScheduler, CardState, DEFAULT_WEIGHTS
-from armenian_anki.database import CardDatabase
+from lousardzag.fsrs import FSRSScheduler, CardState, DEFAULT_WEIGHTS
+from lousardzag.database import CardDatabase
 
 
 class TestFSRSSchedulerInit(unittest.TestCase):

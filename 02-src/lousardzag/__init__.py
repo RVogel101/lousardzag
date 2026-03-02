@@ -1,5 +1,5 @@
-"""
-Armenian Anki Card Generation Pipeline
+﻿"""
+Lousardzag Card Generation Pipeline
 
 Generates morphological forms (declensions, conjugations, articles)
 for Armenian vocabulary and creates Anki flashcards via AnkiConnect.

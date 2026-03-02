@@ -1,10 +1,10 @@
-"""Test vocabulary tracking in sentence generation."""
+﻿"""Test vocabulary tracking in sentence generation."""
 import sys
 import json
 sys.path.insert(0, '02-src')
 
-from armenian_anki.database import CardDatabase
-from armenian_anki.card_generator import CardGenerator
+from lousardzag.database import CardDatabase
+from lousardzag.card_generator import CardGenerator
 
 # Create a test card with sentences
 db = CardDatabase()

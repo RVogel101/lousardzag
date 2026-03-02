@@ -1,4 +1,4 @@
-"""
+﻿"""
 Facebook Image Scraper — Full Resolution
 Scrapes FULL-RESOLUTION images from the Centre for Western Armenian Studies
 Facebook photos page.

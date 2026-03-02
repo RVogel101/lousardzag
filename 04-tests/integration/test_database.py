@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
-Tests for armenian_anki.database — local SQLite card storage.
+Tests for lousardzag.database — local SQLite card storage.
 
 Run with:  python test_database.py
 """
@@ -14,7 +14,7 @@ import unittest
 # Make sure the package is importable when running from the repo root.
 sys.path.insert(0, os.path.dirname(__file__))
 
-from armenian_anki.database import CardDatabase
+from lousardzag.database import CardDatabase
 
 
 class TestCardDatabase(unittest.TestCase):

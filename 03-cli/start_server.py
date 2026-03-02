@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """Start the Armenian Cards API development server."""
 
 import sys
@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / '02-src'))
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(
-        "armenian_anki.api:app",
+        "lousardzag.api:app",
         host="127.0.0.1",
         port=8000,
         reload=True,

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 Tests for Western Armenian transliteration and orthography compliance.
 
@@ -22,7 +22,7 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(__file__))
 
-from armenian_anki.morphology.core import (
+from lousardzag.morphology.core import (
     ARM,
     ARM_UPPER,
     VOWELS,
@@ -32,15 +32,15 @@ from armenian_anki.morphology.core import (
     ends_in_vowel,
     count_syllables,
 )
-from armenian_anki.morphology.articles import (
+from lousardzag.morphology.articles import (
     add_definite,
     add_indefinite,
     DEF_AFTER_CONSONANT,
     DEF_AFTER_VOWEL,
     INDEF_ARTICLE,
 )
-from armenian_anki.morphology.nouns import decline_noun, DECLENSION_CLASSES
-from armenian_anki.morphology.verbs import (
+from lousardzag.morphology.nouns import decline_noun, DECLENSION_CLASSES
+from lousardzag.morphology.verbs import (
     conjugate_verb,
     VERB_CLASSES,
     PRESENT_PARTICLE,

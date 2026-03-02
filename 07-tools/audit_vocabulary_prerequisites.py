@@ -1,4 +1,4 @@
-"""Audit vocabulary usage across all generated sentences.
+﻿"""Audit vocabulary usage across all generated sentences.
 
 This tool helps identify which words are introduced in sentences before
 they've been explicitly taught, allowing you to reorder curriculum or
@@ -14,7 +14,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 
 sys.path.insert(0, '02-src')
 
-from armenian_anki.database import CardDatabase
+from lousardzag.database import CardDatabase
 
 
 def audit_vocabulary_prerequisites(db_path: str | None = None):

@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
-Armenian Anki Card Generator — Main Entry Point
+Lousardzag Card Generator — Main Entry Point
 
 Reads vocabulary from an existing Anki deck, generates morphological forms
 (noun declensions, verb conjugations, definite/indefinite articles, example
@@ -8,7 +8,7 @@ sentences) and pushes the results back to Anki via AnkiConnect.
 
 Prerequisites:
   1. Anki desktop running with AnkiConnect plugin (code: 2055492159)
-  2. A source deck with Armenian vocabulary (configure in armenian_anki/config.py)
+  2. A source deck with Armenian vocabulary (configure in lousardzag/config.py)
   3. Each note should have fields: Word, PartOfSpeech, Translation
 
 Usage:
@@ -32,19 +32,19 @@ if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf-8-s
 if sys.stderr.encoding and sys.stderr.encoding.lower() not in ("utf-8", "utf-8-sig"):
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
-from armenian_anki.anki_connect import AnkiConnect, AnkiConnectError
-from armenian_anki.card_generator import CardGenerator
-from armenian_anki.morphology.nouns import decline_noun, DECLENSION_CLASSES
-from armenian_anki.morphology.verbs import conjugate_verb, VERB_CLASSES
-from armenian_anki.morphology.articles import add_definite, add_indefinite
-from armenian_anki.sentence_generator import generate_noun_sentences, generate_verb_sentences
-from armenian_anki.config import SOURCE_DECK, TARGET_DECK
-from armenian_anki.progression import (
+from lousardzag.anki_connect import AnkiConnect, AnkiConnectError
+from lousardzag.card_generator import CardGenerator
+from lousardzag.morphology.nouns import decline_noun, DECLENSION_CLASSES
+from lousardzag.morphology.verbs import conjugate_verb, VERB_CLASSES
+from lousardzag.morphology.articles import add_definite, add_indefinite
+from lousardzag.sentence_generator import generate_noun_sentences, generate_verb_sentences
+from lousardzag.config import SOURCE_DECK, TARGET_DECK
+from lousardzag.progression import (
     ProgressionPlan, WordEntry, VocabBatch, PhraseBatch,
     level_tag, batch_tag, grammar_tag, syllable_tag,
     assign_due_positions, sentence_filter_for, fill_plan_sentences,
 )
-from armenian_anki.ocr_vocab_bridge import (
+from lousardzag.ocr_vocab_bridge import (
     extract_vocab_from_file, vocab_to_csv, vocab_to_json,
     vocab_to_word_entries,
 )
@@ -138,7 +138,7 @@ def run_demo():
 
     # ── Noun Declension Demo ──
     # Using common Western Armenian words
-    from armenian_anki.morphology.core import ARM
+    from lousardzag.morphology.core import ARM
     _k = ARM["k"]         # dles (WA: k)
     _i = ARM["i"]         # dles
     _r = ARM["r"]         # dles
@@ -384,7 +384,7 @@ def run_progression_pipeline(source_deck: str = None, dry_run: bool = False,
 
         # ── 3. Setup models and progression deck ─────────────────────
         gen.setup_models()
-        from armenian_anki.config import PROGRESSION_DECK
+        from lousardzag.config import PROGRESSION_DECK
         anki.ensure_deck(PROGRESSION_DECK)
 
         due_positions = assign_due_positions(plan)
@@ -555,7 +555,7 @@ def run_sync_vocabulary(source_deck: str = None, field_overrides: dict = None):
             print("  Install AnkiConnect: Tools → Add-ons → Get Add-ons → Code: 2055492159")
             sys.exit(1)
 
-        from armenian_anki.database import CardDatabase
+        from lousardzag.database import CardDatabase
         db = CardDatabase()
         
         source_deck = source_deck or SOURCE_DECK

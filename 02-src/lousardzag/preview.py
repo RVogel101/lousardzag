@@ -1,4 +1,4 @@
-"""Build rendered sample cards from real data for preview surfaces."""
+﻿"""Build rendered sample cards from real data for preview surfaces."""
 
 from __future__ import annotations
 

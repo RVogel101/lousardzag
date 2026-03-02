@@ -1,4 +1,4 @@
-"""Tests for preview rendering payload and minimal API surface."""
+﻿"""Tests for preview rendering payload and minimal API surface."""
 
 from __future__ import annotations
 
@@ -8,9 +8,9 @@ import unittest
 
 from fastapi.testclient import TestClient
 
-from armenian_anki.api import PreviewRequest, app, cards_preview
-from armenian_anki.database import CardDatabase
-from armenian_anki.preview import build_preview_payload
+from lousardzag.api import PreviewRequest, app, cards_preview
+from lousardzag.database import CardDatabase
+from lousardzag.preview import build_preview_payload
 
 
 class TestPreviewPayload(unittest.TestCase):

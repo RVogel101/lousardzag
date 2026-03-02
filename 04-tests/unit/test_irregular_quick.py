@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """Quick test of irregular verb conjugation."""
 
-from armenian_anki.morphology.verbs import conjugate_verb
+from lousardzag.morphology.verbs import conjugate_verb
 
 # Test 'to be'
 be = conjugate_verb('ըլլալ', translation='to be')

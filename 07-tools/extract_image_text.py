@@ -1,4 +1,4 @@
-"""
+﻿"""
 Simple Image Text Extractor - Quick Version
 A simpler version using only Tesseract OCR for quick testing.
 """

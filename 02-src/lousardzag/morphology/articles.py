@@ -1,4 +1,4 @@
-"""
+﻿"""
 Armenian article generation (definite and indefinite).
 
 Western Armenian articles:
