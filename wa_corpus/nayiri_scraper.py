@@ -141,7 +141,7 @@ def _extract_entries_from_page(driver: webdriver.Chrome) -> list[dict]:
             try:
                 pos_elem = elem.find_element(By.CSS_SELECTOR, "i, em, .pos")
                 pos_text = pos_elem.text.strip()
-                if pos_text in ("գ.", "ա.", "բ.", "մ.", " delays.", "ածdelays.", "burgh.",
+                if pos_text in ("գ.", "ա.", "բ.", "մ.", "մկ.", "ածանց.", "շ.",
                                 "noun", "verb", "adj", "adv"):
                     pos = pos_text
             except Exception:

@@ -76,15 +76,32 @@ AZTAG = NewsSource(
 HORIZON = NewsSource(
     name="horizon",
     base_url="https://horizonweekly.ca",
-    listing_url="https://horizonweekly.ca/en/category/armenian/",
-    pagination_pattern="https://horizonweekly.ca/en/category/armenian/page/{page}/",
-    article_link_selector="h2 a, .entry-title a, .post-title a, article a",
-    article_body_selector=".entry-content, .post-content, .td-post-content",
+    listing_url="https://horizonweekly.ca/hy/category/armenian/",
+    pagination_pattern="https://horizonweekly.ca/hy/category/armenian/page/{page}/",
+    article_link_selector=(
+        "h2.entry-title a, h3.entry-title a, .td-module-title a, "
+        ".entry-title a, h2 a, article a[href*='horizonweekly.ca']"
+    ),
+    article_body_selector=".entry-content, .td-post-content, .post-content",
     title_selector="h1.entry-title, h1.tdb-title-text, h1",
-    date_selector="time, .entry-date, .td-post-date",
+    date_selector="time, .entry-date, .td-post-date, .td-post-meta-date",
 )
 
-ALL_SOURCES = [AZTAG, HORIZON]
+ASBAREZ = NewsSource(
+    name="asbarez",
+    base_url="https://asbarez.com",
+    listing_url="https://asbarez.com/category/armenian/",
+    pagination_pattern="https://asbarez.com/category/armenian/page/{page}/",
+    article_link_selector=(
+        "h2.entry-title a, h3.entry-title a, .entry-title a, "
+        "h2 a, article a[href*='asbarez.com']"
+    ),
+    article_body_selector=".entry-content, .post-content, article .content",
+    title_selector="h1.entry-title, h1",
+    date_selector="time, .entry-date, .post-date",
+)
+
+ALL_SOURCES = [AZTAG, HORIZON, ASBAREZ]
 
 
 # ─── Browser Setup ───────────────────────────────────────────────────
