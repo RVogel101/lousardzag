@@ -32,18 +32,15 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_OUTPUT_DIR = Path("wa_corpus/data/nayiri")
 
-# Dictionary types on nayiri.com
-# HaysttseainBararan = Armenian Explanatory Dictionary
-# AnglerenHayeren = English-Armenian
-# HayerenAngleren = Armenian-English
+# Dictionary types on nayiri.com (confirmed via site scraping)
 DICT_TYPES = {
-    "explanatory": "HaysttseainBararan",     # Armenian-Armenian explanatory
-    "arm_eng": "HayerenAngleren",            # Armenian → English
+    "explanatory": "HY_HY",     # Armenian-Armenian explanatory (WA)
+    "arm_eng": "HY_EN",          # Armenian → English
 }
 
-# Base search URL
-NAYIRI_SEARCH_URL = "https://nayiri.com/search?l=hy&dt={dict_type}&query={query}"
-NAYIRI_BROWSE_URL = "https://nayiri.com/imagepage.php?dt={dict_type}&p={page}"
+# Base search URL — HTTP only; HTTPS has SSL issues
+NAYIRI_SEARCH_URL = "http://nayiri.com/search?l=hy_LB&dt={dict_type}&query={query}"
+NAYIRI_BROWSE_URL = "http://nayiri.com/imagepage.php?dt={dict_type}&p={page}"
 
 # Armenian lowercase alphabet via Unicode range: ա (U+0561) through ֆ (U+0586)
 ARMENIAN_LOWER = [chr(c) for c in range(0x0561, 0x0587)]  # 38 letters
