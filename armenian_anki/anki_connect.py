@@ -180,6 +180,25 @@ class AnkiConnect:
         """Create deck if it doesn't exist, return deck ID."""
         return self.create_deck(name)
 
+    def retrieve_media_file(self, filename: str) -> Optional[bytes]:
+        """Download a media file from Anki's media collection.
+
+        Args:
+            filename: The filename as stored in Anki's media folder
+                      (e.g. ``"pronunciation_word.mp3"`` or ``"image.jpg"``).
+
+        Returns:
+            Raw file bytes, or ``None`` if the file does not exist.
+        """
+        try:
+            result = self._request("retrieveMediaFile", filename=filename)
+        except AnkiConnectError:
+            return None
+        if not result:
+            return None
+        import base64
+        return base64.b64decode(result)
+
     def set_due_position(self, note_id: int, position: int) -> None:
         """Set the due position for all cards belonging to a note.
 
