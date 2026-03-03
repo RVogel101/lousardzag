@@ -8,7 +8,7 @@
 
 - [ ] Read ARMENIAN_QUICK_REFERENCE.md (2 minutes)
 - [ ] Note the voicing reversal pattern (բ=p, պ=b, etc.)
-- [ ] Test your understanding with 5 words: պետք, ճամ, ջուր, ոչ, իւր
+- [ ] Test your understanding with 5 words: պետք, ժամ, ջուր, ոչ, իւր
 - [ ] Bookmark /memories/western-armenian-requirement.md (persistent reminder)
 - [ ] Check 02-src/lousardzag/phonetics.py line 1 (Western Armenian declaration)
 
@@ -154,7 +154,7 @@ git commit -m "fix(phonetics): correct Western Armenian [letter] IPA mapping
 
 - Updated [letter] from [old] to [new]
 - Regenerated vocabulary with new mapping
-- Verified with test words: պետք, ճամ, ջուր
+- Verified with test words: պետք, ժամ, ջուր
 - All 140 words have phonetic data"
 ```
 
@@ -183,10 +183,10 @@ Currently documented but not implemented in get_phonetic_transcription().
 2. **Add Tests**
    ```python
    test_cases = {
-       'եղջ': 'yeg-', # ե at start = ye
-       'բե': 'be-',    # ե in middle = e
-       'ոչ': 'voch',   # ո + consonant = v
-       'որ': 'vor',    # ո + consonant = v (before ր)
+       'եղջ': 'yeghch', # ե at start = ye
+       'բե': 'pe',      # ե in middle = e
+       'ոչ': 'voch',   # ո + consonant = vo
+       'որ': 'vor',    # ո + consonant = vo (before ր)
    }
    ```
 
@@ -215,7 +215,7 @@ Currently documented but not implemented in get_phonetic_transcription().
 2. Check phonetics.py — you've reversed the mappings
 3. Swap all voicing-reversed pairs
 4. Regenerate vocabulary
-5. Test: պետք should give "be-dik" not "pe-tik"
+5. Test: պետք should give "bedk" not "petik"
 
 **Prevention**: Always start with voicing checklist before phonetic work
 
@@ -286,7 +286,7 @@ git commit -m "fix(phonetics): correct Western Armenian բ mapping to p
 - Updated ARMENIAN_PHONEMES['բ'] IPA to p (was b)
 - English approximation: pat (English p sound)
 - Regenerated 08-data/vocab_n_standard.csv
-- Tested with պետք: outputs be-dik correctly"
+- Tested with պետք: outputs bedk correctly"
 
 # Not good
 git commit -m "fixed phonetics"

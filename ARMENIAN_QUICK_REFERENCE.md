@@ -8,14 +8,14 @@ Western Armenian has **BACKWARDS VOICING** — letter appearance ≠ pronunciati
 
 | Letter | Looks Like | Actually Sounds Like | Example |
 |--------|-----------|----------------------|---------|
-| **բ** | voiced b | **p** (unvoiced) | բան = bahn |
-| **պ** | unvoiced p | **b** (voiced) | պետք = BEDIK |
-| **դ** | voiced d | **t** (unvoiced) | դուռ = dur |
-| **տ** | unvoiced t | **d** (voiced) | տուն = doon |
-| **գ** | voiced g | **k** (unvoiced) | գիտ = git |
-| **կ** | unvoiced k | **g** (voiced) | կտուր = gdur |
+| **բ** | voiced p | **p** (unvoiced) | բան = pahn |
+| **պ** | unvoiced b | **b** (voiced) | պետք = bedk |
+| **դ** | voiced t | **t** (unvoiced) | դուռ = toor |
+| **տ** | unvoiced d | **d** (voiced) | տուն = doon |
+| **գ** | voiced k | **k** (unvoiced) | գիտ = keed |
+| **կ** | unvoiced g | **g** (voiced) | կտուր = g'door |
 
-**TEST WORD**: պետք = "be-dik" (NOT "pe-tik")  
+**TEST WORD**: պետք = "bedk" (NOT "petik")  
 If you get the [p] sound, you're using Eastern Armenian ❌
 
 ---
@@ -24,10 +24,10 @@ If you get the [p] sound, you're using Eastern Armenian ❌
 
 | Letter | Position | Sound | Example |
 |--------|----------|-------|---------|
-| **յ** | word start | h | յուղ = hugh |
-| **յ** | word middle/end | y | բայ = bay |
-| **ո** | before consonant | v | ոչ = voch |
-| **ո** | after vowel/alone | o | որ = vor |
+| **յ** | word start | h | յոյս = hoys |
+| **յ** | word middle/end | y | բայ = pay |
+| **ո** | before consonant | vo | ոչ = voch |
+| **ո** | after consonant/as vowel | o (go) | կո = go |
 | **ե** | word start | ye | ե = ye |
 | **ե** | word middle/end | e | ե = e |
 | **ւ** | between vowels | v~oo | (complex, see diphthongs) |
@@ -35,6 +35,10 @@ If you get the [p] sound, you're using Eastern Armenian ❌
 ---
 
 ## Consonant Quick Map
+
+Use these in both directions. Keep spelling in classical Western Armenian.
+
+### Sound -> Letter
 
 | Sound | Western | NOT | Notes |
 |-------|---------|-----|-------|
@@ -45,8 +49,7 @@ If you get the [p] sound, you're using Eastern Armenian ❌
 | k | գ | կ | Remember: opposite of appearance |
 | g | կ | գ | Remember: opposite of appearance |
 | j (like "job") | ճ | ջ | ճ is voiced affricate [dʒ] |
-| ch (like "chop") | ջ | ճ | ջ is unvoiced affricate [tʃ] |
-| ch (like "chop") | չ | - | Same as ջ |
+| ch (like "chop") | ջ/չ | ճ | ջ and չ both map to [tʃ] |
 | ts | ց | - | |
 | dz | ծ | - | |
 | sh | շ | - | |
@@ -63,6 +66,35 @@ If you get the [p] sound, you're using Eastern Armenian ❌
 | n | ն | - | |
 | l | լ | - | |
 
+### Letter -> Sound
+
+| Western Letter | Sound | Common Wrong Read |
+|----------------|-------|-------------------|
+| բ | p | b |
+| պ | b | p |
+| դ | t | d |
+| տ | d | t |
+| գ | k | g |
+| կ | g | k |
+| ճ | j ([dʒ]) | ch ([tʃ]) |
+| ջ | ch ([tʃ]) | j ([dʒ]) |
+| չ | ch ([tʃ]) | j ([dʒ]) |
+| ց | ts | - |
+| ծ | dz | - |
+| շ | sh | - |
+| ժ | zh | - |
+| ս | s | - |
+| թ | t | th |
+| ր | r (flap) | - |
+| ռ | r (trill) | - |
+| ֆ | f | - |
+| հ | h | - |
+| խ | kh | - |
+| ղ | gh | - |
+| մ | m | - |
+| ն | n | - |
+| լ | l | - |
+
 ---
 
 ## Vowels (Complete Set)
@@ -72,7 +104,7 @@ If you get the [p] sound, you're using Eastern Armenian ❌
 | **ա** | a (father) | ամ = am |
 | **ե** | e (bed) or ye* | (context) |
 | **ի** | i (fleece) | իմ = im |
-| **ո** | o (lot) or v* | (context) |
+| **ո** | o (go) or vo* | (context) |
 | **օ** | o (go) | օր = or |
 
 *Context-dependent, see above
@@ -85,8 +117,8 @@ If you get the [p] sound, you're using Eastern Armenian ❌
 
 | Pair | Sound | Example |
 |------|-------|---------|
-| **ու** | oo | ուր = ur (where) |
-| **իւ** | yoo | իւր = yur |
+| **ու** | oo | ուր = oor (where) |
+| **իւ** | yoo | իւղ = yoogh (oil), իւր/իր = yur/ir |
 
 ---
 
@@ -96,15 +128,15 @@ Use these to check if you're using Western Armenian (correct) or Eastern (wrong)
 
 ```
 Correct (Western Armenian):
-պետք → be-dik (պ=b, տ=d)
-ճամ → jam (ճ=dʒ like "j")
-ջուր → chur (ջ=tʃ like "ch")
-ոչ → voch (ո=v at start)
+պետք → bedk (պ=b, տ=d)
+ժամ → zham (ժ=zh like "azure")
+ջուր → choor (ջ=tʃ like "ch")
+ոչ → voch (ո=vo before consonant)
 իւր → yur (իւ=yoo diphthong)
 
 Wrong (Eastern Armenian - if you get these, STOP):
-պետք → pe-tik (wrong voicing)
-ճամ → chyam (wrong affricate)
+պետք → petik (wrong voicing)
+ախամ → akham (a-kh-a-m, NOT jahm)
 ջուր → jayur (wrong affricate)
 թ → th (doesn't exist in Western)
 ```
@@ -150,7 +182,7 @@ mapping = {
     'ջ': {'ipa': 'tʃ', 'english': 'ch', ...},
     'թ': {'ipa': 't', 'english': 't', ...},
     'ե': {'ipa': 'ɛ~jɛ', 'english': 'e/ye', ...},  # Context-aware
-    'ո': {'ipa': 'v~ɔ', 'english': 'v/o', ...},   # Context-aware
+    'ո': {'ipa': 'v~ɔ', 'english': 'vo/o', ...},  # Context-aware: vo or o
     'յ': {'ipa': 'j~h', 'english': 'y/h', ...},   # Context-aware
     'ւ': {'ipa': 'v~u', 'english': 'v/oo', ...},  # Context-aware
     # NO 'է' entry — Eastern Armenian only
@@ -161,7 +193,7 @@ mapping = {
 
 ## One-Sentence Summary
 
-**Western Armenian voicing is backwards from letter appearance: բ/պ, դ/տ, κ/կ pairs are REVERSED. Test with պետք (be-dik, not pe-tik). Always verify before implementing.**
+**Western Armenian voicing is backwards from letter appearance: բ/պ, դ/տ, κ/կ pairs are REVERSED. Test with պետք (bedk, not petik). Always verify before implementing.**
 
 ---
 

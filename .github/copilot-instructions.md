@@ -75,7 +75,7 @@ Western Armenian has **REVERSED VOICING** compared to letter shapes:
 
 **Contextual Vowels:**
 - ե: /ɛ/ (e) in word middle, /jɛ/ (ye) at word start
-- ո: /v/ before consonants (ոչ=voch), /ɔ/ (o) vowel otherwise
+- ո: /vo/ before consonants (ոչ=voch), /o/ vowel otherwise
 - ւ: **NOT A VOWEL** — /v/ between vowels, /u/ in diphthongs (ու, իւ)
 - է: /ɛ/ (eh) like bed — vowel, not consonant
 

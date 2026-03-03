@@ -492,7 +492,7 @@ All CSV outputs include these columns (may vary by preset):
 | Syllables | int | Phonetics | 2 |
 | Rank | int | wa_frequency_list.csv | 12,345 |
 | Frequency_Band | str | Computed | "2-3 syllables" |
-| IPA | str | Phonetics module | "be-dik" |
+| IPA | str | Phonetics module | "bedk" |
 | English_Approx | str | Phonetics module | "bet + ik" |
 | Phonetic_Difficulty | float | calculate_phonetic_difficulty() | 1.5 |
 | Batch | int | Batch strategy | 2 |

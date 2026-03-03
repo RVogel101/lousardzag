@@ -301,7 +301,7 @@ No failing tests reported.
    - բ (looks voiced) = [p] (unvoiced)
    - պ (looks unvoiced) = [b] (voiced)
    - Same pattern repeats: դ/տ, կ/գ
-   - Test word: պետք = "be-dik" NOT "pe-tik"
+   - Test word: պետք = "bedk" NOT "petik"
 
 2. **Documentation is Incomplete** — Must be created before major phonetic work
 

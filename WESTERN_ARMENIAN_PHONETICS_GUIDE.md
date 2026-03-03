@@ -28,26 +28,26 @@ Think of it as **BACKWARDS from English expectations**:
 
 ### Unaspirated Stop Pairs (VOICING REVERSED)
 
-| Letter | Shape | IPA | English | Example | Difficulty | Notes |
-|--------|-------|-----|---------|---------|------------|-------|
-| **բ** | Looks voiced | p | pat | բան (bahn) | 1 | REVERSED from appearance |
-| **պ** | Looks unvoiced | b | bat | պետք (betik) | 1 | REVERSED from appearance |
-| **դ** | Looks voiced | t | top | դուռ (dur) | 1 | REVERSED from appearance |
-| **տ** | Looks unvoiced | d | dog | տուն (dun) | 1 | REVERSED from appearance |
+| Letter | Looks Like | IPA | English | Example | Difficulty | Notes |
+|--------|-----------|-----|---------|---------|------------|-------|
+| **բ** | voiced p | p | pat | բան (pahn) | 1 | REVERSED from appearance |
+| **պ** | unvoiced b | b | bat | պետք (bedk) | 1 | REVERSED from appearance |
+| **դ** | voiced t | t | top | դուռ (toor) | 1 | REVERSED from appearance |
+| **տ** | unvoiced d | d | dog | տուն (doon) | 1 | REVERSED from appearance |
 
 ### Velar Pairs (VOICING REVERSED)
 
-| Letter | Shape | IPA | English | Example | Difficulty | Notes |
-|--------|-------|-----|---------|---------|------------|-------|
-| **գ** | Looks voiced | k | kit | գիտ (git) | 1 | REVERSED from appearance |
-| **կ** | Looks unvoiced | g | go | կտուր (gdur) | 1 | REVERSED from appearance |
+| Letter | Looks Like | IPA | English | Example | Difficulty | Notes |
+|--------|-----------|-----|---------|---------|------------|-------|
+| **գ** | voiced k | k | kit | գիտ (keed) | 1 | REVERSED from appearance |
+| **կ** | unvoiced g | g | go | կտուր (g'door) | 1 | REVERSED from appearance |
 
 ### Affricate Pairs (CRITICAL: Easy to Confuse)
 
 | Letter | IPA | English | Word | Difficulty | Notes |
 |--------|-----|---------|------|------------|-------|
-| **ճ** | dʒ | j (job) | ճամ (jam) | 1 | Voiced affricate, sounds like English "j" |
-| **ջ** | tʃ | ch (chop) | ջուր (chur) | 1 | Unvoiced affricate, sounds like English "ch" |
+| **ժ** | ʒ | zh (azure) | ժամ (zham) | 1 | Voiced postalveolar fricative, sounds like "zh" in "azure" |
+| **ջ** | tʃ | ch (chop) | ջուր (choor) | 1 | Unvoiced affricate, sounds like English "ch" |
 | **չ** | tʃ | ch (chop) | չեն (chen) | 1 | Alternative spelling for tʃ sound |
 
 **CRITICAL DISTINCTION**: Western Armenian ճ = [dʒ] like "j" in "job" (NOT "ch")
@@ -59,31 +59,31 @@ Think of it as **BACKWARDS from English expectations**:
 | **ծ** | dz | dz | ծանի (dzani) | 2 | Voiced affricate (like "adze") |
 | **ց** | ts | ts | ցանց (tsants) | 2 | Unvoiced affricate |
 | **ժ** | ʒ | zh | ժամ (zham) | 2 | Voiced fricative |
-| **շ** | ʃ | sh | շատ (shat) | 1 | Unvoiced fricative |
+| **շ** | ʃ | sh | շատ (shad) | 1 | Unvoiced fricative |
 | **ս** | s | s | սառ (sar) | 1 | Unvoiced alveolar fricative |
 | **ր** | ɾ | r (flap) | (better) | 2 | Flapped r, like English "better" |
 | **ռ** | r | r (trill) | Spanish r | 3 | Trilled r (more difficult) |
 | **ֆ** | f | f | ֆլ (fl) | 1 | Labiodental fricative |
 | **խ** | x | kh (guttural) | խաղ (khagh) | 4 | Velar fricative (GUTTURAL) |
-| **ղ** | ɣ | gh (voiced) | ղանճ (ghanch) | 4 | Voiced velar fricative (GUTTURAL) |
+| **ղ** | ɣ | gh (voiced) | ղանճ (ghanj) | 4 | Voiced velar fricative (GUTTURAL) |
 | **հ** | h | h | հայ (hay) | 1 | Glottal fricative |
 
 ### Nasals and Liquids
 
 | Letter | IPA | English | Word | Difficulty | Notes |
 |--------|-----|---------|------|------------|-------|
-| **մ** | m | m | մարդ (mard) | 1 | Labial nasal |
+| **մ** | m | m | մարդ (mart) | 1 | Labial nasal |
 | **ն** | n | n | նոր (nor) | 1 | Alveolar nasal |
-| **լ** | l | l | լեզու (lezu) | 1 | Alveolar lateral |
+| **լ** | l | l | լեզու (lezoo) | 1 | Alveolar lateral |
 
 ### Glides and Context-Aware Letters
 
 | Letter | Phoneme Context | IPA | English | Word | Difficulty | Notes |
 |--------|-----------------|-----|---------|------|------------|-------|
-| **յ** | Word-initial | h | hat | յուղ (hugh) | 1 | At word start sounds like "h" |
-| **յ** | Word-medial/final | j | yes | բայ (bay) | 1 | In middle/end sounds like "y" |
-| **ո** | Before consonant | v | vet | ոչ (voch) | 2 | Before consonants = [v] sound |
-| **ո** | Standalone (vowel) | ɔ | lot | որ (vor) | 2 | As vowel or after vowels = [ɔ] sound |
+| **յ** | Word-initial | h | hat | յոյս (hoys) | 1 | At word start sounds like "h" |
+| **յ** | Word-medial/final | j | yes | բայ (pay) | 1 | In middle/end sounds like "y" |
+| **ո** | Before consonant | vo | vo- | ոչ (voch) | 2 | Before consonants = [vo] onset |
+| **ո** | After consonant/as vowel | o | go | կո (go) | 2 | As vowel after consonant = [o] |
 | **ւ** | In diphthongs | u | oo | ու (u) | 1 | Part of ու diphthong |
 | **ւ** | Between vowels | v | vet | այւ (ayv) | 1 | Between vowels = [v] sound |
 
@@ -94,12 +94,12 @@ Think of it as **BACKWARDS from English expectations**:
 | **ա** | ɑ | father | ամ (am) | 1 | Open back unrounded vowel |
 | **ե** | ɛ~jɛ | e/ye | (varies) | 1 | Context-dependent (see below) |
 | **ի** | i | fleece | իմ (im) | 1 | Close front unrounded vowel |
-| **ո** | ɔ~v | o/v | (varies) | 2 | Context-dependent (see above) |
+| **ո** | o~vo | o/vo | (varies) | 2 | Context-dependent (see above) |
 | **օ** | o | go | օր (or) | 1 | Close back rounded vowel |
 
 **IMPORTANT**: 
 - ե changes by position (ye at word start, e in middle)
-- ո changes by position (v before consonants, ɔ elsewhere)
+- ո changes by position (vo before consonants, o elsewhere)
 - ւ is NOT a vowel by itself (only vowel in diphthongs)
 - EXCLUDE: է is Eastern Armenian, never use in Western
 
@@ -107,7 +107,7 @@ Think of it as **BACKWARDS from English expectations**:
 
 | Pair | IPA | English | Example | Difficulty | Notes |
 |------|-----|---------|---------|------------|-------|
-| **ու** | u | oo (goose) | ուր (ur = where) | 1 | First element ո (v-colored) + second ո |
+| **ու** | u | oo (goose) | ուր (oor = where) | 1 | First element ո (v-colored) + second ո |
 | **իւ** | ju | yoo (you) | իւր (yur) | 1 | First element ի + second ու |
 
 **Critical Note**: ւ is only a vowel when part of these diphthongs. Elsewhere it's a consonant [v] or part of a diphthong.
@@ -119,36 +119,36 @@ Think of it as **BACKWARDS from English expectations**:
 ### Letter յ (Y/H) - Two Pronunciations
 
 **Word-Initial Position**: Pronounced as [h] (like English "hat")
-- Example: յուղ = [hugh] (oil)
+- Example: յոյս = [hoys] (hope)
 - Note: Sounds like starting "h", not "y"
 
 **Word-Medial or Word-Final**: Pronounced as [j] (like English "yes")
-- Example: բայ = [bay] (but, "ba-y")
+- Example: բայ = [pay] (but, "pa-y")
 - Note: Acts as glide/consonant between vowels
 
 **Implementation**: Check character position in word; apply [h] at index 0, [j] elsewhere
 
 ### Letter ո (O/V) - Two Pronunciations
 
-**Before Consonants (Including Word-Initial)**: Pronounced as [v] (like English "vet")
+**Before Consonants (Including Word-Initial)**: Pronounced as [vo]
 - Example: ոչ = [voch] (no)
 - Example: որ = [vor] (who, before ր consonant)
 - Note: Even in Armenian words, check if next char is consonant
 
-**After Vowels or As Standalone Vowel**: Pronounced as [ɔ] (like English "lot")
-- Example: կո = [kɔ] (after vowel կ)
-- Example: որբ = [vorp] (orphan - first ո before consonant, not [ɔ])
+**After Consonant or As Standalone Vowel**: Pronounced as [o] (like English "go")
+- Example: կո = [go] (after consonant կ)
+- Example: որբ = [vorp] (first ո before consonant, so [vo])
 
-**Implementation**: Check if next character is consonant; if yes use [v], else [ɔ]
+**Implementation**: Check if next character is consonant; if yes use [vo], else [o]
 
 ### Letter ե (E/YE) - Two Pronunciations
 
 **Word-Initial Position**: Pronounced as [jɛ] (like "ye" in yes)
-- Example: եղջ = [yegdj] (starting with ye sound)
+- Example: եղջ = [yeghch] (starting with ye sound)
 - Note: Sometimes written with glide marker, sometimes not
 
 **Word-Medial or Word-Final**: Pronounced as [ɛ] (like English "bed")
-- Example: բե = [bɛ] (in middle)
+- Example: բե = [pe] (in middle)
 - Note: Short vowel, clean "e" sound
 
 **Implementation**: Check character position; [jɛ] at index 0, [ɛ] elsewhere
@@ -199,7 +199,7 @@ Words containing **guttural consonants** (խ, ղ) automatically get:
 Example:
 - բան (simple) = 1 (all base-1 phonemes)
 - շատ (has շ) = 1 (all easy)
-- խաղ (has խ guttural) = 4 (base 1 on խ + 1 boost = 2? No, گ is 4)
+- խաղ (has խ guttural) = 4 (base difficulty on խ is 4)
 
 ---
 
@@ -261,9 +261,9 @@ Example: իւր = [yur] (diphthong իւ = [ju]), NOT [i][v][ɾ]
 **Correct**: Context-dependent — check position and surrounding letters
 
 Test words:
-- y before consonant: ոչ = [voch] (not [ɔch])
-- վե after vowel: կե = [kɛ] (not [kjɛ])
-- յ at start: յուղ = [hugh] (not [jugh])
+- ո before consonant: ոչ = [voch] (not [ɔch])
+- ե after consonant: կե = [ke] (not [kje])
+- իւ diphthong: իւղ = [yoogh] (not [i-v-gh])
 
 ### ❌ Mistake: Missing Digraphs
 
@@ -289,7 +289,7 @@ Example: ուր should be processed as DIGRAPH ու + single ր, not ո + ո + �
 - [ ] Difficulty scores: base 1-5, guttural boost included
 - [ ] All comments explicitly say "Western Armenian"
 - [ ] No Eastern Armenian artifacts in code (no թ=θ, no կ=k, etc.)
-- [ ] Test words work: պետք=be-dik, ճամ=jam, ջուր=chur, ոչ=voch, իւր=yur
+- [ ] Test words work: պետք=bedk, ժամ=zham, ջուր=choor, ոչ=voch, իւր=yur
 
 ---
 
@@ -301,10 +301,10 @@ Example: ուր should be processed as DIGRAPH ու + single ր, not ո + ո + �
 from lousardzag.phonetics import get_phonetic_transcription
 
 test_words = {
-    'պետք': 'be-dik',      # պ=b, տ=d (reversed)
-    'ճամ': 'jam',          # ճ=dʒ (j sound)
-    'ջուր': 'chur',         # ջ=tʃ (ch sound)
-    'ոչ': 'voch',           # ո at start = v
+    'պետք': 'bedk',        # պ=b, տ=d (reversed)
+    'ժամ': 'zham',          # ժ=ʒ (zh sound)
+    'ջուր': 'choor',         # ջ=tʃ (ch sound)
+    'ոչ': 'voch',           # ո at start = vo
     'իւր': 'yur',           # իւ = yu diphthong
 }
 
@@ -361,6 +361,7 @@ Should have 0 failures.
 
 ### Reference Files
 - **ARMENIAN_QUICK_REFERENCE.md** (Quick lookup card)
+- **CLASSICAL_ORTHOGRAPHY_GUIDE.md** (Classical spelling requirements)
 - **/memories/western-armenian-requirement.md** (Persistent memory)
 
 ### Test Files
