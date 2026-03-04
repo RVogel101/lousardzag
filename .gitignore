@@ -43,6 +43,10 @@ data/_wa_source_extract/
 08-data/*.pkl
 08-data/*.pickle
 08-data/anki_media/
+08-data/audio_comparison/
+08-data/letter_audio/
+08-data/letter_audio_ipa_test/
+08-data/vocab_audio/
 08-data/extracted_text_simple/
 08-data/_wa_source_extract/
 !08-data/.gitkeep
