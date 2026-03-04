@@ -1,0 +1,81 @@
+<div class="visual-letter-card">
+    <!-- Repeat front -->
+    <div class="letter-showcase">
+        <div class="letter-forms">
+            <div class="form uppercase">
+                <div class="label">Uppercase</div>
+                <div class="form-letter">{{LetterUppercase}}</div>
+            </div>
+            <div class="form lowercase">
+                <div class="label">Lowercase</div>
+                <div class="form-letter">{{Letter}}</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="shape-description">
+        <div class="section-title">Letter Shape</div>
+        <div class="shape-info">{{ShapeDescription}}</div>
+        <div class="stroke-order">
+            <strong>Key features:</strong>
+            <div class="features-list">{{KeyFeatures}}</div>
+        </div>
+    </div>
+    
+    <hr class="divider">
+    
+    <!-- Handwriting guide -->
+    <div class="handwriting-section">
+        <div class="section-title">✏️ Handwriting Guide</div>
+        
+        <!-- Stroke sequence -->
+        <div class="strokes">
+            <div class="stroke-info">
+                <strong>Stroke sequence (Right to Left):</strong>
+                <div class="stroke-steps">{{StrokeSequence}}</div>
+            </div>
+        </div>
+        
+        <!-- Writing tips -->
+        <div class="writing-tips">
+            <strong>Writing tips:</strong>
+            <ul>{{WritingTips}}</ul>
+        </div>
+        
+        <!-- Common mistakes -->
+        {{#CommonMistakes}}
+        <div class="common-mistakes">
+            <strong>⚠️ Common mistakes to avoid:</strong>
+            <ul>{{CommonMistakes}}</ul>
+        </div>
+        {{/CommonMistakes}}
+    </div>
+    
+    <!-- Shape variants -->
+    {{#ShapeVariants}}
+    <div class="shape-variants">
+        <div class="section-title">Shape Variations</div>
+        <div class="variants-info">{{ShapeVariants}}</div>
+    </div>
+    {{/ShapeVariants}}
+    
+    <!-- Similar-looking letters -->
+    {{#SimilarLetters}}
+    <div class="similar-letters">
+        <div class="section-title">Similar Letters (Compare)</div>
+        <div class="similar-info">
+            <p>Don't confuse with: {{SimilarLetters}}</p>
+            <p class="distinction">Key differences: {{Distinction}}</p>
+        </div>
+    </div>
+    {{/SimilarLetters}}
+    
+    <!-- Pronunciation reminder -->
+    <div class="pronunciation-reminder">
+        <div class="section-title">💬 Pronunciation</div>
+        <div class="pronunciation-info">
+            <strong>Name:</strong> {{LetterName}}<br>
+            <strong>Sounds like:</strong> {{EnglishSound}} (IPA: {{IPA}})
+        </div>
+    </div>
+</div>

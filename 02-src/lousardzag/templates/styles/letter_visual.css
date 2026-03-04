@@ -1,0 +1,318 @@
+/* Visual Letter Training Cards - Shape Recognition & Handwriting */
+
+.visual-letter-card {
+    font-family: 'Noto Sans Armenian', 'DejaVu Sans', sans-serif;
+    color: #333;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 40px;
+    max-width: 700px;
+    margin: 0 auto;
+    border-radius: 16px;
+}
+
+/* Letter showcase section */
+.letter-showcase {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.letter-forms {
+    display: flex;
+    justify-content: space-around;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.form .label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.form-letter {
+    font-size: 140px;
+    font-weight: bold;
+    color: #1a237e;
+    line-height: 1;
+    font-family: 'Noto Serif Armenian', 'Noto Sans Armenian', serif;
+}
+
+/* Shape description */
+.shape-description {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+    border-left: 5px solid #3f51b5;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a237e;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.shape-info {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 15px;
+}
+
+.stroke-order {
+    background: #f5f5f5;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.features-list {
+    margin-top: 8px;
+    padding-left: 20px;
+}
+
+.features-list li,
+.features-list div {
+    margin: 6px 0;
+    color: #555;
+}
+
+/* Practice prompt */
+.practice-prompt {
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-style: italic;
+    color: #1565c0;
+    margin: 20px 0;
+}
+
+/* Handwriting section */
+.handwriting-section {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin: 25px 0;
+    border: 2px dashed #ff9800;
+}
+
+.strokes {
+    background: #fff3e0;
+    padding: 16px;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+.stroke-info {
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.stroke-steps {
+    margin-top: 10px;
+    padding-left: 20px;
+    background: white;
+    padding: 12px;
+    border-radius: 6px;
+}
+
+.stroke-steps li,
+.stroke-steps div {
+    margin: 8px 0;
+    color: #333;
+    font-weight: 500;
+}
+
+.writing-tips {
+    background: #f3e5f5;
+    padding: 16px;
+    border-radius: 8px;
+    margin: 15px 0;
+    font-size: 15px;
+}
+
+.writing-tips strong {
+    color: #6a1b9a;
+}
+
+.writing-tips ul {
+    margin: 10px 0;
+    padding-left: 25px;
+}
+
+.writing-tips li {
+    margin: 8px 0;
+    color: #555;
+}
+
+.common-mistakes {
+    background: #ffebee;
+    border-left: 4px solid #d32f2f;
+    padding: 16px;
+    border-radius: 8px;
+    margin: 15px 0;
+    font-size: 15px;
+}
+
+.common-mistakes strong {
+    color: #c62828;
+}
+
+.common-mistakes ul {
+    margin: 10px 0;
+    padding-left: 25px;
+}
+
+.common-mistakes li {
+    margin: 8px 0;
+    color: #d32f2f;
+}
+
+/* Shape variants */
+.shape-variants {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #ddd;
+}
+
+.variants-info {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #555;
+    margin-top: 10px;
+}
+
+/* Similar letters comparison */
+.similar-letters {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    border: 2px solid #ffc107;
+}
+
+.similar-info {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #333;
+    margin-top: 10px;
+}
+
+.similar-info p {
+    margin: 8px 0;
+}
+
+.distinction {
+    font-weight: 600;
+    color: #f57f17;
+    font-style: italic;
+}
+
+/* Pronunciation reminder */
+.pronunciation-reminder {
+    background: #e8eaf6;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    border-left: 5px solid #3f51b5;
+    font-size: 15px;
+}
+
+.pronunciation-info {
+    margin-top: 10px;
+    line-height: 1.8;
+    color: #1a237e;
+}
+
+.pronunciation-info strong {
+    color: #1a237e;
+}
+
+/* Divider */
+.divider {
+    border: none;
+    border-top: 2px solid #e0e0e0;
+    margin: 20px 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .visual-letter-card {
+        padding: 20px;
+    }
+
+    .letter-showcase {
+        padding: 20px;
+    }
+
+    .letter-forms {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-letter {
+        font-size: 100px;
+    }
+
+    .handwriting-section {
+        padding: 15px;
+    }
+
+    .section-title {
+        font-size: 14px;
+    }
+
+    .shape-info,
+    .stroke-info,
+    .pronunciation-info {
+        font-size: 14px;
+    }
+}
+
+/* Print-friendly styles */
+@media print {
+    .visual-letter-card {
+        background: white;
+        color: black;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+
+    .letter-showcase {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+
+    .practice-prompt {
+        display: none;
+    }
+
+    .section-title {
+        color: black;
+        border-bottom: 2px solid #333;
+        padding-bottom: 8px;
+    }
+}
