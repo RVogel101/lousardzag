@@ -52,17 +52,19 @@ anki-note-generation-pipelines/
 │   ├── integration/
 │   └── e2e/
 │
-├── 05-config/                     [Configuration files]
-│   └── logging_config.py
-│
 ├── 06-notebooks/                  [Jupyter & exploration]
 │   ├── demo_component_analysis.py
 │   └── exploration.ipynb
 │
 ├── 07-tools/                      [Utilities & experimental scripts]
-│   ├── scrape_fb_images.py
-│   ├── extract_image_text.py
-│   ├── _extract_wa_sources.py
+│   ├── scraping/
+│   │   ├── main_coordinator.py
+│   │   ├── scrape_fb_images.py
+│   │   └── _extract_wa_sources.py
+│   ├── extraction/
+│   ├── generation/
+│   ├── analysis/
+│   └── ... (other tool categories)
 │   └── ocr_setup_check.py
 │
 ├── 08-data/                       [Generated artifacts (gitignored)]

@@ -62,7 +62,7 @@ git remote set-url origin https://github.com/yourusername/lousardzag.git
   - `02-src/` — Source packages (armenian_anki, wa_corpus)
   - `03-cli/` — Command-line interfaces
   - `04-tests/` — Test suite
-  - `05-config/` — Configuration files
+  - Configuration moved to `02-src/lousardzag/` (consolidated)
   - `06-notebooks/` — Jupyter notebooks
   - `07-tools/` — Utility scripts
   - `08-data/` — Data outputs

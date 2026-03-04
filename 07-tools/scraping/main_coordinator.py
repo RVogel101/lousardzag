@@ -32,7 +32,7 @@ PROCESSING_LOG = os.path.join(SCRIPT_DIR, "processing_log.json")
 def setup_logging():
     """Set up enhanced logging for the coordinator."""
     try:
-        from logging_config import setup_enhanced_logging, log_system_info, create_session_logger
+        from lousardzag.logging_config import setup_enhanced_logging, log_system_info, create_session_logger
         logger = setup_enhanced_logging("coordinator", enable_debug_file=True)
         
         # Log system info for diagnostics

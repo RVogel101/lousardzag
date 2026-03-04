@@ -19,13 +19,12 @@ Lousardzag combines computational linguistics with pedagogical progression to cr
 lousardzag/
 ├── 01-docs/          Documentation and references
 ├── 02-src/           Source code
-│   ├── lousardzag/   Core learning platform (morphology, progression, card generation)
+│   ├── lousardzag/   Core learning platform (morphology, progression, card generation, config)
 │   └── wa_corpus/    Western Armenian corpus tools (scrapers, tokenization, frequency analysis)
 ├── 03-cli/           Command-line interfaces
 ├── 04-tests/         Test suite
-├── 05-config/        Configuration files
 ├── 06-notebooks/     Jupyter notebooks for analysis
-├── 07-tools/         Utility scripts
+├── 07-tools/         Utility scripts and tools (organized by category)
 └── 08-data/          Data outputs (gitignored)
 ```
 
