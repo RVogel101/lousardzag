@@ -2,6 +2,54 @@
 
 All notable changes to this project are documented here. This follows the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
 
+## [0.4.0] - 2026-03-03 (Letter Cards & TTS Audio)
+
+### ✨ Added
+
+- **Armenian Letter Card System**
+  - `letter_data.py` — Comprehensive data for all 38 Armenian letters (phonetics, examples, difficulty)
+  - `letter_practice.py` — Interactive letter practice and quiz modules
+  - `letter_progression.py` — Difficulty-aware letter learning progression
+  - `letter_audio.py` — Letter audio generation and management
+  - Anki card templates: `letter_cards/`, `letter_visual/` (front/back HTML + CSS)
+
+- **Western Armenian TTS Audio Generation**
+  - `07-tools/generate_vocab_audio_mms.py` — Production audio script using Meta MMS
+  - Model: `facebook/mms-tts-hyw` (Western Armenian specific, VITS architecture)
+  - **3-pass denoising**: Generate audio 3 times, pad to equal length, average — reduces synthesis artifacts
+  - Speed tuning: 0.90x via librosa `time_stretch()` for natural pacing
+  - Post-processing: `minimal_declick()` — 50Hz high-pass + 3-tap median filter
+  - Generated production audio for 10 vocabulary words (16kHz WAV)
+
+- **Interactive Audio Comparison Tool**
+  - `03-cli/letter_cards_viewer.py` — Flask web viewer (localhost:5001)
+  - `/vocab` page for vocabulary audio triage
+  - `/compare` page for A/B testing TTS variants (espeak-ng vs MMS vs neural)
+  - Comparison groups: espeak-ng, MMS natural/slow, 3-pass/5-pass denoised, enhanced variants
+
+- **Anki Card Templates**
+  - `noun_declension/` — Noun declension card template (front/back)
+  - `verb_conjugation/` — Verb conjugation card template (front/back)
+  - `vocab_sentences/` — Vocabulary sentences card template (front/back)
+
+### 🔧 Changed
+
+- Updated `.gitignore` to exclude audio data directories (`audio_comparison/`, `letter_audio/`, `vocab_audio/`, `letter_audio_ipa_test/`)
+- Consolidated TTS scripts — removed obsolete generation experiments (`07-tools/generation/`)
+- Updated `phonetics.py` with minor improvements
+
+### 🧪 TTS Evaluation Summary
+
+| Engine | Result |
+|--------|--------|
+| espeak-ng | Correct pronunciation, robotic quality |
+| Bark (suno/bark) | Gibberish — no Armenian training data |
+| Coqui XTTS v2 | Gibberish — no Armenian training data |
+| Google Cloud TTS | Armenian not in 63 supported languages |
+| Meta MMS (hyw) | ✅ Natural, intelligible Western Armenian |
+
+---
+
 ## [0.3.0] - 2026-03-02 (Lousardzag Rebrand)
 
 ### ✨ Changed (Major)
