@@ -97,18 +97,12 @@ htmlcov/
 *.sh
 *.cmd
 
-# Temporary data exports
-*.bak
-*.tmp
-*.temp
+# Temporary/scratch directories and files
+07-tools/scratch/
 07-tools/example_*.py
-07-tools/analyze_*.py
 07-tools/generate_vocab_cards.py
-07-tools/quick_*.py
-07-tools/verify_*.py
-07-tools/match_*.py
 
-# Root-level analysis/test scripts
+# Root-level temporary scripts (should be moved to 07-tools/scratch/)
 analyze_*.py
 check_*.py
 match_*.py
