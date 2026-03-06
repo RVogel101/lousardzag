@@ -119,6 +119,9 @@ Use these in both directions. Keep spelling in classical Western Armenian.
 |------|-------|---------|
 | **ու** | oo | ուր = oor (where) |
 | **իւ** | yoo | իւղ = yoogh (oil), իւր/իր = yur/ir |
+| **եա** | e-a (IPA: ɛɑ) | See `02-src/lousardzag/phonetics.py` (`DIPHTHONG_SOUND_IPA`) |
+| **ոյ** | o / ooy (IPA: uj, context-dependent) | Word-final: `o`; before consonant: `ooy` |
+| **այ** | ai (IPA: aj) | See `02-src/lousardzag/phonetics.py` (`DIPHTHONG_SOUND_IPA`) |
 
 ---
 

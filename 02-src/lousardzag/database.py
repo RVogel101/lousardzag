@@ -27,9 +27,9 @@ from .fsrs import FSRSScheduler, CardState
 
 logger = logging.getLogger(__name__)
 
-# Default path — lives alongside the package so it is easy to find but can
-# be overridden by callers who want a custom location.
-DEFAULT_DB_PATH = Path(__file__).parent.parent / "armenian_cards.db"
+# Default path — kept in 08-data as the authoritative source
+# Can be overridden by callers who want a custom location.
+DEFAULT_DB_PATH = Path(__file__).parent.parent.parent / "08-data" / "armenian_cards.db"
 
 
 def _now_iso() -> str:
@@ -43,31 +43,37 @@ _SCHEMA_SQL = """
 PRAGMA journal_mode = WAL;
 PRAGMA foreign_keys = ON;
 
--- Core card record (one row per generated word / note)
-CREATE TABLE IF NOT EXISTS cards (
+-- Anki imported cards (primary source of truth from Anki desktop)
+CREATE TABLE IF NOT EXISTS anki_cards (
     id               INTEGER PRIMARY KEY AUTOINCREMENT,
-    word             TEXT    NOT NULL,
-    translation      TEXT    NOT NULL DEFAULT '',
-    pos              TEXT    NOT NULL DEFAULT '',   -- noun | verb | adjective …
-    declension_class TEXT    NOT NULL DEFAULT '',
-    verb_class       TEXT    NOT NULL DEFAULT '',
-    frequency_rank   INTEGER NOT NULL DEFAULT 9999,
-    syllable_count   INTEGER NOT NULL DEFAULT 0,
+    anki_note_id     INTEGER UNIQUE NOT NULL,  -- Anki note ID (primary identifier from AnkiConnect)
+    word             TEXT    NOT NULL,          -- Armenian word/phrase (from Anki fields)
+    translation      TEXT    NOT NULL DEFAULT '',  -- English translation (from Anki fields)
+    pos              TEXT    NOT NULL DEFAULT '',   -- part of speech (from Anki fields)
+    deck_name        TEXT    NOT NULL DEFAULT '',  -- parent deck name (e.g., "Armenian (Western)")
+    sub_deck_name    TEXT    NOT NULL DEFAULT '',  -- child portion after :: (e.g., "Level 1")
+    metadata_json    TEXT    NOT NULL DEFAULT '{}', -- anki_fields, anki_tags, anki_model_name, etc.
+    created_at       TEXT    NOT NULL
+);
+
+-- Computed/enrichment data for cards (frequency, syllables, morphology, etc.)
+CREATE TABLE IF NOT EXISTS card_enrichment (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    card_id          INTEGER UNIQUE NOT NULL REFERENCES anki_cards(id) ON DELETE CASCADE,
+    declension_class TEXT    NOT NULL DEFAULT '',  -- noun declension class
+    verb_class       TEXT    NOT NULL DEFAULT '',  -- verb conjugation class
+    frequency_rank   INTEGER NOT NULL DEFAULT 9999,  -- corpus frequency ranking
+    syllable_count   INTEGER NOT NULL DEFAULT 0,   -- number of syllables
     level            INTEGER NOT NULL DEFAULT 1,    -- progression level
-    batch_index      INTEGER NOT NULL DEFAULT 0,    -- 0-based batch number
-    card_type        TEXT    NOT NULL DEFAULT '',   -- noun_declension | verb_conjugation | sentence
-    template_version TEXT    NOT NULL DEFAULT 'v1', -- card style schema version for migrations
-    metadata_json    TEXT    NOT NULL DEFAULT '{}', -- presentational metadata (loanword, UI flags)
-    morphology_json  TEXT    NOT NULL DEFAULT '{}', -- full declension / conjugation blob
-    anki_note_id     INTEGER,                       -- Anki note ID if pushed via AnkiConnect
-    created_at       TEXT    NOT NULL,
-    UNIQUE (word, card_type)
+    batch_index      INTEGER NOT NULL DEFAULT 0,    -- ordering within level
+    template_version TEXT    NOT NULL DEFAULT 'v1', -- card template version for migrations
+    morphology_json  TEXT    NOT NULL DEFAULT '{}'  -- declensions/conjugations data
 );
 
 -- Example sentences attached to a card
 CREATE TABLE IF NOT EXISTS sentences (
     id               INTEGER PRIMARY KEY AUTOINCREMENT,
-    card_id          INTEGER NOT NULL REFERENCES cards(id) ON DELETE CASCADE,
+    card_id          INTEGER NOT NULL REFERENCES anki_cards(id) ON DELETE CASCADE,
     form_label       TEXT    NOT NULL DEFAULT '',
     armenian_text    TEXT    NOT NULL DEFAULT '',
     english_text     TEXT    NOT NULL DEFAULT '',
@@ -89,7 +95,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS card_reviews (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id           INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    card_id           INTEGER NOT NULL REFERENCES cards(id) ON DELETE CASCADE,
+    card_id           INTEGER NOT NULL REFERENCES anki_cards(id) ON DELETE CASCADE,
     reviewed_at       TEXT    NOT NULL,
     rating            INTEGER NOT NULL DEFAULT 0, -- 1 (again) … 4 (easy)
     response_time_ms  INTEGER NOT NULL DEFAULT 0,
@@ -118,13 +124,16 @@ CREATE TABLE IF NOT EXISTS vocabulary (
 );
 
 -- Indexes for common query patterns
-CREATE INDEX IF NOT EXISTS idx_cards_word        ON cards(word);
-CREATE INDEX IF NOT EXISTS idx_sentences_card    ON sentences(card_id);
-CREATE INDEX IF NOT EXISTS idx_reviews_user_card ON card_reviews(user_id, card_id);
-CREATE INDEX IF NOT EXISTS idx_reviews_due       ON card_reviews(user_id, next_due_at);
-CREATE INDEX IF NOT EXISTS idx_vocabulary_lemma  ON vocabulary(lemma);
-CREATE INDEX IF NOT EXISTS idx_vocabulary_pos    ON vocabulary(pos);
-CREATE INDEX IF NOT EXISTS idx_vocabulary_deck   ON vocabulary(source_deck);
+CREATE INDEX IF NOT EXISTS idx_anki_cards_note_id   ON anki_cards(anki_note_id);
+CREATE INDEX IF NOT EXISTS idx_anki_cards_word      ON anki_cards(word);
+CREATE INDEX IF NOT EXISTS idx_anki_cards_deck      ON anki_cards(deck_name, sub_deck_name);
+CREATE INDEX IF NOT EXISTS idx_card_enrichment_card ON card_enrichment(card_id);
+CREATE INDEX IF NOT EXISTS idx_sentences_card       ON sentences(card_id);
+CREATE INDEX IF NOT EXISTS idx_reviews_user_card    ON card_reviews(user_id, card_id);
+CREATE INDEX IF NOT EXISTS idx_reviews_due          ON card_reviews(user_id, next_due_at);
+CREATE INDEX IF NOT EXISTS idx_vocabulary_lemma     ON vocabulary(lemma);
+CREATE INDEX IF NOT EXISTS idx_vocabulary_pos       ON vocabulary(pos);
+CREATE INDEX IF NOT EXISTS idx_vocabulary_deck      ON vocabulary(source_deck);
 """
 
 
@@ -168,33 +177,39 @@ class CardDatabase:
 
     def _apply_schema_migrations(self, conn: sqlite3.Connection) -> None:
         """Apply additive schema migrations for existing local databases."""
-        # Check cards table columns
-        cols = {
+        # Check if migration from old schema is needed
+        tables = {
             row["name"]
-            for row in conn.execute("PRAGMA table_info(cards)").fetchall()
+            for row in conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='table'"
+            ).fetchall()
         }
-
-        if "template_version" not in cols:
-            conn.execute(
-                "ALTER TABLE cards ADD COLUMN template_version TEXT NOT NULL DEFAULT 'v1'"
-            )
-
-        if "metadata_json" not in cols:
-            conn.execute(
-                "ALTER TABLE cards ADD COLUMN metadata_json TEXT NOT NULL DEFAULT '{}'"
-            )
-
+        
+        if "cards" in tables and "anki_cards" not in tables:
+            logger.warning("Old 'cards' table found without 'anki_cards'. Schema migration needed.")
+            logger.warning("Run migrate_split_schema.py to split cards table into anki_cards + card_enrichment")
+        
+        # Check anki_cards table columns (new schema)
+        if "anki_cards" in tables:
+            anki_cols = {
+                row["name"]
+                for row in conn.execute("PRAGMA table_info(anki_cards)").fetchall()
+            }
+            if anki_cols:  # Table exists with columns
+                logger.debug("Using new split schema (anki_cards + card_enrichment)")
+        
         # Check sentences table columns
-        sent_cols = {
-            row["name"]
-            for row in conn.execute("PRAGMA table_info(sentences)").fetchall()
-        }
+        if "sentences" in tables:
+            sent_cols = {
+                row["name"]
+                for row in conn.execute("PRAGMA table_info(sentences)").fetchall()
+            }
 
-        if "vocabulary_used" not in sent_cols:
-            conn.execute(
-                "ALTER TABLE sentences ADD COLUMN vocabulary_used TEXT NOT NULL DEFAULT '[]'"
-            )
-            logger.info("Applied migration: Added vocabulary_used column to sentences table")
+            if "vocabulary_used" not in sent_cols:
+                conn.execute(
+                    "ALTER TABLE sentences ADD COLUMN vocabulary_used TEXT NOT NULL DEFAULT '[]'"
+                )
+                logger.info("Applied migration: Added vocabulary_used column to sentences table")
 
         # Check vocabulary table columns
         vocab_cols = {
@@ -229,7 +244,7 @@ class CardDatabase:
         word: str,
         translation: str = "",
         pos: str = "",
-        card_type: str = "",
+        card_type: str = "",  # Deprecated - kept for backward compatibility
         declension_class: str = "",
         verb_class: str = "",
         frequency_rank: int = 9999,
@@ -240,31 +255,68 @@ class CardDatabase:
         metadata: dict | None = None,
         morphology: dict | None = None,
         anki_note_id: int | None = None,
+        deck_name: str = "",
+        sub_deck_name: str = "",
     ) -> int:
         """Insert or update a card record; return its ``id``.
 
-        The (word, card_type) pair is the natural key: if a row already exists
-        it is updated in place so that re-running the pipeline is idempotent.
+        The anki_note_id is the natural key: if a row already exists it is 
+        updated in place so that re-running the pipeline is idempotent.
+        
+        Updated to work with split schema (anki_cards + card_enrichment).
         """
+        if anki_note_id is None:
+            raise ValueError("anki_note_id is required for card upsert")
+        
         morphology_json = json.dumps(morphology or {}, ensure_ascii=False)
         metadata_json = json.dumps(metadata or {}, ensure_ascii=False)
         now = _now_iso()
+        
         with self._connect() as conn:
+            # Upsert into anki_cards (Anki-sourced data)
             conn.execute(
                 """
-                INSERT INTO cards
-                    (word, translation, pos, declension_class, verb_class,
-                     frequency_rank, syllable_count, level, batch_index,
-                     card_type, template_version, metadata_json, morphology_json,
-                     anki_note_id, created_at)
+                INSERT INTO anki_cards
+                    (anki_note_id, word, translation, pos, deck_name, sub_deck_name, metadata_json, created_at)
                 VALUES
-                    (:word, :translation, :pos, :declension_class, :verb_class,
-                     :frequency_rank, :syllable_count, :level, :batch_index,
-                     :card_type, :template_version, :metadata_json,
-                     :morphology_json, :anki_note_id, :created_at)
-                ON CONFLICT(word, card_type) DO UPDATE SET
-                    translation      = excluded.translation,
-                    pos              = excluded.pos,
+                    (:anki_note_id, :word, :translation, :pos, :deck_name, :sub_deck_name, :metadata_json, :created_at)
+                ON CONFLICT(anki_note_id) DO UPDATE SET
+                    word          = excluded.word,
+                    translation   = excluded.translation,
+                    pos           = excluded.pos,
+                    deck_name     = excluded.deck_name,
+                    sub_deck_name = excluded.sub_deck_name,
+                    metadata_json = excluded.metadata_json
+                """,
+                {
+                    "anki_note_id": anki_note_id,
+                    "word": word,
+                    "translation": translation,
+                    "pos": pos,
+                    "deck_name": deck_name,
+                    "sub_deck_name": sub_deck_name,
+                    "metadata_json": metadata_json,
+                    "created_at": now,
+                },
+            )
+            
+            # Get the card_id
+            row = conn.execute(
+                "SELECT id FROM anki_cards WHERE anki_note_id = ?",
+                (anki_note_id,),
+            ).fetchone()
+            card_id: int = row["id"]
+            
+            # Upsert into card_enrichment (computed/derived data)
+            conn.execute(
+                """
+                INSERT INTO card_enrichment
+                    (card_id, declension_class, verb_class, frequency_rank, syllable_count,
+                     level, batch_index, template_version, morphology_json)
+                VALUES
+                    (:card_id, :declension_class, :verb_class, :frequency_rank, :syllable_count,
+                     :level, :batch_index, :template_version, :morphology_json)
+                ON CONFLICT(card_id) DO UPDATE SET
                     declension_class = excluded.declension_class,
                     verb_class       = excluded.verb_class,
                     frequency_rank   = excluded.frequency_rank,
@@ -272,41 +324,40 @@ class CardDatabase:
                     level            = excluded.level,
                     batch_index      = excluded.batch_index,
                     template_version = excluded.template_version,
-                    metadata_json    = excluded.metadata_json,
-                    morphology_json  = excluded.morphology_json,
-                    anki_note_id     = COALESCE(excluded.anki_note_id, cards.anki_note_id)
+                    morphology_json  = excluded.morphology_json
                 """,
                 {
-                    "word": word,
-                    "translation": translation,
-                    "pos": pos,
+                    "card_id": card_id,
                     "declension_class": declension_class,
                     "verb_class": verb_class,
                     "frequency_rank": frequency_rank,
                     "syllable_count": syllable_count,
                     "level": level,
                     "batch_index": batch_index,
-                    "card_type": card_type,
                     "template_version": template_version,
-                    "metadata_json": metadata_json,
                     "morphology_json": morphology_json,
-                    "anki_note_id": anki_note_id,
-                    "created_at": now,
                 },
             )
-            row = conn.execute(
-                "SELECT id FROM cards WHERE word = ? AND card_type = ?",
-                (word, card_type),
-            ).fetchone()
-        card_id: int = row["id"]
-        logger.debug("Upserted card id=%d word=%r type=%r", card_id, word, card_type)
+        
+        logger.debug("Upserted card id=%d word=%r anki_note_id=%d", card_id, word, anki_note_id)
         return card_id
 
     def get_card(self, card_id: int) -> Optional[dict]:
-        """Return a card row as a dict, or None if not found."""
+        """Return a card row as a dict (joined from anki_cards + card_enrichment), or None if not found."""
         with self._connect() as conn:
             row = conn.execute(
-                "SELECT * FROM cards WHERE id = ?", (card_id,)
+                """
+                SELECT 
+                    ac.id, ac.anki_note_id, ac.word, ac.translation, ac.pos,
+                    ac.deck_name, ac.sub_deck_name, ac.metadata_json, ac.created_at,
+                    ce.declension_class, ce.verb_class, ce.frequency_rank,
+                    ce.syllable_count, ce.level, ce.batch_index,
+                    ce.template_version, ce.morphology_json
+                FROM anki_cards ac
+                LEFT JOIN card_enrichment ce ON ce.card_id = ac.id
+                WHERE ac.id = ?
+                """,
+                (card_id,)
             ).fetchone()
         if row is None:
             return None
@@ -315,18 +366,24 @@ class CardDatabase:
         result["morphology"] = json.loads(result.pop("morphology_json", "{}"))
         return result
 
-    def get_card_by_word(self, word: str, card_type: str = "") -> Optional[dict]:
-        """Return a card row by word (and optionally card_type)."""
+    def get_card_by_word(self, word: str) -> Optional[dict]:
+        """Return a card row by word (first match)."""
         with self._connect() as conn:
-            if card_type:
-                row = conn.execute(
-                    "SELECT * FROM cards WHERE word = ? AND card_type = ?",
-                    (word, card_type),
-                ).fetchone()
-            else:
-                row = conn.execute(
-                    "SELECT * FROM cards WHERE word = ? LIMIT 1", (word,)
-                ).fetchone()
+            row = conn.execute(
+                """
+                SELECT 
+                    ac.id, ac.anki_note_id, ac.word, ac.translation, ac.pos,
+                    ac.deck_name, ac.sub_deck_name, ac.metadata_json, ac.created_at,
+                    ce.declension_class, ce.verb_class, ce.frequency_rank,
+                    ce.syllable_count, ce.level, ce.batch_index,
+                    ce.template_version, ce.morphology_json
+                FROM anki_cards ac
+                LEFT JOIN card_enrichment ce ON ce.card_id = ac.id
+                WHERE ac.word = ?
+                LIMIT 1
+                """,
+                (word,)
+            ).fetchone()
         if row is None:
             return None
         result = dict(row)
@@ -337,25 +394,33 @@ class CardDatabase:
     def list_cards(
         self,
         pos: str = "",
-        card_type: str = "",
+        card_type: str = "",  # Deprecated - kept for backward compatibility
         level: int | None = None,
     ) -> list[dict]:
-        """Return cards, optionally filtered by pos, card_type, or level."""
+        """Return cards, optionally filtered by pos or level."""
         clauses: list[str] = []
         params: list = []
         if pos:
-            clauses.append("pos = ?")
+            clauses.append("ac.pos = ?")
             params.append(pos)
-        if card_type:
-            clauses.append("card_type = ?")
-            params.append(card_type)
         if level is not None:
-            clauses.append("level = ?")
+            clauses.append("ce.level = ?")
             params.append(level)
         where = ("WHERE " + " AND ".join(clauses)) if clauses else ""
         with self._connect() as conn:
             rows = conn.execute(
-                f"SELECT * FROM cards {where} ORDER BY level, batch_index, frequency_rank",
+                f"""
+                SELECT 
+                    ac.id, ac.anki_note_id, ac.word, ac.translation, ac.pos,
+                    ac.deck_name, ac.sub_deck_name, ac.metadata_json, ac.created_at,
+                    ce.declension_class, ce.verb_class, ce.frequency_rank,
+                    ce.syllable_count, ce.level, ce.batch_index,
+                    ce.template_version, ce.morphology_json
+                FROM anki_cards ac
+                LEFT JOIN card_enrichment ce ON ce.card_id = ac.id
+                {where}
+                ORDER BY ce.level, ce.batch_index, ce.frequency_rank
+                """,
                 params,
             ).fetchall()
         results = []
@@ -586,14 +651,20 @@ class CardDatabase:
         with self._connect() as conn:
             rows = conn.execute(
                 """
-                SELECT c.*
-                FROM cards c
+                SELECT 
+                    ac.id, ac.anki_note_id, ac.word, ac.translation, ac.pos,
+                    ac.deck_name, ac.sub_deck_name, ac.metadata_json, ac.created_at,
+                    ce.declension_class, ce.verb_class, ce.frequency_rank,
+                    ce.syllable_count, ce.level, ce.batch_index,
+                    ce.template_version, ce.morphology_json
+                FROM anki_cards ac
+                LEFT JOIN card_enrichment ce ON ce.card_id = ac.id
                 JOIN (
                     SELECT card_id, MAX(reviewed_at) AS last_reviewed, next_due_at
                     FROM card_reviews
                     WHERE user_id = ?
                     GROUP BY card_id
-                ) r ON r.card_id = c.id
+                ) r ON r.card_id = ac.id
                 WHERE r.next_due_at <= ?
                 ORDER BY r.next_due_at
                 """,

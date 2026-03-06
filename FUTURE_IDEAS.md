@@ -1,5 +1,15 @@
 ﻿# Future Ideas
 
+- **Intelligent Card Enrichment Pipeline**: Currently, Anki notes synced to the local SQLite DB lack key learning metadata. A future enhancement would automatically compute and populate:
+  - `frequency_rank`: Link vocabulary to corpus frequency data (newspapers, Wikipedia, Internet Archive) for data-driven difficulty ordering
+  - `syllable_count`: Auto-count phonetic syllables from `lousardzag.phonetics` to identify simple words for early learners
+  - `level`: Auto-assign progression level (1-7) based on frequency + syllable complexity
+  - `morphology_json`: Auto-generate full declension/conjugation tables for nouns and verbs using existing morphology engine
+  - **Vision**: Enable adaptive vocabulary ordering that starts with the most common, simplest words and progressively introduces complex morphology and rare vocabulary
+  - **Impact**: Learners would automatically get optimized card sequences without manual curation
+  - **Implementation Path**: Four standalone enrichment scripts (`enrich_card_frequency.py`, `enrich_card_syllables.py`, `enrich_card_levels.py`, `enrich_card_morphology.py`) that run as a post-sync pipeline
+  - **Benefit**: Turns static Anki deck import into a dynamic, adaptive learning progression system
+
 - Conversation practice mode: revisit piping responses from a Western Armenian LLM to support guided dialogue practice without adding heavy learner friction.
 
 - **Custom Western Armenian TTS model**: The `facebook/mms-tts-hyw` model (Meta MMS) works well with 3-pass denoising + 0.90x speed, but quality could be improved further. Options: (1) Fine-tune XTTS v2 or train a Piper voice with ~30 min of clean native speaker audio — this would give the highest quality. (2) Explore multi-speaker MMS fine-tuning if Meta releases training code. (3) Use the project's `phonetics.py` Western Armenian phoneme set to inform any phoneme mapping. Current MMS output is usable for flashcards but still has some synthesis artifacts that averaging can't fully remove. Key challenge remains data collection — no existing high-quality WA TTS datasets exist. Potential audio sources: record a native speaker reading the vocabulary list, diaspora radio/TV archives, or clean existing Anki audio files.

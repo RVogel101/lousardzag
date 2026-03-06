@@ -1,0 +1,697 @@
+/* ========================================
+   FLASHCARD SYSTEM - RESPONSIVE STYLING
+   Mobile-First Design (320px+)
+   ======================================== */
+
+:root {
+    /* Brand Colors */
+    --primary-armenian: #1a237e;
+    --secondary-text: #555;
+    --light-bg: #f5f5f5;
+    --card-bg: #ffffff;
+    
+    /* Difficulty Colors */
+    --difficulty-easy: #4caf50;
+    --difficulty-medium: #ff9800;
+    --difficulty-hard: #f44336;
+    
+    /* Interactive Colors */
+    --correct-tint: #e8f5e9;
+    --wrong-tint: #ffebee;
+    --focus-blue: #1976d2;
+    
+    /* Typography */
+    --font-armenian: 'Noto Sans Armenian', 'DejaVu Sans', sans-serif;
+    --font-english: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    
+    /* Spacing */
+    --spacing-xs: 8px;
+    --spacing-sm: 12px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+}
+
+/* ========================================
+   RESET & BASE
+   ======================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: var(--font-english);
+    background-color: var(--light-bg);
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md);
+}
+
+/* ========================================
+   FLASHCARD CONTAINER
+   Mobile: Full viewport
+   Tablet+: Max-width 600px
+   ======================================== */
+
+.flashcard-container {
+    width: 100%;
+    max-width: 600px;
+    height: 100vh;
+    max-height: 700px;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   FRONT SIDE - MINIMAL
+   ======================================== */
+
+.flashcard-front {
+    justify-content: center;
+    padding: var(--spacing-lg);
+    text-align: center;
+}
+
+.flashcard-front .flashcard-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    flex: 1;
+}
+
+/* Difficulty Badge */
+.difficulty-badge {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    display: flex;
+    gap: 4px;
+    z-index: 10;
+}
+
+.difficulty-dots .dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ddd;
+    transition: all 0.3s ease;
+}
+
+.difficulty-dots .dot.filled {
+    background-color: var(--difficulty-medium);
+}
+
+.difficulty-dots .dot.half {
+    background: linear-gradient(90deg, var(--difficulty-medium) 50%, #ddd 50%);
+}
+
+[data-difficulty="1"] .dot.filled { background-color: var(--difficulty-easy); }
+[data-difficulty="2"] .dot.filled { background-color: var(--difficulty-easy); }
+[data-difficulty="3"] .dot.filled { background-color: var(--difficulty-medium); }
+[data-difficulty="4"] .dot.filled { background-color: var(--difficulty-hard); }
+[data-difficulty="5"] .dot.filled { background-color: var(--difficulty-hard); }
+
+/* Armenian Word (Vocabulary Front) */
+.word-armenian {
+    font-family: var(--font-armenian);
+    font-size: 48px;
+    font-weight: bold;
+    color: var(--primary-armenian);
+    line-height: 1.2;
+    margin-bottom: var(--spacing-md);
+}
+
+/* Armenian Sentence (Sentence Front) */
+.sentence-armenian {
+    font-family: var(--font-armenian);
+    font-size: 40px;
+    font-weight: 600;
+    color: var(--primary-armenian);
+    line-height: 1.4;
+}
+
+/* Hint Text */
+.hint-text {
+    font-size: 14px;
+    color: #aaa;
+    font-style: italic;
+    margin-top: var(--spacing-md);
+}
+
+/* ========================================
+   BACK SIDE - PROGRESSIVE REVEAL
+   ======================================== */
+
+.flashcard-back {
+    flex-direction: column;
+    padding: var(--spacing-lg);
+    padding-bottom: var(--spacing-xl) + 10px; /* Account for footer */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.flashcard-back .flashcard-content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+/* English Translation */
+.translation-english,
+.sentence-english {
+    font-family: var(--font-english);
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--primary-armenian);
+    line-height: 1.4;
+}
+
+/* Divider */
+.content-divider {
+    border: none;
+    border-top: 2px solid #e0e0e0;
+    margin: var(--spacing-md) 0;
+}
+
+/* ========================================
+   PROGRESSIVE REVEAL SECTIONS
+   ======================================== */
+
+.progressive-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+/* Base Expandable Section */
+.expandable-section {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.expandable-section:hover {
+    border-color: var(--focus-blue);
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.1);
+}
+
+/* Expand Button */
+.expand-button {
+    width: 100%;
+    padding: var(--spacing-md);
+    background-color: #f9f9f9;
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--secondary-text);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    transition: all 0.2s ease;
+}
+
+.expand-button:hover {
+    background-color: #f0f0f0;
+}
+
+.expand-button:active {
+    background-color: #e8e8e8;
+}
+
+.expand-button .icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.expand-button .label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex: 1;
+    text-align: left;
+}
+
+.expand-button .value {
+    font-family: var(--font-armenian);
+    font-size: 16px;
+    color: var(--primary-armenian);
+    font-weight: bold;
+    margin: 0 var(--spacing-sm);
+}
+
+.expand-button .toggle {
+    font-size: 12px;
+    transition: transform 0.2s ease;
+}
+
+.expandable-section:has(.expand-content:not(.hidden)) .toggle {
+    transform: rotate(180deg);
+}
+
+/* Expand Content */
+.expand-content {
+    padding: var(--spacing-md);
+    background-color: #fafafa;
+    display: block;
+    max-height: 500px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    animation: expandDown 0.2s ease-out;
+}
+
+.expand-content.hidden {
+    display: none;
+}
+
+@keyframes expandDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 500px;
+    }
+}
+
+/* Content Inside Expandable */
+.grammar-info,
+.pronunciation-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.grammar-info p,
+.pronunciation-info p {
+    color: var(--secondary-text);
+}
+
+.grammar-info strong,
+.pronunciation-info strong {
+    color: var(--primary-armenian);
+}
+
+.ipa {
+    background-color: #e3f2fd;
+    color: #1565c0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Charis SIL', 'DejaVu Sans', monospace;
+    font-size: 14px;
+}
+
+.note {
+    font-size: 13px;
+    color: #999;
+    font-style: italic;
+}
+
+/* ========================================
+   SPECIAL SECTIONS: ROOT, EXAMPLES, ETC.
+   ======================================== */
+
+/* Root Section */
+.root-section .grammar-info p:first-child {
+    font-family: var(--font-armenian);
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--primary-armenian);
+    margin-bottom: var(--spacing-sm);
+}
+
+/* Examples List */
+.examples-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.example-item {
+    padding: var(--spacing-sm);
+    background-color: #fff;
+    border-left: 3px solid var(--focus-blue);
+    border-radius: 4px;
+}
+
+.example-armenian {
+    font-family: var(--font-armenian);
+    font-size: 16px;
+    color: var(--primary-armenian);
+    font-weight: 500;
+}
+
+/* Word Focus Section (Sentence Cards) */
+.word-focus-section {
+    background-color: #fff;
+    border: 2px solid var(--focus-blue);
+    border-radius: 8px;
+    padding: var(--spacing-md);
+}
+
+.focus-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.focus-item .label {
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--secondary-text);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.focused-word {
+    font-family: var(--font-armenian);
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-armenian);
+}
+
+.focused-translation {
+    font-size: 18px;
+    color: var(--secondary-text);
+}
+
+.meta-tag {
+    font-size: 13px;
+    color: #666;
+    font-weight: 600;
+}
+
+.tense-tag {
+    background-color: #e0e0e0;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 6px;
+    font-weight: normal;
+}
+
+/* Grammar Section */
+.grammar-section .context-list {
+    list-style: none;
+    margin-top: var(--spacing-sm);
+    padding-left: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.grammar-section .context-list li {
+    font-size: 14px;
+    color: var(--secondary-text);
+}
+
+.grammar-section .context-list li::before {
+    content: "• ";
+    color: var(--focus-blue);
+    font-weight: bold;
+    margin-right: 6px;
+}
+
+/* ========================================
+   AUDIO BUTTON
+   ======================================== */
+
+.audio-button {
+    align-self: flex-start;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--focus-blue);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.audio-button:hover {
+    background-color: #1565c0;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+}
+
+.audio-button:active {
+    transform: translateY(0);
+}
+
+/* ========================================
+   INTERACTION FOOTER
+   Always visible, sticky at bottom
+   ======================================== */
+
+.interaction-footer {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-lg) var(--spacing-md);
+    background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0.95));
+    border-top: 1px solid #e0e0e0;
+    z-index: 100;
+}
+
+/* Mark Button */
+.mark-button {
+    flex: 1;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mark-button .icon {
+    font-size: 24px;
+}
+
+.mark-button .label {
+    font-size: 12px;
+}
+
+/* Correct Button */
+.mark-correct {
+    background-color: var(--difficulty-easy);
+    color: white;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.mark-correct:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.mark-correct:active {
+    transform: translateY(0);
+    background-color: #388e3c;
+}
+
+/* Wrong Button */
+.mark-wrong {
+    background-color: var(--difficulty-hard);
+    color: white;
+    box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+
+.mark-wrong:hover {
+    background-color: #e53935;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+}
+
+.mark-wrong:active {
+    transform: translateY(0);
+    background-color: #d32f2f;
+}
+
+/* After Mark State */
+.flashcard-container.marked-correct {
+    background-color: var(--correct-tint);
+}
+
+.flashcard-container.marked-wrong {
+    background-color: var(--wrong-tint);
+}
+
+/* ========================================
+   TABLET BREAKPOINT (768px+)
+   ======================================== */
+
+@media (min-width: 768px) {
+    body {
+        padding: var(--spacing-xl);
+    }
+
+    .flashcard-container {
+        max-height: 600px;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .flashcard-front,
+    .flashcard-back {
+        padding: var(--spacing-xl);
+    }
+
+    .word-armenian {
+        font-size: 56px;
+    }
+
+    .sentence-armenian {
+        font-size: 44px;
+    }
+
+    .translation-english,
+    .sentence-english {
+        font-size: 36px;
+    }
+
+    .interaction-footer {
+        gap: var(--spacing-md);
+        padding: var(--spacing-lg);
+    }
+
+    .mark-button {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .mark-button .icon {
+        font-size: 20px;
+    }
+
+    .mark-button .label {
+        font-size: 13px;
+    }
+}
+
+/* ========================================
+   DESKTOP BREAKPOINT (1024px+)
+   ======================================== */
+
+@media (min-width: 1024px) {
+    body {
+        padding: var(--spacing-xl);
+    }
+
+    .flashcard-container {
+        max-width: 700px;
+        max-height: 650px;
+        border-radius: 20px;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+    }
+
+    .flashcard-front,
+    .flashcard-back {
+        padding: var(--spacing-xl);
+    }
+
+    .word-armenian {
+        font-size: 64px;
+    }
+
+    .sentence-armenian {
+        font-size: 48px;
+    }
+
+    .translation-english,
+    .sentence-english {
+        font-size: 40px;
+    }
+
+    .expand-button {
+        padding: var(--spacing-lg);
+    }
+
+    .mark-button {
+        padding: var(--spacing-lg) var(--spacing-xl);
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY & PRINT
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+@media print {
+    .flashcard-container {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+
+    .interaction-footer,
+    .hint-text {
+        display: none !important;
+    }
+}
+
+/* ========================================
+   HIGH DPI DISPLAYS
+   ======================================== */
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .flashcard-container {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+}

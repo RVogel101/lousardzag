@@ -21,6 +21,8 @@ env/
 *.db
 *.db-shm
 *.db-wal
+*.db.backup
+*.db.bak
 
 # Credentials and API keys (NEVER commit)
 arm-speech-converter-*.json
@@ -89,6 +91,10 @@ notebooks/.ipynb_checkpoints/
 # OS
 Thumbs.db
 .DS_Store
+
+# Installers and executables (not part of project)
+*.exe
+*.msi
 
 # Testing & Coverage
 .pytest_cache/

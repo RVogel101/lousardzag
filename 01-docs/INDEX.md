@@ -43,6 +43,26 @@ Workflow guide with mandatory checklists and common commands.
 
 ---
 
+### 2.5 **WESTERN_ARMENIAN_LANGUAGE_CONSOLIDATED.md** (Consolidated Logic)
+Single canonical consolidation for grammar + transliteration + phonetics +
+Western-vs-Eastern lexical markers + classical-vs-reformed spelling differences.
+
+**What it covers**:
+- Consolidated grammar logic currently implemented/documented
+- Transliteration logic and owning code/tests
+- Phonetic logic and owning code/tests
+- Project-documented Western markers not usually used in Eastern
+- Classical/reformed pair table for dictionary workflows
+- Source-of-truth file ownership map
+
+**When to use**:
+- When you need one place to understand language logic end-to-end
+- Before modifying dialect classifier, phonetics, transliteration, or orthography handling
+
+**Path**: `01-docs/references/WESTERN_ARMENIAN_LANGUAGE_CONSOLIDATED.md`
+
+---
+
 ## 📖 Complete References (1st Session + Deep Dives)
 
 ### 3. **WESTERN_ARMENIAN_PHONETICS_GUIDE.md** (Authoritative)

@@ -157,6 +157,163 @@ def get_pronunciation_guide(armenian_word):
     return guide
 
 
+# ============================================================================
+# LETTER NAME & SOUND DATA (merged from ipa_mappings.py for consolidation)
+# ============================================================================
+# These dictionaries provide alternative representations of Armenian letter
+# phonetics used in specific contexts (letter naming, IPA transcription).
+# See: 02-src/lousardzag/ipa_mappings.py (source, scheduled for deletion)
+
+# Armenian-script spelling of each letter's traditional name
+LETTER_NAME_ARMENIAN = {
+    "ա": "այբ",      # ayp
+    "բ": "բեն",      # pen
+    "գ": "գիմ",      # kim
+    "դ": "դա",       # ta
+    "ե": "եծ",       # yech
+    "զ": "զա",       # za
+    "է": "է",        # eh
+    "ը": "ըթ",       # et
+    "թ": "թո",      # to
+    "ժ": "ժե",       # zhe
+    "ի": "ինի",      # ini
+    "լ": "լյուն",    # lyun
+    "խ": "խե",      # khe
+    "ծ": "ծա",       # dza
+    "կ": "կեն",      # gen
+    "հ": "հո",       # ho
+    "ձ": "ծա",       # tsa
+    "ղ": "ղաղ",      # ghat
+    "ճ": "ճե",       # je
+    "մ": "մեն",      # men
+    "յ": "յի",       # yi
+    "ն": "նու",      # nu
+    "շ": "շա",       # sha
+    "ո": "ո",        # vo
+    "չ": "չա",       # cha
+    "պ": "բե",       # be
+    "ջ": "չե",       # che
+    "ռ": "ռա",       # rra
+    "ս": "սե",       # se
+    "վ": "վեւ",      # vev
+    "տ": "տյուն",    # dyun
+    "ր": "րե",       # re
+    "ց": "ցո",       # tso
+    "ւ": "հյուն",    # yiwn
+    "փ": "փյուր",    # pyur
+    "ք": "քե",       # ke
+    "օ": "օ",        # o
+    "ֆ": "ֆե",       # fe
+}
+
+# Spoken names of Armenian letters (grapheme names), in detailed IPA
+# Used for pronunciation of individual letter names (e.g., "What letter is this?")
+LETTER_NAME_IPA = {
+    "ա": "ɑjpʰ",
+    "բ": "pʰɛn",
+    "գ": "kʰim",
+    "դ": "tʰɑ",
+    "ե": "jɛtʃʰ",
+    "զ": "zɑ",
+    "է": "ɛ",
+    "ը": "ətʰ",
+    "թ": "tʰɔ",
+    "ժ": "ʒɛ",
+    "ի": "ini",
+    "լ": "lʏn",
+    "խ": "χɛ",
+    "ծ": "dzɑ",
+    "կ": "ɡɛn",
+    "հ": "ho",
+    "ձ": "tsʰɑ",
+    "ղ": "ʁɑd",
+    "ճ": "dʒɛ",
+    "մ": "mɛn",
+    "յ": "hi",
+    "ն": "nu",
+    "շ": "ʃɑ",
+    "ո": "ʋɔ",
+    "չ": "tʃʰɑ",
+    "պ": "bɛ",
+    "ջ": "tʃʰɛ",
+    "ռ": "ɾɑ",
+    "ս": "sɛ",
+    "վ": "vɛv",
+    "տ": "dʏn",
+    "ր": "ɾɛ",
+    "ց": "tsʰɔ",
+    "ւ": "hʏn",
+    "փ": "pʰʏɾ",
+    "ք": "kʰɛ",
+    "օ": "o",
+    "ֆ": "fɛ",
+}
+
+# Base letter sounds (phoneme values) in isolated context, in IPA
+# Use these for consonant/vowel sounds (not letter names)
+# Context-sensitive alternates (word-initial, diphthongs) stored separately below
+LETTER_SOUND_IPA = {
+    "ա": "ɑ",
+    "բ": "pʰ",
+    "գ": "kʰ",
+    "դ": "tʰ",
+    "ե": "ɛ",
+    "զ": "z",
+    "է": "ɛ",
+    "ը": "ə",
+    "թ": "tʰ",
+    "ժ": "ʒ",
+    "ի": "i",
+    "լ": "l",
+    "խ": "χ",
+    "ծ": "dz",
+    "կ": "ɡ",
+    "հ": "h",
+    "ձ": "tsʰ",
+    "ղ": "ʁ",
+    "ճ": "dʒ",
+    "մ": "m",
+    "յ": "h",
+    "ն": "n",
+    "շ": "ʃ",
+    "ո": "ɔ",
+    "չ": "tʃʰ",
+    "պ": "b",
+    "ջ": "tʃʰ",
+    "ռ": "ɾ",
+    "ս": "s",
+    "վ": "v",
+    "տ": "d",
+    "ր": "ɾ",
+    "ց": "tsʰ",
+    "ւ": "v",
+    "փ": "pʰ",
+    "ք": "kʰ",
+    "օ": "o",
+    "ֆ": "f",
+}
+
+# Word-initial alternates (letters that sound different at word start)
+LETTER_SOUND_IPA_WORD_INITIAL = {
+    "ե": "jɛ",      # ե at word start → ye (jɛ)
+    "ո": "ʋɔ",      # ո at word start → vo (ʋɔ)
+}
+
+# Multi-character diphthong sounds (vowel + vowel combinations)
+DIPHTHONG_SOUND_IPA = {
+    "ու": "u",      # ո + ւ = long oo (goose)
+    "իւ": "ju",     # ի + ւ = yoo (you)
+    "եա": "ɛɑ",
+    "ոյ": "uj",
+    "այ": "aj",
+}
+
+# Ligatures (special grapheme combinations)
+LIGATURE_SOUND_IPA = {
+    "և": "jɛv",
+}
+
+
 if __name__ == '__main__':
     # Test examples
     test_words = ['ուր', 'ղ', 'ռ', 'պետք', 'մեր']

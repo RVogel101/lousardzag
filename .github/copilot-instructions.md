@@ -45,6 +45,46 @@
 
 ---
 
+## 🚨 CRITICAL: NEVER USE INVENTED EXAMPLES — ALWAYS USE REAL DATA
+
+**THIS IS NON-NEGOTIABLE.** When creating documentation, specifications, or examples involving Armenian words, sentences, or data:
+
+1. **NEVER invent Armenian words or examples** — No matter how logical they seem
+2. **ALWAYS pull from your local databases FIRST**:
+   - `08-data/armenian_cards.db` — PRIMARY source: local SQLite database with actual Anki card data (cards table: word, translation, pos, frequency_rank, metadata_json, morphology_json)
+   - `08-data/anki_export.json` — Real Anki deck export (for reference only)
+   - `wa_corpus/data/` — Corpus sentences and phrases (not primary vocab source)
+   - `02-src/lousardzag/letter_data.py` — Letter information
+   - **NOTE**: CSV files like `vocab_n_standard.csv`, `vocab_l1_core.csv`, etc. are DERIVED/SECONDARY and contain assumptions that may be outdated. Always query the database directly instead.
+3. **BEFORE creating any example**, ask yourself:
+   - "Is this word actually in vocab_n_standard.csv?"
+   - "Did I verify the IPA against the database?"
+   - "Is this POS tag from the actual data?"
+4. **DO NOT use placeholder text** — Placeholders like `[Real Armenian sentence]` are dangerous because they get filled with invented Eastern Armenian. Instead:
+   - Only create sections with ACTUAL data already loaded
+   - OR use code/JSON template variables with `{...}` syntax that clearly indicate where data will come from
+   - EXAMPLES OF WHAT NOT TO DO:
+     - ❌ `[Real Armenian sentence from corpus]` (gets confused with Armenian text)
+     - ❌ `Նա գալ ես` (invented Eastern Armenian)
+     - ❌ Any Armenian text you haven't verified in the actual database
+   - EXAMPLES OF WHAT TO DO:
+     - ✅ Load the sentence from corpus FIRST, then include it
+     - ✅ Use JSON like `"sentence": "{load_from_wa_corpus_data}"` (not Armenian)
+     - ✅ Leave the section empty or note "To be populated from actual corpus on integration"
+
+**Why?** You made the mistake of using "ամուսնալ" (to marry) — an Eastern Armenian word, NOT from the Western Armenian database. This breaks consistency and wastes time. Never again.
+
+**Procedure on every spec/doc with Armenian content:**
+1. Query `08-data/armenian_cards.db` FIRST (PRIMARY source from Anki — cards table)
+2. Copy real examples directly (word, translation, pos, frequency_rank, metadata_json, morphology_json)
+3. If real data is unavailable:
+   - Use code template variables with `{...}` syntax (e.g., `{load_from_wa_corpus_data}`)
+   - OR note "To be populated from actual corpus on integration" (English-only)
+   - NEVER use placeholder text like `[Real Armenian sentence]`
+4. Cite the source: "(from armenian_cards.db, cards table, frequency_rank X)" or "(from anki_export.json)"
+
+---
+
 ## ⚠️ CRITICAL: WESTERN ARMENIAN PHONETICS & TRANSLITERATION
 
 **This is the #1 source of implementation errors. Follow STRICTLY.**
@@ -96,6 +136,71 @@ Western Armenian has **REVERSED VOICING** compared to letter shapes:
 3. ❌ Forgetting ւ is NOT a vowel (is semi-vowel, only vowel in diphthongs)
 4. ❌ Missing է as vowel (is vowel like ե, just without y-glide)
 5. ❌ Assuming ջ and ճ are the same (ջ=ch, ճ=j)
+
+### Transliteration Validation (CRITICAL)
+**Whenever you output ANY transliteration, Armenian phonetic mapping, or IPA:** 
+1. **STOP and ask yourself:** "Is this the correct WESTERN Armenian transliteration/IPA?"
+2. **Cross-check immediately against:**
+   - `02-src/lousardzag/phonetics.py` — `ARMENIAN_PHONEMES` dict (38 entries with verified WA mappings)
+   - `02-src/lousardzag/letter_data.py` — Letter name and IPA data
+   - `08-data/anki_export.json` or `armenian_cards.db` — Real examples with correct IPA values
+   - `/memories/western-armenian-requirement.md` — Reference authority for phoneme mappings
+3. **If uncertain, DO NOT OUTPUT** — Leave a note "(verify Western Armenian IPA from phonetics.py)" instead
+4. **COMPLETE list of common transposition errors to catch:**
+
+**CRITICAL REVERSED VOICING (Visual shape ≠ sound):**
+| Wrong | Correct | Letter | IPA |
+|-------|---------|--------|-----|
+| ❌ պ = p | ✅ պ = b | պ | b |
+| ❌ բ = b | ✅ բ = p | բ | p |
+| ❌ կ = k | ✅ կ = g | կ | g |
+| ❌ գ = g | ✅ գ = k | գ | k |
+| ❌ տ = t | ✅ տ = d | տ | d |
+| ❌ դ = d | ✅ դ = t | դ | t |
+| ❌ ջ = j | ✅ ջ = ch (tʃ) | ջ | tʃ |
+| ❌ ճ = ch | ✅ ճ = j (dʒ) | ճ | dʒ |
+
+**OTHER WESTERN ARMENIAN SPECIFIC ERRORS:**
+| Wrong | Correct | Letter | Notes |
+|-------|---------|--------|-------|
+| ❌ թ = th | ✅ թ = t | թ | aspirated t, NOT English "th" |
+| ❌ ո = o always | ✅ ո = v~ɔ | ո | vo before consonants (ոչ=voch, որ=vor), o vowel otherwise |
+| ❌ ե = ɛ always | ✅ ե = ɛ~jɛ | ե | e in middle, **ye at word start** |
+| ❌ ե | ✅ ե ≠ է | ե ≠ է | These are DIFFERENT letters with DIFFERENT sounds |
+| ❌ ղ = g | ✅ ղ = gh | ղ | voiced velar fricative (guttural, strict English: gh), NOT plain g |
+| ❌ ռ = tap r | ✅ ռ = r (trilled) | ռ | Spanish-style TRILLED r, NOT English r |
+| ❌ ր = ɾ equally | ✅ ր = ɾ (flap) | ր | Flapped r, different from trilled ռ |
+| ❌ ց = dz | ✅ ց = ts | ց | ts NOT dz |
+| ❌ ծ = dz | ✅ ծ = dz | ծ | voiced dz, NOT ts |
+| ❌ ձ = dz | ✅ ձ = ts | ձ | ts (different from ծ), NOT dz |
+| ❌ ւ = vowel | ✅ ւ = v~u | ւ | **NOT a vowel** — v between vowels, u in diphthongs (ու, իւ) |
+| ❌ յ = y always | ✅ յ = j~h | յ | y in middle, **h at word start** |
+| ❌ չ = ch vs ջ=ch | ✅ Both ch but different | չ ≠ ջ | Both are tʃ (ch) but different letters — verify context |
+| ❌ փ = f or other | ✅ փ = p | փ | p sound (variant shape) |
+| ❌ ք = q or other | ✅ ք = k | ք | k sound (variant shape) |
+| ❌ ժ = j | ✅ ժ = ʒ | ժ | zh (voiced), NOT j |
+
+**VOWEL CONFUSION ERRORS:**
+| Wrong | Correct | Notes |
+|-------|---------|-------|
+| ❌ ա = ə | ✅ ա = ɑ | Different from ը (schwa) |
+| ❌ ը = ɛ | ✅ ը = ə | Schwa only, NOT plain e |
+| ❌ ե = ɛ only | ✅ ե = ɛ~jɛ | **CONTEXT:** ye at start, e elsewhere |
+| ❌ ո = o only | ✅ ո = v~ɔ | **CONTEXT:** vo before consonants, o vowel otherwise |
+| ❌ ու = o | ✅ ու = u | Diphthong = long oo (goose), NOT short o |
+| ❌ իւ = u | ✅ իւ = ju | Diphthong = yoo (you), NOT u |
+
+**CONSISTENCY ERRORS (Context matters):**
+| Letter | WRONG | CORRECT |
+|--------|-------|---------|
+| ե at word start | ɛ | jɛ (ye) |
+| ե in middle | jɛ | ɛ (e) |
+| ո before consonant | o | vo (voch, vor) |
+| ո as vowel | v | o (lot) |
+| ւ between vowels | u | v (vet) |
+| ւ in diphthongs | v | u (goose) |
+| յ at start | y | h (hat) |
+| յ in middle | h | j (yes) |
 
 ---
 
