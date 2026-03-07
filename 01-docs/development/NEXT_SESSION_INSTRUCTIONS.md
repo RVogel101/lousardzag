@@ -22,14 +22,23 @@
 - Vocabulary ordering system (5 modes, 3 strategies, 4 presets)
 - Western Armenian phonetics module (38-letter map with difficulty scoring)
 - Flashcard generation with syllable/sentence controls
-- 323 passing tests across unit and integration suites
+- 323+ passing tests across unit and integration suites
 - Morphological analysis and verb conjugation
+- Card enrichment Phase 1: 8,395 cards with syllable counts, POS tags, and phonetics (100%)
+- Dialect classifier (rule-based, source-traceable, conservative defaults)
 
 **What's Incomplete** ⚠️
+- Card enrichment Phase 2: frequency_rank (0%), custom_level (0%), full morphology_json
 - Context-aware phoneme implementation (documented but not fully functional)
-- Comprehensive documentation guides (to be created)
 - Diphthong coverage (partial, needs expansion)
-- Nayiri dictionary scraper (broken, low priority)
+- Nayiri dictionary scraper (broken, requires IP whitelist)
+- Letter audio generation (IPA-direct approach pending, MMS available as fallback)
+- Corpus builder newspaper scraping (intermittent failures)
+
+**What's Planned** 📋
+- Package extraction: wa-corpus → armenian-linguistics → lousardzag refactor (see IMPLEMENTATION_ACTION_PLAN.md)
+- Custom Western Armenian TTS model (see 01-docs/development/planning/FUTURE_IDEAS.md § Audio Training Models)
+- Card template redesign (see 01-docs/CARD-REDESIGN-SPEC.md)
 
 **Critical Constraint** 🔴
 - Western Armenian has BACKWARDS voicing (letter appearance ≠ pronunciation)
@@ -85,7 +94,202 @@ python 02-src/lousardzag/phonetics.py
 # Or interactively
 python
 >>> from lousardzag.phonetics import get_phonetic_transcription
->>> get_phonetic_transcription('պետք')
+>>> get_phonetic_transcription('պետdelays')
+```
+
+### Classify Dialect
+
+```bash
+# Classify a text sample
+python 07-tools/analysis/classify_dialect.py --text "sample Armenian text"
+
+# Classify from file
+python 07-tools/analysis/classify_dialect.py --file path/to/text.txt
+```
+
+### Audio Generation
+
+```bash
+# Generate vocabulary audio (MMS, production quality)
+python 07-tools/generate_vocab_audio_mms.py
+
+# Letter card viewer with audio comparison
+python 03-cli/letter_cards_viewer.py
+# Then open: http://localhost:5001 (letters), :5001/vocab (vocab), :5001/compare (A/B test)
+```
+
+### Espeak-ng (IPA Path) Verification
+
+```powershell
+# System binary path check
+where.exe espeak-ng
+
+# Conda env checks
+conda run -n base espeak-ng --version
+conda run -n wa-llm espeak-ng --version
+```
+
+Expected installed path on this machine:
+- `C:\Program Files\eSpeak NG\espeak-ng.exe`
+
+If missing in `wa-llm`:
+
+```powershell
+conda install -n wa-llm -c conda-forge espeak-ng -y
+conda run -n wa-llm espeak-ng --version
+```
+
+### Card Enrichment
+
+```bash
+# Enrich database with syllable counts, POS tags, phonetics (Phase 1 - already done)
+python 07-tools/enrich_anki_database.py
+
+# Future Phase 2: frequency mapping (depends on corpus builder)
+# python 07-tools/enrich_card_frequency.py
+# python 07-tools/enrich_card_levels.py
+```
+
+---
+
+## P0 Sprint: Stabilize Core Workflows (Est. 8-12 hours)
+
+**Purpose**: Fix high-friction entry points and unmask silent failures.  
+**Target**: Make all 5 primary CLIs pass smoke tests with clear error messages.
+
+### Daily Tasks (Pick 1-2 per session)
+
+#### Task 1: Fix `letter_cards_viewer.py` Startup (2-3h) 
+**Status**: [ ] Not started
+
+**Steps**:
+1. [ ] Run: `python 03-cli/letter_cards_viewer.py` 
+2. [ ] Capture **exact** failure mode (exits with code 1 — where does it fail?)
+3. [ ] Add diagnostic output at entry: 
+   - Log port availability check
+   - Log template/static file existence
+   - Log environment variables (PYTHONPATH, etc.)
+4. [ ] Test with `--debug` flag: `python 03-cli/letter_cards_viewer.py --debug`
+5. [ ] Commit with message: `fix(cli): add startup diagnostics to letter_cards_viewer`
+
+**Expected outcome**: Clear "Why did I exit?" message instead of silent code 1.
+
+---
+
+#### Task 2: Add `--debug` Mode to CLI Tools (1-2h)
+**Status**: [ ] Not started
+
+**Affected tools**:
+- `03-cli/letter_cards_viewer.py`
+- `07-tools/test_mms_tts.py`
+
+**Steps**:
+1. [ ] Add argument parser: `parser.add_argument('--debug', action='store_true')`
+2. [ ] Enable verbose logging when `--debug` set
+3. [ ] Test: `python 03-cli/letter_cards_viewer.py --debug` → should see detailed logs
+4. [ ] Commit: `feat(cli): add --debug mode for verbose logging`
+
+**Expected outcome**: Users can run `--debug` to see internal state without code changes.
+
+---
+
+#### Task 3: CLI Smoke Tests (2-3h)
+**Status**: [ ] Not started
+
+**Create file**: `04-tests/smoke/test_cli_entry_points.py`
+
+**Tests to add**:
+```bash
+# Test 1: letter_cards_viewer help
+python 03-cli/letter_cards_viewer.py --help
+# Expected: exits 0, shows usage
+
+# Test 2: preview_server help
+python 03-cli/preview_server.py --help
+# Expected: exits 0, shows usage
+
+# Test 3: corpus build single source
+python -m wa_corpus.build_corpus --newspapers 1
+# Expected: exits 0, creates/updates corpus
+
+# Test 4: vocabulary generation
+python 07-tools/gen_vocab_simple.py --preset n-standard --max-words 10
+# Expected: exits 0, creates CSV
+```
+
+**Steps**:
+1. [ ] Create `04-tests/smoke/test_cli_entry_points.py` and `04-tests/smoke/__init__.py`
+2. [ ] Implement subprocess calls with timeout (e.g., 60 seconds max)
+3. [ ] Assert exit code 0 and expected output patterns
+4. [ ] Run: `python -m pytest 04-tests/smoke/ -v`
+5. [ ] Commit: `test(smoke): add CLI entry-point smoke tests`
+
+**Expected outcome**: `pytest 04-tests/smoke/ -v` passes; CI can auto-detect CLI breakage.
+
+---
+
+#### Task 4: Normalize Failure Logs (1-2h)
+**Status**: [ ] Not started
+
+**Current state**: `logs/` has many .log files with inconsistent naming and format.
+
+**Steps**:
+1. [ ] Review logs structure: `ls -la logs/`
+2. [ ] Define standard log naming: `{YYYYMMDD}_{HHMM}_{tool}_{result}.log`
+   - Example: `20260306_0945_newspaper_scrape_FAILED.log`
+3. [ ] Every failed tool run appends (not overwrites) to timestamped log
+4. [ ] Update scraper/tool entry points to use this pattern
+5. [ ] Commit: `refactor(logging): standardize log naming and retention`
+
+**Expected outcome**: `logs/` directory is organized and searchable.
+
+---
+
+#### Task 5: Harden Newspaper Build for Partial Failures (2h)
+**Status**: [ ] Not started
+
+**Current symptom**: `python -m wa_corpus.build_corpus --newspapers 2` exits on first source error (should continue and report).
+
+**Steps**:
+1. [ ] Review `wa_corpus/build_corpus.py` newspaper scraping logic
+2. [ ] Add try-catch around each newspaper source:
+   ```python
+   try:
+       scrape_newspaper(source)
+   except Exception as e:
+       logger.error(f"Failed to scrape {source}: {e}")
+       failed_sources.append(source)
+       continue  # Don't exit—process next source
+   ```
+3. [ ] At end, print summary: `Scraped 5/6 sources. Failed: source_X (reason)`
+4. [ ] Test: `python -m wa_corpus.build_corpus --newspapers 3` → should continue after failures
+5. [ ] Commit: `fix(corpus): add retry and partial-failure recovery to newspaper builder`
+
+**Expected outcome**: Newspaper scraping resilient to individual source failures.
+
+---
+
+### Quick Test All P0 Items
+
+```bash
+# After completing each task, run this to verify nothing broke
+python -m pytest 04-tests/ -q
+
+# Then spot-check the CLI tools
+python 03-cli/letter_cards_viewer.py --help
+python 03-cli/preview_server.py --help
+python -m wa_corpus.build_corpus --help
+```
+
+### Tracking P0 Completion
+
+Use IMPLEMENTATION_ACTION_PLAN.md § "Prioritized Sprint Checklist (P0/P1/P2)" to mark items complete:
+```markdown
+#### P0 - Stabilize Core Workflows (Total: 8-12h)
+- [x] `letter_cards_viewer` startup diagnostics and explicit fatal errors (2-3h)
+- [x] `--debug` mode for CLI tools (1-2h)
+- [x] CLI smoke tests (2-3h)
+- [ ] Normalize failure logs...
 ```
 
 ---
@@ -262,10 +466,16 @@ Currently documented but not implemented in get_phonetic_transcription().
 | File | Purpose | Edit When |
 |------|---------|-----------|
 | ARMENIAN_QUICK_REFERENCE.md | Quick lookup (START HERE) | Never (reference only) |
-| WESTERN_ARMENIAN_PHONETICS_GUIDE.md | Complete phoneme reference (TO BE CREATED) | When phonetics change |
+| WESTERN_ARMENIAN_PHONETICS_GUIDE.md | Complete phoneme reference | When phonetics change |
 | 02-src/lousardzag/phonetics.py | Implementation | Adding/fixing phonemes |
+| 02-src/lousardzag/dialect_classifier.py | Dialect classification | Adding WA/EA markers |
 | 07-tools/gen_vocab_simple.py | Vocabulary generation | Changing ordering logic |
+| 07-tools/analysis/classify_dialect.py | Dialect CLI | Adding classifier features |
 | 08-data/vocab_n_standard.csv | Output vocabulary | Generated by gen_vocab_simple.py |
+| 08-data/armenian_cards.db | Primary data source | After enrichment scripts |
+| IMPLEMENTATION_ACTION_PLAN.md | Package extraction plan | Architecture changes |
+| 01-docs/development/planning/FUTURE_IDEAS.md | Feature backlog | New ideas, TTS planning |
+| 01-docs/development/planning/NEXT_STEPS_MARCH2026.md | Active task tracker | After completing/adding tasks |
 | /memories/western-armenian-requirement.md | Persistent reminder | When updating memory |
 
 ---
