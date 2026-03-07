@@ -69,6 +69,17 @@ Use this section to record any migration-related issue.
 
 ## Completion Record
 
-- End date:
-- Outcome:
-- Approved by:
+- [ ] End date recorded
+- [ ] Outcome recorded
+- [ ] Approval recorded
+
+- End date: TBD (complete on Day 7)
+- Outcome: TBD
+- Approved by: TBD
+
+## Day 7 Closeout Actions
+
+- Update completion fields above (end date, outcome, approval)
+- Confirm no rollback events across the full 7-day window
+- Confirm no critical regressions were observed
+- Update Step 6 sign-off file to mark monitoring status as complete
