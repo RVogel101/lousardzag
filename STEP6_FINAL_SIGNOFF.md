@@ -49,6 +49,7 @@ Scope: Cross-repo migration sign-off for lousardzag + WesternArmenianLLM central
   - `Notify on Pipeline Status`: success
 - `WesternArmenianLLM` merge commit `49bba2885439bb90afe93bb6bc3b50b2fe72c640`:
   - No check-runs configured on this commit
+  - Follow-up hardening completed after merge: adapter status workflow added in `WesternArmenianLLM/.github/workflows/adapter_regression.yml` (commit `3277805` on `feat/migration-core-adapter-layer`)
 
 ## Notes
 

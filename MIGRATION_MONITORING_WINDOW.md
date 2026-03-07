@@ -55,10 +55,10 @@ Use this section to record any migration-related issue.
 		- `[PASS] adapter_dry_run_fallback (exit=0)`
 		- `[PASS] integration_test (exit=0)`
 	- `python -m pytest 04-tests/integration/test_central_package_integration.py -q`: PASS (6 passed)
-- Secondary repository check (RVogel101/WesternArmenianLLM): BLOCKED (local path unavailable)
-	- Attempted path: `C:/Users/litni/OneDrive/Documents/anki/WesternArmenianLLM`
-	- Result: path not found on this machine.
-	- Follow-up: run `python -m pytest tests/test_core_adapters.py -q` once the repo is available locally.
+- Secondary repository check (RVogel101/WesternArmenianLLM): PASS
+	- Path used: `C:/Users/litni/WesternArmenianLLM`
+	- `python -m pytest tests/test_core_adapters.py -q`: PASS (3 passed)
+	- CI hardening applied for future visibility: `.github/workflows/adapter_regression.yml` added (commit `3277805`).
 
 ## Exit Criteria
 
