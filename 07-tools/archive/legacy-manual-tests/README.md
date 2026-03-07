@@ -1,0 +1,1 @@
+Legacy manual test scripts archived from 07-tools/testing during strict cleanup pass (2026-03-06).

@@ -1,0 +1,1 @@
+Legacy debug scripts archived from 07-tools/debug during strict cleanup pass (2026-03-06).

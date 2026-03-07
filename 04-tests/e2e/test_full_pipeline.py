@@ -22,7 +22,7 @@ from typing import Dict, Any
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / '02-src'))
 
 from lousardzag.database import CardDatabase
-from lousardzag.phonetics import get_phonetic_transcription, calculate_phonetic_difficulty
+from lousardzag.core_shims.linguistics_core import get_phonetic_transcription, calculate_phonetic_difficulty
 from lousardzag.sentence_progression import get_available_tiers_at_level, get_form_tier
 from lousardzag.morphology.difficulty import score_word_difficulty
 

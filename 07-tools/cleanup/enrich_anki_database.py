@@ -31,7 +31,7 @@ from lousardzag.morphology.difficulty import (
     analyze_word,
     score_word_difficulty,
 )
-from lousardzag.phonetics import get_phonetic_transcription
+from lousardzag.core_shims.linguistics_core import get_phonetic_transcription
 from lousardzag.db_operations import DatabaseOperation
 
 # ──────────────────────────────────────────────────────────────────────────────

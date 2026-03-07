@@ -14,16 +14,19 @@ Categories
   - analyze_stemming_impact.py
   - analyze_unmatched.py
   - analyze_unmatched_fallbacks.py
+  - audit_vocabulary_prerequisites.py
+  - classify_dialect.py
+  - extract_vocabulary_words.py
+  - map_frequency_to_vocab.py
 
 - cleanup/
   - clean_anki_export.py
   - extract_anki_words_clean.py
 
-- debug/
-  - debug_filter.py
-  - debug_problem_words.py
-  - test_phonetics.py
-  - test_vocab_tracking.py
+- archive/
+  - legacy-debug/
+  - legacy-manual-tests/
+  - legacy-query-scripts/
 
 - ocr/
   - extract_image_text.py
@@ -48,3 +51,6 @@ High-traffic root scripts
 - export_unmatched_report.py
 - map_frequency_to_vocab.py
 - report_unmatched_reasons.py
+
+Notes
+- Legacy debug/manual-test/query scripts were archived during strict cleanup pass on 2026-03-06.

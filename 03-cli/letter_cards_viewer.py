@@ -11,7 +11,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent / "02-src"))
 
 from lousardzag.letter_data import ARMENIAN_LETTERS
-from lousardzag.phonetics import ARMENIAN_PHONEMES, ARMENIAN_DIGRAPHS
+from lousardzag.core_shims.linguistics_core import ARMENIAN_PHONEMES, ARMENIAN_DIGRAPHS
 
 app = Flask(__name__)
 

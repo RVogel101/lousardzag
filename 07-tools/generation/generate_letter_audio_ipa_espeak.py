@@ -17,7 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "02-src"))
 
-from lousardzag.phonetics import LETTER_NAME_IPA, LETTER_SOUND_IPA
+from lousardzag.core_shims.linguistics_core import LETTER_NAME_IPA, LETTER_SOUND_IPA
 
 OUT_DIR = ROOT / "08-data" / "letter_audio_ipa"
 MANIFEST_PATH = OUT_DIR / "letter_audio_ipa_manifest.json"

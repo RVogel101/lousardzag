@@ -11,7 +11,7 @@ from pathlib import Path
 # Add src to path
 sys.path.insert(0, str(Path('02-src')))
 
-from lousardzag.phonetics import ARMENIAN_PHONEMES
+from lousardzag.core_shims.linguistics_core import ARMENIAN_PHONEMES
 
 # Mapping of IPA symbols to more accurate English pronunciations
 IPA_TO_PHONETIC = {
