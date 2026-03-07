@@ -13,7 +13,7 @@ def _patched_load(*args, **kwargs):
     return _original_load(*args, **kwargs)
 torch.load = _patched_load
 
-from TTS.api import TTS
+from TTS.api import TTS  # type: ignore[reportMissingImports]
 from pathlib import Path
 
 OUT_DIR = Path(__file__).parent.parent / "08-data" / "audio_comparison"

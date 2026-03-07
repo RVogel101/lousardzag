@@ -9,7 +9,7 @@ import sqlite3
 import sys
 from pathlib import Path
 from datetime import datetime
-from flask import Flask, render_template, jsonify, request, send_from_directory
+from flask import Flask, render_template, jsonify, request, send_from_directory  # type: ignore[reportMissingImports]
 import logging
 
 # Configure logging

@@ -4,7 +4,7 @@ Test IPA→audio generation using pyttsx3 with better phonetic mappings.
 Maps IPA symbols to more accurate English phonetic approximations.
 """
 
-import pyttsx3
+import pyttsx3  # type: ignore[reportMissingImports]
 import sys
 from pathlib import Path
 

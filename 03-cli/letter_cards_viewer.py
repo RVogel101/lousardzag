@@ -4,7 +4,7 @@
 import json
 import os
 from pathlib import Path
-from flask import Flask, render_template_string, jsonify, request
+from flask import Flask, render_template_string, jsonify, request  # type: ignore[reportMissingImports]
 
 # Add src directory to path
 import sys
@@ -475,7 +475,7 @@ def serve_audio(filename):
     print(f"[DEBUG] Exists: {audio_path.exists()}")
     
     if audio_path.exists():
-        from flask import send_file
+        from flask import send_file  # type: ignore[reportMissingImports]
         # Detect MIME type based on file extension
         if audio_path.suffix.lower() == '.wav':
             mimetype = 'audio/wav'
@@ -804,7 +804,7 @@ def vocab_triage():
 def serve_vocab_audio(filename):
     """Serve vocab audio WAV files."""
     import urllib.parse
-    from flask import send_file
+    from flask import send_file  # type: ignore[reportMissingImports]
     decoded = urllib.parse.unquote(filename)
     audio_path = VOCAB_AUDIO_DIR / decoded
     if audio_path.exists():
@@ -1071,7 +1071,7 @@ def audio_comparison():
 def serve_comp_audio(filename):
     """Serve comparison audio WAV files."""
     import urllib.parse
-    from flask import send_file
+    from flask import send_file  # type: ignore[reportMissingImports]
     decoded = urllib.parse.unquote(filename)
     audio_path = COMP_AUDIO_DIR / decoded
     if audio_path.exists():

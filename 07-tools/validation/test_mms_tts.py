@@ -8,7 +8,7 @@ import torch
 from transformers import VitsModel, AutoTokenizer
 import scipy.io.wavfile
 import scipy.signal
-import librosa
+import librosa  # type: ignore[reportMissingImports]
 import numpy as np
 import sys
 import io

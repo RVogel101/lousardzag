@@ -1,5 +1,5 @@
 """Test espeakng with IPA phonemes."""
-import espeakng
+import espeakng  # type: ignore[reportMissingImports]
 from pathlib import Path
 
 # Test IPA pronunciation

@@ -18,7 +18,7 @@ torch.load = _patched_load
 from pathlib import Path
 import numpy as np
 import scipy.io.wavfile
-from bark import SAMPLE_RATE, generate_audio, preload_models
+from bark import SAMPLE_RATE, generate_audio, preload_models  # type: ignore[reportMissingImports]
 
 OUT_DIR = Path(__file__).parent.parent / "08-data" / "audio_comparison"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
