@@ -1,8 +1,8 @@
-# Project Assessment - March 3, 2026
+# Project Assessment - March 6, 2026 (Updated)
 
 ## Executive Summary
 
-**Lousardzag** is a Western Armenian learning platform in active development. The core infrastructure is **operational**, with 323 tests passing and multiple functional systems. Documentation exists but is fragmented. The project is ready for **targeted feature advancement**.
+**Lousardzag** is a Western Armenian learning platform in active development. The core infrastructure is **operational**, with 323+ tests passing and multiple functional systems. Card enrichment Phase 1 is **complete** (8,395 cards with syllable counts, POS tags, and phonetics). A 3-phase package extraction plan exists. The project is ready for **Phase 2 enrichment and modular architecture work**.
 
 ---
 
@@ -38,10 +38,28 @@
    - Prerequisite validation
 
 5. **Database & Corpus Integration**
-   - 3,242 cached vocabulary entries
+   - 8,395 unique vocabulary entries (deduplicated from 8,574)
    - Frequency mapping to 1.47M corpus entries
    - Sentence/phrase filtering (26 cards removed)
    - Multiple corpus scrapers (newspapers, Internet Archive, wiki)
+
+6. **Card Enrichment Phase 1** (Complete as of March 5)
+   - Syllable counting: 100% of 8,395 cards enriched
+   - POS tag inference: 100% of 8,395 cards tagged
+   - Phonetics enrichment: 100% of 8,395 cards have IPA, pronunciation, difficulty
+   - Database schema upgraded with frequency_rank, syllable_count, morphology_json, custom_level columns
+
+7. **Dialect Classifier** (New, March 6)
+   - Rule-based Western/Eastern Armenian classifier in `dialect_classifier.py`
+   - CLI wrapper: `07-tools/analysis/classify_dialect.py`
+   - Conservative `inconclusive` default when evidence is insufficient
+   - Source-traceable evidence for each classification decision
+
+8. **Package Extraction Plan** (New, March 6)
+   - 3-phase plan documented in IMPLEMENTATION_ACTION_PLAN.md
+   - Phase 1: Extract `wa-corpus` (corpus tools)
+   - Phase 2: Extract `armenian-linguistics` (phonetics, morphology, analysis)
+   - Phase 3: Refactor `lousardzag` (learning platform consuming the above)
 
 #### Testing Infrastructure
 - 323 tests across unit and integration suites
@@ -67,17 +85,25 @@ Generated vocabulary files:
 
 ### ❌ What's Missing or Incomplete
 
-#### Documentation (HIGH PRIORITY)
-The following guide documents DO NOT YET EXIST (need creation):
-- [ ] WESTERN_ARMENIAN_PHONETICS_GUIDE.md (authoritative reference)
-- [ ] VOCABULARY_ORDERING_GUIDE.md (system architecture)
-- [ ] NEXT_SESSION_INSTRUCTIONS.md (workflow guide)
-- [ ] ARMENIAN_QUICK_REFERENCE.md (one-page lookup)
-- [ ] DOCUMENTATION_INDEX.md (navigation guide)
+#### Documentation
+The following guide documents now exist (created March 3-5):
+- [x] WESTERN_ARMENIAN_PHONETICS_GUIDE.md — `01-docs/references/`
+- [x] VOCABULARY_ORDERING_GUIDE.md — `01-docs/guides/`
+- [x] NEXT_SESSION_INSTRUCTIONS.md — `01-docs/development/`
+- [x] ARMENIAN_QUICK_REFERENCE.md — `01-docs/references/`
+- [x] INDEX.md (navigation guide) — `01-docs/`
 
-**Impact**: Without these, future sessions will lack critical context for phonetic work, risking Eastern Armenian defaults (the exact problem this session aimed to prevent).
+**Still needed:**
+- [ ] Environment setup guide for speech tooling (espeak-ng, MMS, conda environments)
+- [ ] Confidence interpretation docs for dialect classifier
+- [ ] ARCHITECTURE.md for 3-package design (post-extraction)
 
 #### Feature Incompleteness
+
+0. **Card Enrichment Phase 2** (Columns exist, data empty)
+   - `frequency_rank`: 0% — needs corpus frequency mapping (depends on corpus builder fix)
+   - `custom_level`: 0% — needs difficulty/progression assignment (depends on frequency mapper)
+   - `morphology_json` (full): Currently has phonetics only; needs declensions/conjugations
 
 1. **Context-Aware Phonemes** (Documented but not fully implemented)
    - ո: Position-dependent (v before consonants, ɔ elsewhere)
@@ -127,7 +153,7 @@ The following guide documents DO NOT YET EXIST (need creation):
 760ac8f feat: Add Western Armenian phonetic transcription module
 ```
 
-**Pending**: 5 comprehensive documentation files (created in this session but not committed)
+**Pending**: Uncommitted changes from March 6 session (dialect classifier, session docs, future ideas).
 
 ---
 
@@ -138,60 +164,67 @@ The following guide documents DO NOT YET EXIST (need creation):
 | Card Generation | 9 | ✅ Pass |
 | Integration Overall | 175+ | ✅ Pass |
 | Unit Tests | 140+ | ✅ Pass |
-| **TOTAL** | **323** | ✅ **ALL PASS** |
+| Dialect Classifier | New | ✅ Pass |
+| **TOTAL** | **323+** | ✅ **ALL PASS** |
 
 No failing tests reported.
 
 ---
 
-## Next Session Recommendations
+## Next Session Recommendations (Updated March 6)
 
 ### Tier 1: IMMEDIATE (Critical Path)
 
-**1. Commit Documentation Files** (30 min)
-- Create 5 comprehensive guide files (WESTERN_ARMENIAN_PHONETICS_GUIDE.md, etc.)
-- Update /memories/western-armenian-requirement.md with links
-- Commit as single feature: `docs: add comprehensive Armenian phonetics and vocabulary guides`
-- **Why**: Prevents repeated Eastern Armenian errors; enables future work with confidence
+**1. Generate Letter Audio** (1-2 hours)
+- Create audio for all 38 Armenian letters using IPA-direct synthesis (espeak-ng) or MMS
+- Unblocks letter card viewer pronunciation feature
+- **Files**: Create `07-tools/generate_letter_audio_ipa_espeak.py`
 
-**2. Implement Context-Aware Phoneme Logic** (2-3 hours)
+**2. Fix Corpus Builder** (1-2 hours)
+- Debug newspaper scraper network/parsing issues
+- Test each source individually
+- Add retry with backoff and continue-on-error mode
+- **Why**: Blocks frequency mapping (Phase 2 enrichment)
+
+**3. Frequency Mapper** (1-2 hours)
+- Link 8,395 vocabulary cards to corpus frequency ranks
+- Update `cards.frequency_rank` in SQLite database
+- **Depends on**: Corpus builder fix (#2)
+- **File**: `07-tools/enrich_card_frequency.py` (new)
+
+### Tier 2: HIGH PRIORITY (Feature Advancement)
+
+**4. Level Assignment** (1-2 hours)
+- Assign N1-N7 style progression levels based on frequency + syllables
+- Update `cards.custom_level` in database
+- **Depends on**: Frequency mapper (#3)
+
+**5. Implement Context-Aware Phoneme Logic** (2-3 hours)
 - Enhance get_phonetic_transcription() to detect word position
 - Apply context rules for ո, ե, յ, ւ
 - Add comprehensive tests
 - **Files**: 02-src/lousardzag/phonetics.py
-- **Why**: Currently documented but not functional; needed for accurate transcription
 
-### Tier 2: HIGH PRIORITY (Feature Advancement)
+**6. Expand Dialect Classifier** (1-2 hours)
+- Add mixed-signal tests (texts with both Eastern and Western markers)
+- Add punctuation/boundary edge-case tests
+- Add CSV/JSONL output mode for analysis pipelines
+- Wire into vocab generation as optional `--dialect-gate`
 
-**3. Expand Diphthong Support** (1 hour)
-- Complete ARMENIAN_DIGRAPHS dictionary
-- Validate against corpus examples
-- Add test cases
-- **Files**: 02-src/lousardzag/phonetics.py
-- **Why**: Improves phonetic accuracy; identified as incomplete
+### Tier 3: MEDIUM PRIORITY (Quality & Architecture)
 
-**4. Implement Pronunciation Guide Generation** (2 hours)
-- Create guide_text with tips for difficult letters
-- Include example words
-- Generate per-word guides for vocabulary output
-- **Files**: New function in phonetics.py or separate module
-- **Why**: Helps learners navigate guttural consonants and uncommon phonemes
+**7. Package Extraction Phase 1: wa-corpus** (4-6 hours)
+- Follow IMPLEMENTATION_ACTION_PLAN.md Phase 1
+- Extract corpus tools to standalone package
+- Create pyproject.toml, tests, documentation
 
-**5. Create Anki Card Generation** (3-4 hours)
-- Bridge vocabulary output to Anki note creation
-- Use AnkiConnect API (already implemented)
-- Generate cards with phonetic data
-- **Files**: 02-src/lousardzag/card_generator.py enhancement
-- **Why**: Direct integration with Anki; completes learning workflow
+**8. Build Armenian-to-IPA Text Converter** (2-3 hours)
+- Sentence/text-level IPA converter (beyond single-word)
+- **File**: `02-src/lousardzag/converters.py`
 
-### Tier 3: MEDIUM PRIORITY (Quality & Robustness)
-
-**6. Fix Nayiri Dictionary Scraper** (2-3 hours)
-- Rewrite scraper to use page-based browsing
-- Implement pagination crawling
-- Test with proper rate-limiting
+**9. Fix Nayiri Dictionary Scraper** (2-3 hours)
+- Rewrite to use page-based browsing (requires IP whitelist from Serouj)
 - **Files**: wa_corpus/nayiri_scraper.py
-- **Why**: Would add ~50K+ dictionary entries; currently broken
 
 **7. Enhance Vocabulary Filtering** (1.5 hours)
 - Refine sentence/phrase detection heuristics

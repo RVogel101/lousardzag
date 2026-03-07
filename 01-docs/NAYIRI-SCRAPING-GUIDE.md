@@ -73,7 +73,7 @@ You **must be whitelisted** to scrape Nayiri. This prevents over-aggressive bann
 - **Why**: Humans typically take 2-10 seconds per page
 
 ### Cooldown Periods
-- **Every™: 50 requests (previously 60)
+- **Every**: 50 requests (previously 60)
 - **Duration**: 30 seconds (previously 20)
 - **Why**: Simulates user breaks while browsing
 
@@ -99,6 +99,23 @@ If you get blocked again:
 3. **If on VPN**: Switch VPN server or use different IP
 4. **Email Serouj** explaining the situation
 5. **Request re-whitelisting** if your IP changed
+
+## VPN / IP Change Best Practices
+
+- Treat your VPN exit IP as your identity for Nayiri access.
+- Before each scrape session, verify your current public IP.
+- If the IP changed from your previously approved IP, do not run full scraping until re-confirmed.
+- Prefer stable VPN server locations for repeat scraping sessions.
+- Keep a small local record of:
+  - last whitelisted IP
+  - date confirmed with Serouj
+  - last successful scrape run
+
+### Public IP lookup fallback order
+
+1. Browser check (recommended): `https://whatismyipaddress.com`
+2. Terminal check: `(Invoke-WebRequest -Uri 'https://api.ipify.org').Content`
+3. If terminal lookup fails (DNS/network policy), use browser result and continue whitelist workflow.
 
 ## Monitoring & Resumption
 
