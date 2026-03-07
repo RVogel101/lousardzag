@@ -463,7 +463,7 @@ class CardDatabase:
                 """,
                 (card_id, form_label, armenian_text, english_text, grammar_type, vocab_json, now),
             )
-        return cur.lastrowid
+        return cur.lastrowid or 0
 
     def get_sentences(self, card_id: int) -> list[dict]:
         """Return all sentences for a card."""
@@ -489,7 +489,7 @@ class CardDatabase:
                 (name, ab_group, _now_iso()),
             )
         logger.debug("Created user id=%d name=%r ab_group=%r", cur.lastrowid, name, ab_group)
-        return cur.lastrowid
+        return cur.lastrowid or 0
 
     def list_users(self) -> list[dict]:
         """Return all user rows."""
@@ -543,7 +543,7 @@ class CardDatabase:
             "Recorded review id=%d user=%d card=%d rating=%d",
             cur.lastrowid, user_id, card_id, rating,
         )
-        return cur.lastrowid
+        return cur.lastrowid or 0
 
     def record_review_fsrs(
         self,

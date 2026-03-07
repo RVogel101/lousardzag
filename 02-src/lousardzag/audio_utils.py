@@ -25,7 +25,10 @@ def minimal_declick(audio: np.ndarray, sample_rate: int = 22050) -> np.ndarray:
     if len(audio) < 4:  # Need minimum length for butter filter
         return audio
     
-    b, a = sp.butter(2, 50, btype='high', fs=sample_rate)
+    coefs = sp.butter(2, 50, btype='high', fs=sample_rate)
+    if coefs is None:
+        return audio
+    b, a = coefs[0], coefs[1]
     return sp.filtfilt(b, a, audio)
 
 
@@ -120,14 +123,14 @@ def load_tts_model(engine: str, device: str = 'cpu'):
     
     elif engine.lower() == 'bark':
         try:
-            from bark import SAMPLE_RATE as BARK_SR
+            from bark import SAMPLE_RATE as BARK_SR  # type: ignore[reportMissingModuleSource]
             return None  # Use bark directly in caller
         except Exception as e:
             raise RuntimeError(f"Failed to load Bark TTS: {e}")
     
     elif engine.lower() == 'xtts':
         try:
-            from TTS.models.glow_tts import Glow_TTS
+            from TTS.models.glow_tts import Glow_TTS  # type: ignore[reportMissingModuleSource]
             return Glow_TTS.init_from_random()
         except Exception as e:
             raise RuntimeError(f"Failed to load XTTS model: {e}")
@@ -156,4 +159,4 @@ def resample_audio(
     
     # Use scipy resampling (simple but reliable)
     num_samples = int(len(audio) * target_sr / orig_sr)
-    return sp.resample(audio, num_samples)
+    return sp.resample(audio, num_samples)  # type: ignore[reportUnknownReturn]

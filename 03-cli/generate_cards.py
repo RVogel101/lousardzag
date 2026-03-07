@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 Lousardzag Card Generator — Main Entry Point
 
@@ -27,10 +27,12 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / '02-src'))
 
 # Ensure Armenian Unicode prints correctly on Windows (cp1252 → utf-8)
-if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf-8-sig"):
-    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-if sys.stderr.encoding and sys.stderr.encoding.lower() not in ("utf-8", "utf-8-sig"):
-    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+_reconfigure = getattr(sys.stdout, "reconfigure", None)
+if _reconfigure and sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf-8-sig"):
+    _reconfigure(encoding="utf-8", errors="replace")
+_reconfigure_err = getattr(sys.stderr, "reconfigure", None)
+if _reconfigure_err and sys.stderr.encoding and sys.stderr.encoding.lower() not in ("utf-8", "utf-8-sig"):
+    _reconfigure_err(encoding="utf-8", errors="replace")
 
 from lousardzag.anki_connect import AnkiConnect, AnkiConnectError
 from lousardzag.card_generator import CardGenerator
@@ -202,7 +204,7 @@ def run_demo():
 
 
 def run_single_word(word: str, pos: str, translation: str,
-                    declension_class: str = None, verb_class: str = None,
+                    declension_class: str | None = None, verb_class: str | None = None,
                     no_anki: bool = False):
     """Process a single word and optionally push to Anki."""
     print(f"\nProcessing: {word} ({pos}) — {translation}")
@@ -219,7 +221,7 @@ def run_single_word(word: str, pos: str, translation: str,
             print(f"           {en}")
 
         if not no_anki:
-            _push_to_anki_single(word, pos, translation, declension_class, verb_class)
+            _push_to_anki_single(word, pos, translation, cls, verb_class or "e_class")
 
     elif pos.lower() in ("verb", "v"):
         cls = verb_class or "e_class"
@@ -232,7 +234,7 @@ def run_single_word(word: str, pos: str, translation: str,
             print(f"           {en}")
 
         if not no_anki:
-            _push_to_anki_single(word, pos, translation, declension_class, verb_class)
+            _push_to_anki_single(word, pos, translation, declension_class or "i_class", cls)
 
     else:
         print(f"Unsupported part of speech: {pos}")
@@ -252,25 +254,25 @@ def _push_to_anki_single(word, pos, translation, declension_class, verb_class):
         gen.setup_decks()
 
         if pos.lower() in ("noun", "n"):
-            gen.generate_noun_card(word, translation, declension_class)
+            gen.generate_noun_card(word, translation, declension_class or "i_class")
         elif pos.lower() in ("verb", "v"):
-            gen.generate_verb_card(word, translation, verb_class)
+            gen.generate_verb_card(word, translation, verb_class or "e_class")
 
-        gen.generate_sentence_cards(word, pos, translation, declension_class, verb_class)
+        gen.generate_sentence_cards(word, pos, translation, declension_class or "i_class", verb_class or "e_class")
         print("\n✓ Cards pushed to Anki successfully")
 
     except AnkiConnectError as exc:
         print(f"\n✗ AnkiConnect error: {exc}")
 
 
-def run_full_pipeline(source_deck: str = None, field_overrides: dict = None,
+def run_full_pipeline(source_deck: str | None = None, field_overrides: dict | None = None,
                       default_pos: str = "noun", local_only: bool = False):
     """Process all words in the source deck."""
     try:
         if local_only:
             print("Running in local-only mode (no Anki connections/writes).")
             gen = CardGenerator()
-            stats = gen.process_all(source_deck, field_overrides, default_pos, local_only=True)
+            stats = gen.process_all(source_deck, field_overrides or {}, default_pos, local_only=True)
             print("\n" + "=" * 60)
             print("  Local-Only Generation Complete")
             print("=" * 60)
@@ -289,7 +291,7 @@ def run_full_pipeline(source_deck: str = None, field_overrides: dict = None,
             sys.exit(1)
 
         gen = CardGenerator(anki)
-        stats = gen.process_all(source_deck, field_overrides, default_pos)
+        stats = gen.process_all(source_deck, field_overrides or {}, default_pos)
 
         print("\n" + "=" * 60)
         print("  Card Generation Complete")
@@ -306,8 +308,8 @@ def run_full_pipeline(source_deck: str = None, field_overrides: dict = None,
         sys.exit(1)
 
 
-def run_progression_pipeline(source_deck: str = None, dry_run: bool = False,
-                             field_overrides: dict = None, default_pos: str = "noun"):
+def run_progression_pipeline(source_deck: str | None = None, dry_run: bool = False,
+                             field_overrides: dict | None = None, default_pos: str = "noun"):
     """Build a phrase-chunking progression plan and push ordered cards to Anki.
 
     Each vocabulary word is assigned to a batch and level based on:
@@ -491,7 +493,7 @@ def run_progression_pipeline(source_deck: str = None, dry_run: bool = False,
         sys.exit(1)
 
 
-def run_ocr_bridge(input_path: str, output_path: str = None, output_format: str = "csv"):
+def run_ocr_bridge(input_path: str, output_path: str | None = None, output_format: str = "csv"):
     """Extract vocabulary from OCR output and write a structured vocab list.
 
     Args:
@@ -530,19 +532,19 @@ def run_ocr_bridge(input_path: str, output_path: str = None, output_format: str 
 
     # Write output
     if output_path is None:
-        output_path = inp.parent / f"vocab_{inp.stem}.{output_format}"
+        out_path: Path = inp.parent / f"vocab_{inp.stem}.{output_format}"
     else:
-        output_path = Path(output_path)
+        out_path = Path(output_path)
 
     if output_format == "json":
-        vocab_to_json(entries, output_path)
+        vocab_to_json(entries, out_path)
     else:
-        vocab_to_csv(entries, output_path)
+        vocab_to_csv(entries, out_path)
 
-    print(f"\n✓ Vocabulary list written to: {output_path}")
+    print(f"\n✓ Vocabulary list written to: {out_path}")
 
 
-def run_sync_vocabulary(source_deck: str = None, field_overrides: dict = None):
+def run_sync_vocabulary(source_deck: str | None = None, field_overrides: dict | None = None):
     """Sync vocabulary from Anki deck to local SQLite cache.
     
     After syncing, the vocabulary cache can be used with --no-anki flag
@@ -565,7 +567,7 @@ def run_sync_vocabulary(source_deck: str = None, field_overrides: dict = None):
         stats = db.sync_vocabulary_from_anki(
             anki,
             deck=source_deck,
-            field_overrides=field_overrides or None,
+            field_overrides=field_overrides,
         )
         
         print("\n" + "=" * 60)
@@ -675,7 +677,7 @@ Examples:
     if args.demo:
         run_demo()
     elif args.sync_vocabulary:
-        run_sync_vocabulary(args.source_deck, field_overrides=field_overrides or None)
+        run_sync_vocabulary(args.source_deck, field_overrides=field_overrides)
     elif args.list_decks:
         run_list_decks()
     elif args.inspect:
@@ -684,7 +686,7 @@ Examples:
         run_ocr_bridge(args.ocr_bridge, args.ocr_output, args.ocr_format)
     elif args.progression:
         run_progression_pipeline(args.source_deck, dry_run=args.dry_run,
-                                 field_overrides=field_overrides or None,
+                                 field_overrides=field_overrides,
                                  default_pos=args.default_pos)
     elif args.word:
         if not args.pos:
@@ -695,7 +697,7 @@ Examples:
         )
     else:
         run_full_pipeline(args.source_deck,
-                          field_overrides=field_overrides or None,
+                          field_overrides=field_overrides,
                           default_pos=args.default_pos,
                           local_only=args.local_only)
 

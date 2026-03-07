@@ -1,4 +1,4 @@
-﻿"""
+"""
 Anki card generation pipeline.
 
 Reads vocabulary from an existing Anki deck, generates morphological forms
@@ -729,7 +729,7 @@ class CardGenerator:
 
             # ── Persist sentence to local SQLite ──────────────────────
             card_type = "noun_declension" if pos.lower() in ("noun", "n") else "verb_conjugation"
-            db_card = self.db.get_card_by_word(word, card_type)
+            db_card = self.db.get_card_by_word(word)
             if db_card is None:
                 # Ensure a parent card row exists even if Anki push is skipped.
                 db_card_id = self.db.upsert_card(
@@ -910,6 +910,7 @@ class CardGenerator:
         if not letter_info:
             logger.warning(f"No letter data found for visual card: {letter}")
             return None
+        assert letter_info is not None  # narrow for type checker
 
         # Build shape description and writing guide
         shape_description = f"{letter_info.get('name', letter)} has a distinctive shape used to write {letter}."
@@ -953,7 +954,11 @@ class CardGenerator:
         
         if letter in confusable_pairs:
             similar_letter, distinction = confusable_pairs[letter]
-            similar_letters_str = f"Compare with {similar_letter}: {letter_info['name']} vs {letter_data.get_letter_info(similar_letter).get('name', similar_letter)}"
+            similar_letter_info = letter_data.get_letter_info(similar_letter)
+            if similar_letter_info:
+                similar_letters_str = f"Compare with {similar_letter}: {letter_info['name']} vs {similar_letter_info['name']}"
+            else:
+                similar_letters_str = f"Compare with {similar_letter}: {letter_info['name']} vs {similar_letter}"
             distinction_str = distinction
 
         fields = {

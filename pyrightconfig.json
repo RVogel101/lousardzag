@@ -1,0 +1,6 @@
+{
+  "include": ["02-src", "03-cli", "04-tests", "07-tools"],
+  "extraPaths": ["02-src"],
+  "reportMissingImports": "warning",
+  "reportMissingModuleSource": "warning"
+}

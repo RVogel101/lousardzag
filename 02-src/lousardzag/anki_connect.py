@@ -27,7 +27,7 @@ class AnkiConnectError(Exception):
 class AnkiConnect:
     """Client for the AnkiConnect REST API."""
 
-    def __init__(self, url: str = None, version: int = None):
+    def __init__(self, url: Optional[str] = None, version: Optional[int] = None):
         self.url = url or config.ANKI_CONNECT_URL
         self.version = version or config.ANKI_CONNECT_VERSION
 
@@ -46,7 +46,7 @@ class AnkiConnect:
         try:
             with urllib.request.urlopen(req) as response:
                 body = json.loads(response.read())
-        except urllib.error.URLError as exc:
+        except urllib.error.URLError as exc:  # type: ignore[reportUnknownAttribute]
             raise AnkiConnectError(
                 f"Cannot reach AnkiConnect at {self.url}. "
                 "Is Anki running with the AnkiConnect plugin installed?"

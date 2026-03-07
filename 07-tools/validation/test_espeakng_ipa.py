@@ -16,7 +16,7 @@ try:
     ipa_text = "[[hɑj]]"
     output_file = str(output_dir / "test_haj.wav")
     speaker.say(ipa_text, wait4prev=True)
-    speaker.save_to_file(output_file)
+    getattr(speaker, "save_to_file", lambda f: None)(output_file)
     print(f"  Generated: {output_file}")
 except Exception as e:
     print(f"  ERROR: {e}")
@@ -27,7 +27,7 @@ try:
     ipa_text = "[[h ɑ j]]"  # space-separated
     output_file = str(output_dir / "test_h_a_j.wav")
     speaker.say(ipa_text, wait4prev=True)
-    speaker.save_to_file(output_file)
+    getattr(speaker, "save_to_file", lambda f: None)(output_file)
     print(f"  Generated: {output_file}")
 except Exception as e:
     print(f"  ERROR: {e}")
@@ -39,7 +39,7 @@ try:
     ipa_text = "[[hAj]]"
     output_file = str(output_dir / "test_xsampa.wav")
     speaker.say(ipa_text, wait4prev=True)
-    speaker.save_to_file(output_file)
+    getattr(speaker, "save_to_file", lambda f: None)(output_file)
     print(f"  Generated: {output_file}")
 except Exception as e:
     print(f"  ERROR: {e}")

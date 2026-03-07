@@ -1,4 +1,4 @@
-﻿"""
+"""
 Western Armenian newspaper scraper — multi-source.
 
 Scrapes Armenian-language articles from accessible WA news sources:
@@ -99,10 +99,13 @@ MAX_RETRIES = 3
 
 def _create_session() -> requests.Session:
     """Create a requests session with retry-capable adapter."""
+    from requests.adapters import HTTPAdapter
+    from urllib3.util.retry import Retry
+
     session = requests.Session()
     session.headers.update(_HEADERS)
-    adapter = requests.adapters.HTTPAdapter(
-        max_retries=requests.adapters.Retry(
+    adapter = HTTPAdapter(
+        max_retries=Retry(
             total=MAX_RETRIES, backoff_factor=1.0,
             status_forcelist=[429, 500, 502, 503, 504],
         ),
@@ -141,8 +144,8 @@ def _extract_armenian_links(soup: BeautifulSoup, selector: str, base_url: str) -
         for elem in elements:
             href = elem.get("href", "")
             text = elem.get_text(strip=True)
-            if href and href.startswith(base_url):
-                href = href.split("#")[0]
+            if href and str(href).startswith(base_url):
+                href = str(href).split("#")[0]
                 if _has_armenian(text, min_chars=5) or re.search(r"/archives/\d+", href):
                     if href not in urls:
                         urls.append(href)

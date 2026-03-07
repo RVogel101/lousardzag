@@ -15,10 +15,10 @@ from pathlib import Path
 # Add parent directories to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "02-src"))
 
-from lousardzag.card_generator import CardGenerator
-from lousardzag.letter_practice import LetterPractice, PracticeMode
-from lousardzag.letter_progression import LetterProgressionSystem
-from lousardzag import letter_data
+from lousardzag.card_generator import CardGenerator  # type: ignore[reportMissingImports]
+from lousardzag.letter_practice import LetterPractice, PracticeMode  # type: ignore[reportMissingImports]
+from lousardzag.letter_progression import LetterProgressionSystem  # type: ignore[reportMissingImports]
+from lousardzag import letter_data  # type: ignore[reportMissingImports, reportAttributeAccessIssue]
 
 
 def test_card_generation():
@@ -47,7 +47,7 @@ def test_card_generation():
         note_id = gen.generate_letter_card(letter, push_to_anki=False)
         ids.append(note_id)
         letter_info = letter_data.get_letter_info(letter)
-        print(f"   ✅ {letter} ({letter_info['name']}) → {note_id}")
+        print(f"   ✅ {letter} ({letter_info['name']}) → {note_id}") if letter_info else print(f"   ✅ {letter} → {note_id}")
     
     print(f"\n✅ Generated {len(ids)} cards in local database")
     return True
@@ -66,7 +66,8 @@ def test_letter_data():
     print("\n📋 Sample letters:")
     for letter in ['շ', 'բ', 'պ', 'ճ', 'ջ']:
         info = letter_data.get_letter_info(letter)
-        print(f"   {letter} ({info['name']}): {info['english']} | IPA: {info['ipa']}")
+        if info:
+            print(f"   {letter} ({info['name']}): {info['english']} | IPA: {info['ipa']}")
     
     # Test vowels and consonants
     vowels = letter_data.get_all_vowels()
@@ -77,7 +78,8 @@ def test_letter_data():
     # Test diphthongs
     print(f"\n📌 Diphthongs:")
     for diph, info in letter_data.ARMENIAN_DIPHTHONGS.items():
-        print(f"   {diph}: {info['english']} ({info['ipa']})")
+        entry = info if isinstance(info, dict) else {}
+        print(f"   {diph}: {entry.get('english', '')} ({entry.get('ipa', '')})")
     
     return True
 
@@ -151,7 +153,8 @@ def test_letter_progression():
     
     for letter in letters_to_learn:
         info = letter_data.get_letter_info(letter)
-        print(f"\n   Learning {letter} ({info['name']}):")
+        info_name = info["name"] if info else letter
+        print(f"\n   Learning {letter} ({info_name}):")
         
         # Mark correct 2 times to move from NEW → LEARNING
         system.mark_correct(letter)

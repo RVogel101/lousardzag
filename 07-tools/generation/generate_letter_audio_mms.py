@@ -41,7 +41,7 @@ sys.stdout = TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "02-src"))
 
-from lousardzag.ipa_mappings import LETTER_NAME_ARMENIAN, LETTER_NAME_IPA
+from lousardzag.ipa_mappings import LETTER_NAME_ARMENIAN, LETTER_NAME_IPA  # type: ignore[reportMissingImports]
 from lousardzag.letter_data import get_all_letters_ordered, get_letter_info
 from lousardzag.morphology.core import ARM
 
@@ -360,7 +360,7 @@ def build_name_prompt(letter: str) -> str:
     base = LETTER_NAME_ARMENIAN.get(letter, letter)
 
     if USE_EASTERN_BIAS_WORKAROUND:
-        return "".join(_EASTERN_BIAS_NAME_CHAR_PROXY.get(ch, ch) for ch in base)
+        return "".join((_EASTERN_BIAS_NAME_CHAR_PROXY.get(ch, ch) or ch) for ch in base)
     return base
 
 
@@ -453,6 +453,7 @@ def main() -> int:
             print(f"Model load error: {exc}")
             print("Tip: run with --dry-run to verify prompts without audio synthesis.")
             return 1
+        assert model is not None and tokenizer is not None  # for type checker
 
     manifest: Dict[str, Dict[str, str]] = {}
     created = 0
@@ -490,6 +491,8 @@ def main() -> int:
             continue
 
         try:
+            if model is None or tokenizer is None:
+                continue
             # Use split-synthesis if a rule exists for this letter
             if letter in _SPLIT_SYNTHESIS_RULES:
                 parts = _SPLIT_SYNTHESIS_RULES[letter]

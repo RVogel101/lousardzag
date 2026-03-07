@@ -92,7 +92,7 @@ def convert_wav_to_mp3(wav_file: Path, mp3_file: Path) -> bool:
 
     # Prefer lameenc (in-process, no external binary issues).
     try:
-        import lameenc
+        import lameenc  # type: ignore[reportMissingImports]
         encoder = lameenc.Encoder()
         encoder.set_bit_rate(128)
         encoder.set_in_sample_rate(sample_rate)

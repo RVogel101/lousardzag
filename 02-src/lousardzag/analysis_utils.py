@@ -321,8 +321,8 @@ def get_word_length_distribution(words: List[str]) -> Dict[int, int]:
 
 def filter_words_by_length(
     words: List[str],
-    min_length: int = None,
-    max_length: int = None
+    min_length: Optional[int] = None,
+    max_length: Optional[int] = None
 ) -> List[str]:
     """Filter words by length criteria.
     

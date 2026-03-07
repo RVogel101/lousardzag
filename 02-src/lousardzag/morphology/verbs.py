@@ -1,4 +1,4 @@
-﻿"""
+"""
 Western Armenian verb conjugation system.
 
 Generates conjugated forms across tenses and persons for Armenian verbs.
@@ -23,7 +23,7 @@ NOTE: All transliteration keys follow Western Armenian phonology.
 See morphology/core.py for the full consonant shift table.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
 from .core import ARM
@@ -220,16 +220,16 @@ class VerbConjugation:
     translation: str = ""
 
     # Tense → person → form
-    present: dict[str, str] = None
-    past_aorist: dict[str, str] = None
-    imperfect: dict[str, str] = None
-    future: dict[str, str] = None
-    conditional: dict[str, str] = None
-    subjunctive: dict[str, str] = None
+    present: dict[str, str] = field(default_factory=dict)
+    past_aorist: dict[str, str] = field(default_factory=dict)
+    imperfect: dict[str, str] = field(default_factory=dict)
+    future: dict[str, str] = field(default_factory=dict)
+    conditional: dict[str, str] = field(default_factory=dict)
+    subjunctive: dict[str, str] = field(default_factory=dict)
 
     # Perfect tenses (compound: past_participle + auxiliary "to be")
-    perfect: dict[str, str] = None       # have done (past participle + present of "to be")
-    pluperfect: dict[str, str] = None    # had done (past participle + past of "to be")
+    perfect: dict[str, str] = field(default_factory=dict)
+    pluperfect: dict[str, str] = field(default_factory=dict)
 
     # Imperative (2nd person only)
     imperative_sg: str = ""
@@ -240,6 +240,7 @@ class VerbConjugation:
     present_participle: str = ""
 
     def __post_init__(self):
+        # Normalize optional dicts to empty dict if None was passed (e.g. from serialization)
         if self.present is None:
             self.present = {}
         if self.past_aorist is None:

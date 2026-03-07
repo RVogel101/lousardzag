@@ -139,7 +139,7 @@ class AnkiDatabaseEnrichment(DatabaseOperation):
             enrichment['pos'] = pos
             
             # Difficulty score
-            difficulty = score_word_difficulty(word, pos)
+            difficulty = score_word_difficulty(word, pos or "noun")
             # Store as JSON in metadata field for now
             enrichment['difficulty_score'] = difficulty
         except Exception as e:

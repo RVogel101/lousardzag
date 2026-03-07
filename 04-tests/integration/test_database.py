@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 Tests for lousardzag.database — local SQLite card storage.
 
@@ -64,6 +64,8 @@ class TestCardDatabase(unittest.TestCase):
         id2 = self.db.upsert_card(word="test", translation="b", anki_note_id=2001)
         self.assertEqual(id1, id2)
         card = self.db.get_card(id1)
+        self.assertIsNotNone(card)
+        assert card is not None
         self.assertEqual(card["translation"], "b")
 
     def test_get_card_roundtrip(self):
@@ -77,6 +79,7 @@ class TestCardDatabase(unittest.TestCase):
         )
         card = self.db.get_card(card_id)
         self.assertIsNotNone(card)
+        assert card is not None
         self.assertEqual(card["word"], "test_noun")
         self.assertEqual(card["morphology"], morphology)
 
@@ -93,6 +96,8 @@ class TestCardDatabase(unittest.TestCase):
             anki_note_id=4001,
         )
         card = self.db.get_card(card_id)
+        self.assertIsNotNone(card)
+        assert card is not None
         self.assertEqual(card["template_version"], "v2")
         self.assertEqual(card["metadata"], metadata)
 
@@ -103,6 +108,7 @@ class TestCardDatabase(unittest.TestCase):
         self.db.upsert_card(word="test_noun", anki_note_id=5001)
         card = self.db.get_card_by_word("test_noun")
         self.assertIsNotNone(card)
+        assert card is not None
         self.assertEqual(card["word"], "test_noun")
 
     def test_list_cards_filter_pos(self):

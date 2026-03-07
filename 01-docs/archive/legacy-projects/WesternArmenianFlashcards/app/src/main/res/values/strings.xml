@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Western Armenian</string>
+    
+    <!-- Main Activity -->
+    <string name="default_deck_name">Western Armenian Basics</string>
+    <string name="new_cards">New: %1$d</string>
+    <string name="new_cards_count">New: %1$d</string>
+    <string name="review_cards">Review: %1$d</string>
+    <string name="review_cards_count">Review: %1$d</string>
+    <string name="tap_to_start">Tap to start studying</string>
+    <string name="show_answer">Show Answer</string>
+    
+    <!-- Rating Buttons -->
+    <string name="again">Again</string>
+    <string name="hard">Hard</string>
+    <string name="good">Good</string>
+    <string name="easy">Easy</string>
+    
+    <!-- Empty States -->
+    <string name="no_cards_available">No cards to review!</string>
+    <string name="add_cards_to_start">Add cards to start studying</string>
+    <string name="no_cards_yet">No cards yet</string>
+    
+    <!-- Card List Activity -->
+    <string name="all_cards">All Cards</string>
+    <string name="add_card">Add Card</string>
+    
+    <!-- Menu Items -->
+    <string name="view_all_cards">View All Cards</string>
+    <string name="statistics">Statistics</string>
+    <string name="settings">Settings</string>
+    
+    <!-- Armenian Learning -->
+    <string name="armenian_word">Armenian Word</string>
+    <string name="english_translation">English Translation</string>
+    <string name="pronunciation">Pronunciation</string>
+    <string name="example_sentence">Example Sentence</string>
+    
+    <!-- General -->
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+</resources>

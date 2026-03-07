@@ -16,13 +16,18 @@ from typing import Set, Optional
 
 try:
     from .morphology import (
-        ARM, 
+        ARM,
         detect_noun_class, detect_verb_class,
         decline_noun, conjugate_verb
     )
     MORPHOLOGY_AVAILABLE = True
 except ImportError:
     MORPHOLOGY_AVAILABLE = False
+    ARM = {}  # type: ignore[assignment]
+    detect_noun_class = lambda _: "i_class"  # type: ignore[assignment,misc]
+    detect_verb_class = lambda _: "e_class"  # type: ignore[assignment,misc]
+    decline_noun = lambda *args, **kwargs: None  # type: ignore[assignment,misc]
+    conjugate_verb = lambda *args, **kwargs: None  # type: ignore[assignment,misc]
 
 
 def _get_case_stem_candidates(word: str) -> Set[str]:

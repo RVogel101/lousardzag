@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 Validate word mappings against Western Armenian corpus and phonetics.
 
@@ -21,10 +21,12 @@ from collections import defaultdict
 from typing import Dict, List, Set, Tuple
 
 # Avoid UnicodeEncodeError on Windows cp1252 consoles by escaping unsupported chars.
-if hasattr(sys.stdout, "reconfigure"):
-    sys.stdout.reconfigure(errors="backslashreplace")
-if hasattr(sys.stderr, "reconfigure"):
-    sys.stderr.reconfigure(errors="backslashreplace")
+_reconfigure_out = getattr(sys.stdout, "reconfigure", None)
+if _reconfigure_out:
+    _reconfigure_out(errors="backslashreplace")
+_reconfigure_err = getattr(sys.stderr, "reconfigure", None)
+if _reconfigure_err:
+    _reconfigure_err(errors="backslashreplace")
 
 # Add 02-src to path for morphology imports
 SRC_DIR = Path(__file__).parent.parent / "02-src"
@@ -35,6 +37,10 @@ try:
     STEMMING_AVAILABLE = True
 except ImportError:
     STEMMING_AVAILABLE = False
+    def match_word_with_stemming(vocab_word: str, corpus_words: Set[str]) -> Tuple[bool, str]:
+        return False, "no_match"
+    def get_all_lemmas(word: str) -> Set[str]:
+        return set()
 
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger(__name__)

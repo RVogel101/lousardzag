@@ -1,4 +1,4 @@
-﻿"""
+"""
 Western Armenian Wikipedia dump processor.
 
 Downloads and extracts text from the hyw.wikipedia.org database dump,
@@ -187,7 +187,7 @@ def iter_articles(dump_path: Path) -> Iterator[tuple[str, str]]:
 
             # Get title
             title_elem = elem.find(f"{ns_prefix}title")
-            title = title_elem.text if title_elem is not None else ""
+            title = (title_elem.text or "") if title_elem is not None else ""
 
             # Get latest revision text
             rev = elem.find(f"{ns_prefix}revision")

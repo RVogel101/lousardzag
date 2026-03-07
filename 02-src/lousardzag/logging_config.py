@@ -1,4 +1,4 @@
-﻿"""
+"""
 Logging Configuration for CWAS Facebook Image Processing Pipeline
 
 This module provides centralized logging configuration for both the scraper
@@ -66,7 +66,8 @@ def setup_enhanced_logging(
     main_file_handler.setFormatter(detailed_formatter)
     
     handlers = [console_handler, main_file_handler]
-    
+    debug_log_file = ""
+
     # Debug file handler (shows DEBUG and above, separate file)
     if enable_debug_file:
         debug_log_file = os.path.join(logs_dir, f"{script_name}_debug.log")

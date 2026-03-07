@@ -62,7 +62,7 @@ def get_extraction_registry():
     
     try:
         _debug_print("Attempting to import central package registry...")
-        from armenian_corpus_core.extraction.registry import get_registry
+        from armenian_corpus_core.extraction.registry import get_registry  # type: ignore[reportMissingModuleSource]
         registry = get_registry()
         _debug_print(f"Successfully loaded registry with {len(registry.list_tools())} tools")
         return registry
@@ -225,7 +225,7 @@ def diagnose_central_package() -> dict[str, Any]:
     
     # Check if package can be imported
     try:
-        import armenian_corpus_core
+        import armenian_corpus_core  # type: ignore[reportMissingModuleSource]
         diagnostics["central_package_installed"] = True
         _debug_print(f"Central package found at: {armenian_corpus_core.__file__}")
     except ImportError as e:

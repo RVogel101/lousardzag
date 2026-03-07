@@ -8,7 +8,7 @@ Manages difficulty-based progression for letter learning with:
 - Progress tracking
 """
 
-from typing import List, Dict, Optional, Tuple
+from typing import List, Dict, Optional, Tuple, Any
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
@@ -67,6 +67,8 @@ class LetterProgressionSystem:
         grouped = {}
         for letter in self.all_letters:
             info = letter_data.get_letter_info(letter)
+            if info is None:
+                continue
             difficulty = info["difficulty"]
             if difficulty not in grouped:
                 grouped[difficulty] = []
@@ -76,7 +78,7 @@ class LetterProgressionSystem:
         for difficulty in grouped:
             grouped[difficulty].sort(
                 key=lambda l: (
-                    0 if letter_data.get_letter_info(l)["type"] == "vowel" else 1,
+                    0 if (letter_data.get_letter_info(l) or {}).get("type") == "vowel" else 1,
                     self.all_letters.index(l),
                 )
             )
@@ -103,7 +105,7 @@ class LetterProgressionSystem:
         target_difficulties = difficulty_map.get(level, [1, 2, 3, 4, 5])
         return [
             l for l in self.all_letters
-            if letter_data.get_letter_info(l)["difficulty"] in target_difficulties
+            if (letter_data.get_letter_info(l) or {}).get("difficulty") in target_difficulties
         ]
 
     def mark_correct(self, letter: str) -> None:
@@ -181,7 +183,8 @@ class LetterProgressionSystem:
         if diphthong not in letter_data.ARMENIAN_DIPHTHONGS:
             return []
 
-        component_letters = letter_data.ARMENIAN_DIPHTHONGS[diphthong]["letters"]
+        entry = letter_data.ARMENIAN_DIPHTHONGS[diphthong]
+        component_letters = entry.get("letters", []) if isinstance(entry, dict) else []
         return component_letters
 
     def can_learn_diphthong(self, diphthong: str) -> bool:
@@ -200,7 +203,7 @@ class LetterProgressionSystem:
 
         return True
 
-    def get_progress_stats(self) -> Dict[str, any]:
+    def get_progress_stats(self) -> Dict[str, Any]:
         """Get overall learning statistics.
         
         Returns:
@@ -277,7 +280,7 @@ class LetterProgressionSystem:
 
         return completed_soon, weeks_away, months_away
 
-    def export_progress_json(self) -> Dict[str, any]:
+    def export_progress_json(self) -> Dict[str, Any]:
         """Export progress data for persistence.
         
         Returns:
@@ -298,7 +301,7 @@ class LetterProgressionSystem:
             for letter, prog in self.progress.items()
         }
 
-    def import_progress_json(self, data: Dict[str, any]) -> None:
+    def import_progress_json(self, data: Dict[str, Any]) -> None:
         """Import progress data.
         
         Args:

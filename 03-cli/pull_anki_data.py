@@ -1,4 +1,4 @@
-﻿"""Read-only export of all Anki data, then import into local SQLite.
+"""Read-only export of all Anki data, then import into local SQLite.
 
 Flow:
 1) Read notes from Anki via AnkiConnect (no writes to Anki)
@@ -174,6 +174,8 @@ def export_via_notesinfo(ac: AnkiConnect, deck_name: str) -> list[dict]:
 
     notes: list[dict] = []
     all_media: set[str] = set()
+    if results is None:
+        return notes
     for batch_result in results:
         if isinstance(batch_result, dict) and batch_result.get("error"):
             print(f"    Batch error: {batch_result['error']}")
@@ -242,13 +244,16 @@ def _first_nonempty_short(fields: dict) -> str:
 
 def write_field_name_map(ac: AnkiConnect) -> None:
     models = request_with_retry(ac, "modelNamesAndIds")
+    if not models:
+        return
     by_model: dict[str, list[str]] = {}
     dedup: set[str] = set()
 
     for model_name in sorted(models.keys()):
         fields = request_with_retry(ac, "modelFieldNames", modelName=model_name)
-        by_model[model_name] = fields
-        dedup.update(fields)
+        field_list = fields if isinstance(fields, list) else []
+        by_model[model_name] = field_list
+        dedup.update(field_list)
 
     FIELD_MAP_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(FIELD_MAP_PATH, "w", encoding="utf-8") as f:

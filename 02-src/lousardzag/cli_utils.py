@@ -22,8 +22,8 @@ from typing import Optional, Callable, Any, Dict
 # ============================================================================
 
 def create_database_operation_parser(
-    prog: str = None,
-    description: str = None,
+    prog: Optional[str] = None,
+    description: Optional[str] = None,
     add_limit: bool = False,
     add_backup: bool = True
 ) -> argparse.ArgumentParser:
@@ -89,8 +89,8 @@ def create_database_operation_parser(
 
 
 def create_analysis_parser(
-    prog: str = None,
-    description: str = None
+    prog: Optional[str] = None,
+    description: Optional[str] = None
 ) -> argparse.ArgumentParser:
     """Create a standard parser for analysis tools.
     
@@ -131,8 +131,8 @@ def create_analysis_parser(
 
 
 def create_audio_parser(
-    prog: str = None,
-    description: str = None
+    prog: Optional[str] = None,
+    description: Optional[str] = None
 ) -> argparse.ArgumentParser:
     """Create a standard parser for audio generation tools.
     
@@ -291,7 +291,7 @@ def get_bool_arg(arg_name: str, default: bool = False) -> bool:
     return flag in sys.argv
 
 
-def get_str_arg(arg_name: str, default: str = None) -> str:
+def get_str_arg(arg_name: str, default: Optional[str] = None) -> str | None:
     """Extract string argument value from sys.argv.
     
     Args:
@@ -309,10 +309,10 @@ def get_str_arg(arg_name: str, default: str = None) -> str:
     except (ValueError, IndexError):
         pass
     
-    return default
+    return default or None
 
 
-def get_int_arg(arg_name: str, default: int = None) -> Optional[int]:
+def get_int_arg(arg_name: str, default: Optional[int] = None) -> int | None:
     """Extract integer argument value from sys.argv.
     
     Args:
@@ -330,7 +330,7 @@ def get_int_arg(arg_name: str, default: int = None) -> Optional[int]:
     except (ValueError, IndexError):
         pass
     
-    return default
+    return default or None  # type: ignore[reportUnknownReturn]
 
 
 def print_section(title: str, width: int = 80) -> None:

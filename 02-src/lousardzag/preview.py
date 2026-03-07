@@ -1,4 +1,4 @@
-﻿"""Build rendered sample cards from real data for preview surfaces."""
+"""Build rendered sample cards from real data for preview surfaces."""
 
 from __future__ import annotations
 
@@ -130,7 +130,7 @@ def _verb_fields(word: str, translation: str) -> dict[str, str]:
     return fields
 
 
-def _sentence_fields(word: str, translation: str, pos: str) -> dict[str, str]:
+def _sentence_fields(word: str, translation: str, pos: str) -> dict[str, str | list[str]]:
     loan = build_loanword_metadata(word, translation)
     if pos == "verb":
         label, arm, eng = generate_verb_sentences(

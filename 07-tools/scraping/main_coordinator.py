@@ -1,4 +1,4 @@
-﻿"""
+"""
 Main Coordinator Script for CWAS Facebook Image Processing Pipeline
 
 This script coordinates the full pipeline:
@@ -120,21 +120,25 @@ def run_scraper(mode='update'):
         
         # Monkey patch the get_run_mode function to return our choice
         logger.debug(f"Setting up monkey patch for run mode: {mode}")
-        original_get_run_mode = scrape_fb_images.get_run_mode
-        scrape_fb_images.get_run_mode = lambda: mode
-        
+        original_get_run_mode = getattr(scrape_fb_images, "get_run_mode", None)
+        if original_get_run_mode is not None:
+            setattr(scrape_fb_images, "get_run_mode", lambda: mode)
+
         # Run the main scraper function
         logger.info("Executing scraper main() function")
         scraper_start_time = time.time()
-        
-        scrape_fb_images.main()
-        
+
+        main_fn = getattr(scrape_fb_images, "main", None)
+        if main_fn is not None:
+            main_fn()
+
         scraper_duration = time.time() - scraper_start_time
         logger.info(f"Scraper execution completed in {scraper_duration:.1f}s")
-        
+
         # Restore original function
         logger.debug("Restoring original get_run_mode function")
-        scrape_fb_images.get_run_mode = original_get_run_mode
+        if original_get_run_mode is not None:
+            setattr(scrape_fb_images, "get_run_mode", original_get_run_mode)
         
         logger.info("Facebook scraper completed successfully")
         return True
@@ -193,10 +197,12 @@ def extract_image_metadata(image_path):
             metadata['mode'] = img.mode
             metadata['aspect_ratio'] = round(img.width / img.height, 2)
             
-            # Extract EXIF data if available
-            if hasattr(img, '_getexif') and img._getexif():
+            # Extract EXIF data if available (PIL: getexif() or legacy _getexif())
+            getexif = getattr(img, "getexif", None) or getattr(img, "_getexif", None)
+            exif_dict = getexif() if getexif else None
+            if exif_dict and hasattr(exif_dict, "items"):
                 exif_data = {}
-                for tag_id, value in img._getexif().items():
+                for tag_id, value in exif_dict.items():
                     tag = TAGS.get(tag_id, tag_id)
                     exif_data[tag] = str(value) if not isinstance(value, (int, float, str)) else value
                 metadata['exif'] = exif_data

@@ -31,7 +31,7 @@ class TestCLIDispatcher:
         """Test: CLI dispatcher module imports without errors."""
         try:
             sys.path.insert(0, str(PROJECT_ROOT / '03-cli'))
-            import cli_unified
+            import cli_unified  # type: ignore[reportMissingImports]
             assert cli_unified is not None
         except ImportError as e:
             pytest.skip(f"CLI module not importable: {e}")
@@ -39,7 +39,7 @@ class TestCLIDispatcher:
     def test_command_groups_registered(self):
         """Test: All 5 command groups are registered."""
         sys.path.insert(0, str(PROJECT_ROOT / '03-cli'))
-        from cli_unified import ALL_GROUPS
+        from cli_unified import ALL_GROUPS  # type: ignore[reportMissingImports]
         
         expected_groups = ['audio', 'analysis', 'database', 'generation', 'validation']
         
@@ -49,7 +49,7 @@ class TestCLIDispatcher:
     def test_commands_registered_in_groups(self):
         """Test: Commands are registered within groups."""
         sys.path.insert(0, str(PROJECT_ROOT / '03-cli'))
-        from cli_unified import ALL_GROUPS
+        from cli_unified import ALL_GROUPS  # type: ignore[reportMissingImports]
         
         # Check each group has commands
         for group_name, group in ALL_GROUPS.items():
@@ -129,7 +129,7 @@ class TestDatabaseCommands:
     def test_enrich_command_exists(self):
         """Test: database enrich command is registered."""
         sys.path.insert(0, str(PROJECT_ROOT / '03-cli'))
-        from cli_unified import ALL_GROUPS
+        from cli_unified import ALL_GROUPS  # type: ignore[reportMissingImports]
         
         db_group = ALL_GROUPS.get('database')
         if db_group:
@@ -145,7 +145,7 @@ class TestGenerationCommands:
     def test_vocab_generation_command_exists(self):
         """Test: generation vocab command is registered."""
         sys.path.insert(0, str(PROJECT_ROOT / '03-cli'))
-        from cli_unified import ALL_GROUPS
+        from cli_unified import ALL_GROUPS  # type: ignore[reportMissingImports]
         
         gen_group = ALL_GROUPS.get('generation')
         if gen_group:
@@ -157,7 +157,7 @@ class TestGenerationCommands:
     def test_audio_generation_command_exists(self):
         """Test: generation audio command is registered."""
         sys.path.insert(0, str(PROJECT_ROOT / '03-cli'))
-        from cli_unified import ALL_GROUPS
+        from cli_unified import ALL_GROUPS  # type: ignore[reportMissingImports]
         
         audio_group = ALL_GROUPS.get('audio')
         if audio_group:
@@ -173,7 +173,7 @@ class TestAnalysisCommands:
     def test_analysis_commands_registered(self):
         """Test: Analysis commands are registered."""
         sys.path.insert(0, str(PROJECT_ROOT / '03-cli'))
-        from cli_unified import ALL_GROUPS
+        from cli_unified import ALL_GROUPS  # type: ignore[reportMissingImports]
         
         analysis_group = ALL_GROUPS.get('analysis')
         if analysis_group:
@@ -185,7 +185,7 @@ class TestAnalysisCommands:
     def test_stemming_analysis_exists(self):
         """Test: Stemming analysis command exists."""
         sys.path.insert(0, str(PROJECT_ROOT / '03-cli'))
-        from cli_unified import ALL_GROUPS
+        from cli_unified import ALL_GROUPS  # type: ignore[reportMissingImports]
         
         analysis_group = ALL_GROUPS.get('analysis')
         if analysis_group:
@@ -201,7 +201,7 @@ class TestValidationCommands:
     def test_validation_commands_registered(self):
         """Test: Validation commands are registered."""
         sys.path.insert(0, str(PROJECT_ROOT / '03-cli'))
-        from cli_unified import ALL_GROUPS
+        from cli_unified import ALL_GROUPS  # type: ignore[reportMissingImports]
         
         val_group = ALL_GROUPS.get('validation')
         if val_group:

@@ -213,9 +213,9 @@ class DatabaseOperationReport(StandardReport):
     
     def add_pre_post_state(
         self,
-        total_cards: int = None,
-        total_enriched: int = None,
-        missing_fields: Dict[str, int] = None
+        total_cards: int | None = None,
+        total_enriched: int | None = None,
+        missing_fields: Dict[str, int] | None = None
     ) -> None:
         """Add pre/post database state.
         
@@ -354,7 +354,7 @@ class ReportFormatter:
     @staticmethod
     def print_distribution(
         report: AnalysisReport,
-        key: str = None
+        key: str | None = None
     ) -> None:
         """Print formatted distribution analysis.
         

@@ -125,7 +125,7 @@ class LetterAudioManager:
         Requires: pip install gtts
         """
         try:
-            from gtts import gTTS
+            from gtts import gTTS  # type: ignore[reportMissingModuleSource]
             from . import letter_data
             
             info = letter_data.get_letter_info(letter)

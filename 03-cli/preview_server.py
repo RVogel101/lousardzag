@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Render sample noun/verb/sentence cards from local real data."""
 
 from __future__ import annotations
@@ -17,8 +17,9 @@ from lousardzag.preview import build_preview_payload
 
 def main() -> None:
     # Windows PowerShell may default to a legacy code page; force UTF-8 output.
-    if hasattr(sys.stdout, "reconfigure"):
-        sys.stdout.reconfigure(encoding="utf-8")
+    reconfigure = getattr(sys.stdout, "reconfigure", None)
+    if reconfigure:
+        reconfigure(encoding="utf-8")
 
     parser = argparse.ArgumentParser(description="Render formatted card previews from local data")
     parser.add_argument("--db-path", default=str(DEFAULT_DB_PATH), help="SQLite DB path")

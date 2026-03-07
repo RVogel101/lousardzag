@@ -9,7 +9,7 @@ Provides progressively structured practice for learning Armenian letters:
 - Difficulty-based progression
 """
 
-from typing import List, Dict, Optional, Tuple, Set
+from typing import List, Dict, Optional, Tuple, Set, Union, Any
 from enum import Enum
 import random
 from dataclasses import dataclass
@@ -64,7 +64,8 @@ class LetterPractice:
         if difficulty:
             letters = [
                 l for l in self.all_letters
-                if letter_data.get_letter_info(l)["difficulty"] >= difficulty
+                if (info := letter_data.get_letter_info(l)) is not None
+                and info["difficulty"] >= difficulty
             ]
         else:
             letters = self.all_letters
@@ -74,14 +75,16 @@ class LetterPractice:
 
         for letter in selected:
             info = letter_data.get_letter_info(letter)
+            if info is None:
+                continue
             display_letter = info["uppercase"] if include_uppercase and random.random() > 0.5 else letter
 
             # Create options: correct name + 3 random other names
             correct_name = info["name"]
             wrong_names = [
-                letter_data.get_letter_info(l)["name"]
+                inf["name"]
                 for l in random.sample(letters, 3)
-                if l != letter
+                if l != letter and (inf := letter_data.get_letter_info(l)) is not None
             ]
 
             options = [correct_name] + wrong_names
@@ -93,8 +96,8 @@ class LetterPractice:
                 question_text=f"What is the name of this letter? → {display_letter}",
                 options=options,
                 correct_answer=correct_name,
-                explanation=f"This is {correct_name} ({info['english']}). Example: {info['example_words'][0]}",
-                difficulty=info["difficulty"],
+                explanation=f"This is {correct_name} ({info['english']}). Example: {info['example_words'][0] if info['example_words'] else ''}",  # type: ignore[reportUnknownMemberType]
+                difficulty=(info["difficulty"] or 0),  # type: ignore[reportUnknownMemberType]
             )
             questions.append(question)
 
@@ -114,7 +117,8 @@ class LetterPractice:
         if difficulty:
             letters = [
                 l for l in self.all_letters
-                if letter_data.get_letter_info(l)["difficulty"] >= difficulty
+                if (info := letter_data.get_letter_info(l)) is not None
+                and info["difficulty"] >= difficulty
             ]
         else:
             letters = self.all_letters
@@ -124,6 +128,8 @@ class LetterPractice:
 
         for letter in selected:
             info = letter_data.get_letter_info(letter)
+            if info is None:
+                continue
 
             # Create options: correct letter + 3 random others
             wrong_letters = random.sample(
@@ -132,7 +138,7 @@ class LetterPractice:
             options = [letter] + wrong_letters
             random.shuffle(options)
             option_names = [
-                f"{l} ({letter_data.get_letter_info(l)['name']})" for l in options
+                f"{l} ({inf['name']})" for l in options if (inf := letter_data.get_letter_info(l)) is not None
             ]
 
             question = PracticeQuestion(
@@ -162,7 +168,8 @@ class LetterPractice:
         if difficulty:
             letters = [
                 l for l in self.all_letters
-                if letter_data.get_letter_info(l)["difficulty"] >= difficulty
+                if (info := letter_data.get_letter_info(l)) is not None
+                and info["difficulty"] >= difficulty
             ]
         else:
             letters = self.all_letters
@@ -172,9 +179,11 @@ class LetterPractice:
 
         for letter in selected:
             info = letter_data.get_letter_info(letter)
+            if info is None:
+                continue
 
             # Use example words
-            if not info["example_words"]:
+            if not info.get("example_words"):
                 continue
 
             example_word = random.choice(info["example_words"])
@@ -188,7 +197,7 @@ class LetterPractice:
             options = [letter] + wrong_letters
             random.shuffle(options)
             option_texts = [
-                f"{l} ({letter_data.get_letter_info(l)['name']})" for l in options
+                f"{l} ({inf['name']})" for l in options if (inf := letter_data.get_letter_info(l)) is not None
             ]
 
             question = PracticeQuestion(
@@ -271,6 +280,8 @@ class LetterPractice:
             letter1, letter2 = random.choice(confusable_pairs)
             info1 = letter_data.get_letter_info(letter1)
             info2 = letter_data.get_letter_info(letter2)
+            if info1 is None or info2 is None:
+                continue
 
             # Which one sounds like X?
             if random.random() > 0.5:
@@ -280,13 +291,15 @@ class LetterPractice:
                 target = info2
                 correct_letter = letter2
 
+            correct_info = letter_data.get_letter_info(correct_letter)
+            correct_name = correct_info["name"] if correct_info else correct_letter
             question = PracticeQuestion(
                 mode=PracticeMode.COMPARISON,
                 letter=correct_letter,
                 question_text=f"Which sounds like '{target['english']}'? Choose between: {letter1} or {letter2}",
                 options=[letter1, letter2],
                 correct_answer=correct_letter,
-                explanation=f"{correct_letter} ({letter_data.get_letter_info(correct_letter)['name']}) "
+                explanation=f"{correct_letter} ({correct_name}) "
                            f"sounds like {target['english']}. Western Armenian has reversed voicing: "
                            f"{letter1} = {info1['english']}, {letter2} = {info2['english']}",
                 difficulty=3,
@@ -299,7 +312,7 @@ class LetterPractice:
         self,
         current_level: int = 1,
         num_questions: int = 10,
-    ) -> Tuple[List[PracticeQuestion], Dict[str, any]]:
+    ) -> Tuple[List[PracticeQuestion], Dict[str, Any]]:
         """Generate guided learning progression (easy → hard).
         
         Args:
@@ -320,7 +333,8 @@ class LetterPractice:
         target_difficulties = difficulty_ranges.get(current_level, [1, 2, 3, 4, 5])
         letters = [
             l for l in self.all_letters
-            if letter_data.get_letter_info(l)["difficulty"] in target_difficulties
+            if (info := letter_data.get_letter_info(l)) is not None
+            and info["difficulty"] in target_difficulties
         ]
 
         # Mix different question types
@@ -396,7 +410,7 @@ class LetterPractice:
         else:
             return []
 
-    def format_question_for_display(self, question: PracticeQuestion) -> Dict[str, str]:
+    def format_question_for_display(self, question: PracticeQuestion) -> Dict[str, Union[str, List[str]]]:
         """Format question for console/UI display.
         
         Returns:

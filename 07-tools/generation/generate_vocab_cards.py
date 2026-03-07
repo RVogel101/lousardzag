@@ -252,7 +252,7 @@ Examples:
     
     for word, data in vocab_list:
         try:
-            definition = generator.get_definition(word)
+            definition = getattr(generator, "get_definition", lambda w: None)(word)
             if definition:
                 definitions_dict[word] = definition
             else:

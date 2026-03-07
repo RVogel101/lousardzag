@@ -14,6 +14,11 @@ import sys
 import io
 from lousardzag.audio_utils import minimal_declick
 
+
+def _ensure_ndarray(x: np.ndarray | tuple) -> np.ndarray:
+    """Unwrap scipy filter output (some versions return (out, state) tuple)."""
+    return x[0] if isinstance(x, tuple) else x
+
 # Force UTF-8 output on Windows
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
@@ -80,7 +85,7 @@ def apply_clarity_enhancer(audio: np.ndarray, sr: int = 22050) -> np.ndarray:
     """Apply gentle post-processing: high-pass filter + soft compression + light EQ."""
     # High-pass filter to remove rumble (80 Hz cutoff)
     sos = scipy.signal.butter(4, 80, 'hp', fs=sr, output='sos')
-    audio = scipy.signal.sosfilt(sos, audio)
+    audio = _ensure_ndarray(scipy.signal.sosfilt(sos, audio))
     
     # Soft compression (make dynamic range smoother)
     # Simple soft-knee compressor
@@ -111,11 +116,11 @@ def apply_smooth_enhancement(audio: np.ndarray, sr: int = 22050) -> np.ndarray:
     # Use max 7000 Hz cutoff for 16kHz sample rate (Nyquist = 8000 Hz)
     cutoff = min(7000, sr / 2 - 100)
     sos = scipy.signal.butter(2, cutoff, 'lp', fs=sr, output='sos')
-    audio = scipy.signal.sosfilt(sos, audio)
-    
+    audio = _ensure_ndarray(scipy.signal.sosfilt(sos, audio))
+
     # Normalize
     audio = audio / (np.max(np.abs(audio)) + 1e-10)
-    
+
     return audio
 
 def apply_warm_enhancement(audio: np.ndarray, sr: int = 22050) -> np.ndarray:
@@ -140,9 +145,9 @@ def apply_warm_enhancement(audio: np.ndarray, sr: int = 22050) -> np.ndarray:
     b = [b[0]*A, b[1], b[2]/A]
     a = [1 + alpha/A, -2*np.cos(w0), 1 + alpha*A]
     
-    audio = scipy.signal.lfilter(b, a, audio)
+    audio = _ensure_ndarray(scipy.signal.lfilter(b, a, audio))
     audio = audio / (np.max(np.abs(audio)) + 1e-10)
-    
+
     return audio
 
 def apply_resonant_enhancement(audio: np.ndarray, sr: int = 22050) -> np.ndarray:
@@ -165,15 +170,15 @@ def apply_resonant_enhancement(audio: np.ndarray, sr: int = 22050) -> np.ndarray
     b1 = [b1[0]*A_1, b1[1], b1[2]/A_1]
     a1 = [1 + alpha_1/A_1, -2*np.cos(w0_1), 1 + alpha_1*A_1]
     
-    audio = scipy.signal.lfilter(b1, a1, audio)
-    
+    audio = _ensure_ndarray(scipy.signal.lfilter(b1, a1, audio))
+
     # Slight low-pass to remove harshness above 6kHz
     cutoff = min(6500, sr / 2 - 100)
     sos = scipy.signal.butter(2, cutoff, 'lp', fs=sr, output='sos')
-    audio = scipy.signal.sosfilt(sos, audio)
-    
+    audio = _ensure_ndarray(scipy.signal.sosfilt(sos, audio))
+
     audio = audio / (np.max(np.abs(audio)) + 1e-10)
-    
+
     return audio
 
 def apply_saturation_enhancement(audio: np.ndarray, sr: int = 22050) -> np.ndarray:
@@ -192,10 +197,10 @@ def apply_saturation_enhancement(audio: np.ndarray, sr: int = 22050) -> np.ndarr
     # Light low-pass to smooth harsh artifacts
     cutoff = min(7000, sr / 2 - 100)
     sos = scipy.signal.butter(2, cutoff, 'lp', fs=sr, output='sos')
-    audio = scipy.signal.sosfilt(sos, audio)
-    
+    audio = _ensure_ndarray(scipy.signal.sosfilt(sos, audio))
+
     audio = audio / (np.max(np.abs(audio)) + 1e-10)
-    
+
     return audio
 
 def apply_pitch_shift_warmth(audio: np.ndarray, sr: int = 22050) -> np.ndarray:
@@ -216,10 +221,10 @@ def apply_pitch_shift_warmth(audio: np.ndarray, sr: int = 22050) -> np.ndarray:
     # Light low-pass
     cutoff = min(7000, sr / 2 - 100)
     sos = scipy.signal.butter(2, cutoff, 'lp', fs=sr, output='sos')
-    audio = scipy.signal.sosfilt(sos, audio)
-    
+    audio = _ensure_ndarray(scipy.signal.sosfilt(sos, audio))
+
     audio = audio / (np.max(np.abs(audio)) + 1e-10)
-    
+
     return audio
 
 # Test words
