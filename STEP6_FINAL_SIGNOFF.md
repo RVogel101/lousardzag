@@ -33,7 +33,7 @@ Scope: Cross-repo migration sign-off for lousardzag + WesternArmenianLLM central
 
 - Local sign-off status: COMPLETE
 - Remote CI sign-off status: COMPLETE (for configured checks)
-- Monitoring window status: In progress (1-week stability observation started)
+- Monitoring window status: In progress (1-week stability observation started; daily scheduler configured via `.github/workflows/migration_monitoring_daily.yml`)
 
 ## Remote Verification (Post-Merge)
 
