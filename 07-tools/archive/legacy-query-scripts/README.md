@@ -1,0 +1,1 @@
+Legacy query/check scripts archived from 07-tools/analysis during strict cleanup pass (2026-03-06).

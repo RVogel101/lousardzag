@@ -154,6 +154,11 @@ Comprehensive assessment of project status, what's working, what needs work.
 
 ## 🔍 For Specific Tasks
 
+### Task: Validate Central Package Migration
+**Start**: `01-docs/development/CENTRAL_PACKAGE_DEV_SETUP.md` (setup + checks)
+→ Run: `pytest 04-tests/integration/test_central_package_integration.py -q`
+→ If needed, inspect: `02-src/lousardzag/core_adapters.py`
+
 ### Task: Work on Armenian Phonetics
 **Start**: ARMENIAN_QUICK_REFERENCE.md (5 min)
 → NEXT_SESSION_INSTRUCTIONS.md § "Workflow: Adding Phonetic Feature" (5 min)
@@ -240,12 +245,31 @@ Comprehensive assessment of project status, what's working, what needs work.
 - Next work → PROJECT_ASSESSMENT.md § "Next Session Recommendations"
 - Workflow → NEXT_SESSION_INSTRUCTIONS.md
 - Git history → `git log --oneline -20`
+- Canonical chat synthesis → CONVERSATION_SYNTHESIS_MARCH2026.md
+
+**Corpus Operations (Nayiri)**
+- Operational guide → NAYIRI-SCRAPING-GUIDE.md
+- Scraper implementation → 02-src/wa_corpus/nayiri_scraper.py
+- Pre-run requirement → IP whitelist confirmation from serouj@nayiri.com
+- First safe test → `python -m wa_corpus.nayiri_scraper --max-pages 3`
 
 **Critical Knowledge**
 - Voicing reversal → ARMENIAN_QUICK_REFERENCE.md § "Voicing Reversal"
 - Context-aware letters → ARMENIAN_QUICK_REFERENCE.md § "Context-Aware Letters"
 - Test words → ARMENIAN_QUICK_REFERENCE.md § "Test Words"
 - All three in detail → WESTERN_ARMENIAN_PHONETICS_GUIDE.md
+
+**Architecture & Planning**
+- Package extraction plan → IMPLEMENTATION_ACTION_PLAN.md (3-phase: wa-corpus, armenian-linguistics, lousardzag)
+- Card template redesign → 01-docs/CARD-REDESIGN-SPEC.md
+- Active task tracker → 01-docs/development/planning/NEXT_STEPS_MARCH2026.md
+- Feature backlog → 01-docs/development/planning/FUTURE_IDEAS.md (TTS training, CLI diagnostics, dialect tools, converters)
+
+**Audio & TTS**
+- Current TTS status → CHANGELOG.md § v0.4.0 (MMS evaluation table)
+- Training model comparison → 01-docs/development/planning/FUTURE_IDEAS.md § "Audio Training Models"
+- Data collection plan → 01-docs/development/planning/FUTURE_IDEAS.md § "Audio Data Collection Strategy"
+- IPA-first synthesis approach → 01-docs/development/planning/NEXT_STEPS_MARCH2026.md § "Delta Update - March 6"
 
 ---
 
@@ -258,6 +282,12 @@ Comprehensive assessment of project status, what's working, what needs work.
 | WESTERN_ARMENIAN_PHONETICS_GUIDE.md | Complete phonetics reference | Phonetics implementers | 30-45 min | Deep phonetic work |
 | VOCABULARY_ORDERING_GUIDE.md | Complete system architecture | Vocab/curriculum developers | 30-45 min | Vocabulary generation/mods |
 | PROJECT_ASSESSMENT.md | Current state, roadmap | Decision makers | 15-20 min | Quarterly review, planning |
+| NAYIRI-SCRAPING-GUIDE.md | Safe scraping runbook | Corpus maintainers | 8-12 min | Before any Nayiri crawl |
+| CONVERSATION_SYNTHESIS_MARCH2026.md | Canonical March 2026 synthesis | Maintainers | 5-8 min | Fast context recovery |
+| CARD-REDESIGN-SPEC.md | Card template design | Card designers | 10-15 min | Card UI work |
+| IMPLEMENTATION_ACTION_PLAN.md | Package extraction plan | Architects | 20-30 min | Architecture decisions |
+| 01-docs/development/planning/FUTURE_IDEAS.md | Feature backlog & ideas | All contributors | 10-15 min | Planning, brainstorming |
+| 01-docs/development/planning/NEXT_STEPS_MARCH2026.md | Active task tracker | Active developers | 10-15 min | Daily work planning |
 | This file (DOCUMENTATION_INDEX.md) | Navigation guide | Everyone (finding things) | 5-10 min | Finding documentation |
 
 ---
@@ -271,22 +301,42 @@ lousardzag/
 ├── WESTERN_ARMENIAN_PHONETICS_GUIDE.md  ← PHONETICS REFERENCE (30-45 min)
 ├── VOCABULARY_ORDERING_GUIDE.md         ← VOCAB SYSTEM (30-45 min)
 ├── PROJECT_ASSESSMENT.md                ← PROJECT STATE (15-20 min)
+├── IMPLEMENTATION_ACTION_PLAN.md        ← PACKAGE EXTRACTION (20-30 min)
+├── 01-docs/development/planning/FUTURE_IDEAS.md                      ← FEATURE BACKLOG & TTS PLANS
+├── 01-docs/development/planning/NEXT_STEPS_MARCH2026.md             ← ACTIVE TASK TRACKER
+├── REMAINING_WORK.md                    ← CRITICAL ISSUES & SHORT-TERM WORK
+├── 01-docs/CONVERSATION_SYNTHESIS_MARCH2026.md ← CANONICAL CHAT SYNTHESIS
 ├── DOCUMENTATION_INDEX.md               ← YOU ARE HERE
+│
+├── 01-docs/
+│   ├── CARD-REDESIGN-SPEC.md            (card template specification)
+│   ├── NAYIRI-SCRAPING-GUIDE.md         (operational runbook)
+│   ├── SESSION-SUMMARY.md               (running session log)
+│   ├── development/
+│   │   ├── PROJECT_ASSESSMENT.md        (current state assessment)
+│   │   └── NEXT_SESSION_INSTRUCTIONS.md (workflow guide)
+│   └── references/
+│       ├── ARMENIAN_QUICK_REFERENCE.md
+│       ├── WESTERN_ARMENIAN_PHONETICS_GUIDE.md
+│       └── WESTERN_ARMENIAN_LANGUAGE_CONSOLIDATED.md
 │
 ├── 02-src/lousardzag/
 │   ├── phonetics.py                     (200+ lines, implementation)
+│   ├── dialect_classifier.py            (dialect classification)
 │   ├── database.py                      (vocabulary metadata)
 │   └── [other modules]
 │
 ├── 07-tools/
 │   ├── gen_vocab_simple.py              (570+ lines, vocab generation)
 │   ├── generate_ordered_cards.py        (card generation)
+│   ├── analysis/classify_dialect.py     (dialect CLI)
 │   └── [analysis scripts]
 │
 ├── 04-tests/
 │   ├── test_card_generator.py
 │   ├── test_integration.py
 │   ├── unit/test_difficulty.py          (28+ phonetics tests)
+│   ├── unit/test_dialect_classifier.py  (classifier tests)
 │   ├── unit/test_*_verbs.py
 │   └── integration/test_transliteration.py (60+ tests)
 │
@@ -344,7 +394,14 @@ lousardzag/
 | Complete IPA reference | WESTERN_ARMENIAN_PHONETICS_GUIDE.md | "Complete Phoneme Map" |
 | What's been done | PROJECT_ASSESSMENT.md | "What's Working" |
 | What to do next | PROJECT_ASSESSMENT.md | "Next Session Recommendations" |
+| Active task list | 01-docs/development/planning/NEXT_STEPS_MARCH2026.md | "Revised Action Items" |
+| Future feature ideas | 01-docs/development/planning/FUTURE_IDEAS.md | All sections |
+| Package extraction guide | IMPLEMENTATION_ACTION_PLAN.md | Phase 1/2/3 |
+| Card template design | 01-docs/CARD-REDESIGN-SPEC.md | "Vocabulary Card" / "Sentence Card" |
+| TTS/audio training options | 01-docs/development/planning/FUTURE_IDEAS.md | "Audio Training Models" |
+| Dialect classification | 02-src/lousardzag/dialect_classifier.py | (implementation) |
 | Git workflow | NEXT_SESSION_INSTRUCTIONS.md | "Git Workflow" |
+| Nayiri anti-ban workflow | NAYIRI-SCRAPING-GUIDE.md | "IP Whitelisting" + "VPN / IP Change Best Practices" |
 | Vocabulary output format | VOCABULARY_ORDERING_GUIDE.md | "Output CSV Format" |
 | Test word verification | ARMENIAN_QUICK_REFERENCE.md | "Test Words" |
 | Context-aware phonemes | WESTERN_ARMENIAN_PHONETICS_GUIDE.md | "Context-Aware Pronunciation" |

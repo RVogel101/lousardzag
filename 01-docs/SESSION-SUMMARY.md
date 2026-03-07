@@ -1,39 +1,39 @@
-# Session Work Summary — March 2, 2026
+﻿# Session Work Summary â€” March 2, 2026
 
 **Session Goal**: Rename project to better reflect expanded scope  
-**Status**: ✅ Complete (package rename done, directory rename pending)  
-**Test Results**: ✅ 323/323 tests passing  
+**Status**: âœ… Complete (package rename done, directory rename pending)  
+**Test Results**: âœ… 323/323 tests passing  
 **Git Commits**: 1 major rename commit (8135472)
 
 ---
 
 ## Executive Summary
 
-Today's session accomplished a **complete project rebranding** from "Armenian Anki" to "Lousardzag" (Լուսարձակ — "Light-spreading/Dawn-bringer"), reflecting the project's evolution into a comprehensive Western Armenian language learning platform.
+Today's session accomplished a **complete project rebranding** from "Armenian Anki" to "Lousardzag" (Ô¼Õ¸Ö‚Õ½Õ¡Ö€Õ±Õ¡Õ¯ â€” "Light-spreading/Dawn-bringer"), reflecting the project's evolution into a comprehensive Western Armenian language learning platform.
 
 ### Key Achievements
 
-✅ **Name Research & Verification**
+âœ… **Name Research & Verification**
 - Evaluated 6+ Armenian historical/educational names
 - Verified availability across PyPI, GitHub, web
-- Selected "Lousardzag" — completely conflict-free, historically meaningful
+- Selected "Lousardzag" â€” completely conflict-free, historically meaningful
 
-✅ **Transliteration Accuracy**
+âœ… **Transliteration Accuracy**
 - Corrected Western Armenian spelling (lousardzag, not lusardzak)
 - Documented proper transliteration rules
 
-✅ **Complete Package Rename**
-- Renamed `armenian_anki` → `lousardzag` in 74 files
+âœ… **Complete Package Rename**
+- Renamed `armenian_anki` â†’ `lousardzag` in 74 files
 - Updated 79 import statements across entire codebase
 - Updated configuration: pyproject.toml, CLI scripts, documentation
 - Git-tracked all changes with proper rename history
 
-✅ **Full Test Validation**
+âœ… **Full Test Validation**
 - All 323 tests passing post-rename
 - No functionality broken by name changes
 - Only import statements modified
 
-✅ **Documentation**
+âœ… **Documentation**
 - Rewrote README.md with expanded project vision
 - Created REBRANDING.md (technical implementation details)
 - Created NAME-HISTORY.md (decision process and naming journey)
@@ -52,7 +52,7 @@ Today's session accomplished a **complete project rebranding** from "Armenian An
 - Khrimian Hayrig (patriarch/educator)
 - Vartabed (scholar designation)
 - Zartonk (historical "Awakening" publication)
-- Lusardzak (light-spreading — neologism)
+- Lusardzak (light-spreading â€” neologism)
 
 **Selection Criteria Established:**
 1. Reflect expanded scope beyond Anki
@@ -66,12 +66,12 @@ Today's session accomplished a **complete project rebranding** from "Armenian An
 
 **PyPI Package Registry Check:**
 ```
-✅ lousardzag     : Available
-❌ mekhitar       : Eastern philosophy project exists
-❌ mkhitar        : 47 personal GitHub profiles
-✅ khrimian       : Available
-✅ vartabed       : Available (2 personal profiles only)
-✅ mechitar       : Available (but domains taken)
+âœ… lousardzag     : Available
+âŒ mekhitar       : Eastern philosophy project exists
+âŒ mkhitar        : 47 personal GitHub profiles
+âœ… khrimian       : Available
+âœ… vartabed       : Available (2 personal profiles only)
+âœ… mechitar       : Available (but domains taken)
 ```
 
 **GitHub Repository Count:**
@@ -91,28 +91,28 @@ Today's session accomplished a **complete project rebranding** from "Armenian An
 - No existing Armenian learning tools with these names
 - No educational software conflicts found
 
-**Decision**: **Lousardzag** selected — zero conflicts, historically meaningful, completely available
+**Decision**: **Lousardzag** selected â€” zero conflicts, historically meaningful, completely available
 
 ### Phase 3: Transliteration Correction (15 min)
 
 **Issue Found**: Initial "lusardzak" spelling was incorrect Western Armenian  
-**Root Cause**: Confusion between Western (կ=g) and Eastern (կ=k) Armenian phonetics
+**Root Cause**: Confusion between Western (Õ¯=g) and Eastern (Õ¯=k) Armenian phonetics
 
 **Corrected Transliteration**: 
 ```
-Լուսարձակ (Western Armenian)
+Ô¼Õ¸Ö‚Õ½Õ¡Ö€Õ±Õ¡Õ¯ (Western Armenian)
 = LOUSARDZAG (not lusardzak, lusaker, or lusaper)
 
 Letter mappings:
-- Լ = L
-- ո = o  
-- ւ = u → combined ու = ou
-- ս = s
-- ա = a
-- ր = r
-- դ = d
-- ա = a
-- կ = g (Western Armenian)
+- Ô¼ = L
+- Õ¸ = o  
+- Ö‚ = u â†’ combined Õ¸Ö‚ = ou
+- Õ½ = s
+- Õ¡ = a
+- Ö€ = r
+- Õ¤ = d
+- Õ¡ = a
+- Õ¯ = g (Western Armenian)
 - (not k as in Eastern Armenian)
 ```
 
@@ -120,16 +120,16 @@ Letter mappings:
 
 **Files Changed: 74 total**
 ```
-✅ Renamed armenian_anki/ → lousardzag/ (git mv tracked)
-✅ Updated 79 import statements across:
+âœ… Renamed armenian_anki/ â†’ lousardzag/ (git mv tracked)
+âœ… Updated 79 import statements across:
    - 03-cli/ scripts
    - 04-tests/ test files
    - 06-notebooks/ analysis scripts
    - 07-tools/ utility scripts
-✅ Updated configuration files:
+âœ… Updated configuration files:
    - pyproject.toml (project name, scripts)
    - .github/copilot-instructions.md
-✅ Updated documentation:
+âœ… Updated documentation:
    - README.md (complete rewrite)
    - 01-docs/ subdirectory files
    - Comments in source files
@@ -146,7 +146,7 @@ $ python -m pytest -q --tb=short
 323 passed, 1 warning in 34.86s
 ```
 
-✅ All tests passing — no functionality affected
+âœ… All tests passing â€” no functionality affected
 
 ### Phase 5: Documentation Creation (45 min)
 
@@ -170,7 +170,7 @@ $ python -m pytest -q --tb=short
 - Mission shift context
 
 **Updated README.md:**
-- New project title: "Lousardzag (Լուսարձակ)"
+- New project title: "Lousardzag (Ô¼Õ¸Ö‚Õ½Õ¡Ö€Õ±Õ¡Õ¯)"
 - Expanded project vision
 - Feature highlights
 - Complete restructured documentation
@@ -230,7 +230,7 @@ collected 323 items
 ============================== 323 passed, 1 warning in 34.86s ==============================
 ```
 
-✅ **No tests failed** — rename was purely surface-level (imports/config)
+âœ… **No tests failed** â€” rename was purely surface-level (imports/config)
 
 ---
 
@@ -239,112 +239,94 @@ collected 323 items
 ### Package Structure (Git Renames)
 ```
 02-src/armenian_anki/
-├── __init__.py
-├── anki_connect.py
-├── api.py
-├── card_generator.py
-├── config.py
-├── database.py
-├── fsrs.py
-├── ocr_vocab_bridge.py
-├── preview.py
-├── progression.py
-├── sentence_generator.py
-├── morphology/
-│   ├── core.py
-│   ├── detect.py
-│   ├── difficulty.py
-│   ├── irregular_verbs.py
-│   ├── nouns.py
-│   ├── verbs.py
-│   └── articles.py
-└── templates/
-    └── styles/base.css
-
-    ↓↓↓ Renamed to ↓↓↓
-
-02-src/lousardzag/
-├── (same structure)
-```
-
-### Documentation Files Created
-- [01-docs/REBRANDING.md](01-docs/REBRANDING.md) — Implementation details
-- [01-docs/NAME-HISTORY.md](01-docs/NAME-HISTORY.md) — Decision process
-
-### Documentation Files Updated
-- [README.md](README.md) — Complete rewrite
-- [.github/copilot-instructions.md](.github/copilot-instructions.md) — Header + references updated
-- All Python files with docstrings mentioning "Armenian Anki"
+|- __init__.py
+|- anki_connect.py
+|- api.py
+|- card_generator.py
+|- config.py
+|- database.py
+|- fsrs.py
+|- ocr_vocab_bridge.py
+|- preview.py
+|- progression.py
+|- sentence_generator.py
+`- morphology/
+   |- core.py
+   |- detect.py
+   |- difficulty.py
+   |- irregular_verbs.py
+   |- nouns.py
+   |- verbs.py
+   `- articles.py
 
 ---
 
-## Remaining Tasks
+---
 
-### Required (Before Using New Name)
-- [ ] Close VS Code (directory in use)
-- [ ] Rename root directory: `anki-note-generation-pipelines` → `lousardzag`
-- [ ] Reopen VS Code with new directory
-- [ ] Verify git auto-detects the rename (should be seamless)
+## March 2026 Consolidated Learnings
 
-### Recommended (For Public Facing)
-- [ ] Update GitHub repository name → `lousardzag`
-- [ ] Update git remote URL if GitHub name changed
-- [ ] Create proper PyPI package entry (when releasing)
+This section replaces multiple overlapping March 2026 addenda and serves as the normalized summary for that period.
 
-### Optional (For Future)
-- [ ] Create migration guide for external users
-- [ ] Update archived documentation/wikis
-- [ ] Announce rebrand in project communications
+### Consolidated Outcomes
+- Established Nayiri-safe operations: page-based browsing, whitelist-first workflow, and bounded first-run practices.
+- Captured and prioritized recurring reliability issues in viewer/audio/corpus command paths.
+- Confirmed IPA-first synthesis direction for strict letter-name pronunciation control.
+- Converted extracted backlog into prioritized delivery lanes (P0/P1/P2) in `IMPLEMENTATION_ACTION_PLAN.md`.
+- Added canonical synthesis document for cross-doc consistency.
+
+### Key Learnings
+1. Reliability and observability need immediate attention: recurring `exit code 1` failures must be diagnosable in one run.
+2. Network and VPN context directly affect corpus operations: public IP assumptions can silently break whitelisted workflows.
+3. Safe scraping patterns matter as much as code correctness: natural navigation and conservative pacing reduce block risk.
+4. Existing Anki audio remains validation-grade data; robust TTS training still requires larger curated speech data.
+5. Single-source references reduce drift: duplicate addenda increase maintenance and interpretation risk.
+
+### Consolidated TODO Themes
+- Add startup diagnostics and debug modes for high-use CLI tools.
+- Add smoke tests and standardized error-log summaries under `logs/`.
+- Add Nayiri preflight guardrails and whitelist-readiness checks.
+- Add a unified diagnostics command (`doctor`) and audio pipeline health reporting.
+
+### Canonical References
+- One-page synthesis: `01-docs/CONVERSATION_SYNTHESIS_MARCH2026.md`
+- Prioritized sprint checklist: `IMPLEMENTATION_ACTION_PLAN.md`
+- Nayiri operational runbook: `01-docs/NAYIRI-SCRAPING-GUIDE.md`
 
 ---
 
-## Key Metrics
+## Session Update - March 6, 2026 (Migration-Core Separation and Validation)
 
-| Metric | Value |
-|---|---|
-| Total files changed | 74 |
-| Import statements updated | 79 |
-| Configuration files updated | 5+ |
-| Tests passing | 323/323 ✅ |
-| Failed tests | 0 |
-| New test failures introduced | 0 |
-| Git commits | 1 (8135472) |
-| Documentation files created | 2 |
-| Documentation files updated | 3+ |
-| Time elapsed | ~3 hours |
-| Status | Complete (dir rename pending) |
+### Objective
+Complete a clean migration-focused pass by separating central package integration changes from generated artifacts and unrelated documentation churn.
 
----
+### What Was Done
+1. Diagnosed repository state across three folders:
+   - `lousardzag`
+   - `WesternArmenianLLM`
+   - `armenian-corpus-core`
+2. Repaired `armenian-corpus-core` git tracking:
+   - Confirmed the folder had no `.git` metadata.
+   - Initialized repository with baseline commit `6419a6b`.
+3. Executed focused migration-core staging and commits:
+   - `lousardzag`: commit `7eb4226`
+   - `WesternArmenianLLM`: commit `4587e0b`
+4. Preserved noise isolation:
+   - Kept generated JSONL exports and broad docs updates out of focused commits.
 
-## Lessons Learned
+### Validation Results
+- `lousardzag`: `pytest 04-tests/integration/test_central_package_integration.py -q` -> 3 passed
+- `WesternArmenianLLM`: `pytest tests/test_core_adapters.py -q` -> 3 passed
 
-1. **Transliteration Matters** — Western Armenian κ=g vs Eastern κ=k is critical
-2. **Availability Verification Prevents Conflicts** — Always check PyPI, GitHub, web before committing to name
-3. **Git Mv Preserves History** — Using `git mv` properly tracks renames vs deletes/adds
-4. **Test Suite Stability** — 323 tests passing after complete package rename shows good isolation
-5. **Documentation is Critical** — Created 2 new docs files to explain the rebrand decision
+### Clarification on "Generated artifacts and docs remain out of these commits"
+This means only migration-core code and related tests were committed. Large generated outputs (for example `08-data/*.jsonl`, `migration_exports/*`) and unrelated documentation edits were intentionally left unstaged so the migration commit history stays reviewable and low-risk.
 
----
+### Immediate Next Steps
+1. Push the three new commits to their remotes (once remotes are configured/verified).
+2. Open focused PRs for:
+   - core adapter/contracts/shims + integration tests
+   - WA-LLM adapter layer + migration scripts
+3. Run one broader regression sweep after PR creation:
+   - `python -m pytest 04-tests -q` in `lousardzag`
+   - project-level test pass in `WesternArmenianLLM`
+4. Decide whether to split or archive remaining unstaged docs/data churn into separate non-core housekeeping PRs.
 
-## Next Steps (For User)
-
-1. **Immediate**: Close VS Code and rename the root directory
-2. **Short Term**: Test that everything works with new directory name
-3. **Medium Term**: Update GitHub repository name (optional)
-4. **Long Term**: Plan PyPI release under new name
-
----
-
-## References
-
-- **Git Commit**: `8135472` "Rename project to Lousardzag (Լուսարձակ)"
-- **Rebranding Docs**: 
-  - [REBRANDING.md](01-docs/REBRANDING.md)
-  - [NAME-HISTORY.md](01-docs/NAME-HISTORY.md)
-- **Updated README**: [README.md](README.md)
-- **Test Results**: 323/323 passing ✅
-
----
-
-**Session Completed**: March 2, 2026  
-**Next Session Focus**: Directory rename + optional GitHub repository rename

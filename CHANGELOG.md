@@ -2,6 +2,52 @@
 
 All notable changes to this project are documented here. This follows the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
 
+## [Unreleased]
+
+### Added
+
+- **Card Enrichment Phase 1** (Complete, March 5)
+  - Database cleanup: removed 179 duplicate cards (8,574 → 8,395 unique)
+  - Schema upgrade: added frequency_rank, syllable_count, morphology_json, custom_level columns
+  - Syllable counting: all 8,395 cards enriched (100%)
+  - POS tag inference: all 8,395 cards tagged (100%)
+  - Phonetics enrichment: all 8,395 cards have IPA, pronunciation, phonetic difficulty (100%)
+
+- Rule-based dialect classifier with source-traceable evidence:
+  - `02-src/lousardzag/dialect_classifier.py`
+  - Conservative label policy with `inconclusive` fallback when evidence is insufficient
+- CLI for dialect classification workflows:
+  - `07-tools/analysis/classify_dialect.py`
+- Unit tests for dialect classification behavior:
+  - `04-tests/unit/test_dialect_classifier.py`
+
+- **Package Extraction Plan** (March 6)
+  - `IMPLEMENTATION_ACTION_PLAN.md` — 3-phase plan for extracting wa-corpus, armenian-linguistics, and refactoring lousardzag
+  - `CARD-REDESIGN-SPEC.md` — Minimalist vocabulary + sentence card template spec
+
+### Fixed
+
+- Integration test alignment with current implementation boundaries and command wiring:
+  - `04-tests/integration/test_api.py`
+  - `04-tests/integration/test_cli.py`
+
+### Documentation
+
+- Updated diphthong quick reference to include missing combinations:
+  - `01-docs/references/ARMENIAN_QUICK_REFERENCE.md`
+  - Added `եա`, `ոյ`, `այ` entries
+- Added March 6 execution summary and extracted backlog items:
+  - `01-docs/SESSION-SUMMARY.md`
+  - `01-docs/development/planning/NEXT_STEPS_MARCH2026.md`
+  - `01-docs/development/planning/FUTURE_IDEAS.md`
+- Updated `01-docs/development/PROJECT_ASSESSMENT.md` to March 6 state
+- Expanded `01-docs/development/planning/FUTURE_IDEAS.md` with:
+  - Detailed audio training model comparison (XTTS v2, Piper, voice cloning)
+  - Data collection strategy for Western Armenian TTS
+  - CLI diagnostics, reliability, and developer experience ideas
+  - Dialect classification studio and quality gate concepts
+  - IPA-first synthesis pipeline and TTS backend abstraction concepts
+
 ## [0.4.0] - 2026-03-03 (Letter Cards & TTS Audio)
 
 ### ✨ Added

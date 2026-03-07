@@ -16,6 +16,32 @@
 
 - **Letter audio upgrade**: Replace the 76 espeak-ng letter audio files (`08-data/letter_audio/`) with MMS-generated versions using the same 3-pass denoising technique from `generate_vocab_audio_mms.py`. This would give consistent quality across letter and vocabulary audio.
 
+- **CLI Diagnostics Command (`doctor`)**: Add a unified diagnostics command that checks environment activation, required files/models, network assumptions, and common port conflicts before running viewers or TTS scripts. This would reduce repeated opaque `exit code 1` failures and shorten debugging loops.
+
+- **Nayiri Preflight + Whitelist Guardrails**: Add a `--preflight` path in the Nayiri scraper that prints current configuration, expected request cadence, and whitelist readiness steps (including VPN IP change warning). This can prevent accidental runs from non-whitelisted IPs.
+
+- **Network-Aware IP Discovery Utility**: Provide a small utility that attempts multiple external-IP providers, gracefully falls back to browser-based lookup instructions when DNS/network is restricted, and logs the last known egress IP for whitelisting workflows.
+
+- **Failure-Capture Mode for CLI Tools**: Add an optional `--debug-report` flag for `letter_cards_viewer.py` and TTS test scripts that writes a compact diagnostic bundle (traceback, env summary, dependency versions, file existence checks) to `logs/`.
+
+- **IPA-first synthesis pipeline**: Add a dedicated letter-audio generation path that accepts explicit IPA targets per letter name and synthesizes audio directly (starting with `espeak-ng`, optionally pluggable later). This avoids hidden grapheme-to-phoneme assumptions in text-first TTS models and gives deterministic pronunciation inputs.
+
+- **TTS backend abstraction layer**: Create a shared audio generation interface (for MMS text synthesis, IPA-direct synthesis, and future custom models) so tools can switch engines per task without rewriting workflows. Add backend metadata to manifests for reproducibility.
+
+- **Pronunciation QA harness**: Build an automated evaluation script that compares generated audio variants (MMS vs IPA-direct) with objective metrics (duration, clipping, loudness consistency) and structured manual listening checkpoints. Store pass/fail results for each letter.
+
+- **Bias compensation benchmark set**: Maintain a small benchmark list of known problematic Western Armenian letter-name pronunciations and continuously test them across engines. Use it as a regression suite before accepting TTS changes.
+
+- **Environment reproducibility doc for speech tooling**: Add a dedicated setup guide that records where speech binaries are installed (system path vs conda env), exact verification commands, and troubleshooting for cross-env execution.
+
+- **Explainable Dialect Classification Studio**: Expand the new rule-based Eastern/Western classifier into a small analysis workflow that supports batch scoring, confidence thresholds, and evidence exports (rule hit, matched text, source reference). This can help triage corpus quality and enforce dialect consistency in generated materials.
+
+- **Dialect Quality Gate for Generation Pipelines**: Add an optional `--dialect-gate` mode to vocab and sentence generation tools so low-confidence or mismatched items are flagged before export. Keep this opt-in to avoid blocking exploratory workflows.
+
+- **Classifier Regression Corpus**: Maintain a curated internal test corpus (real project data only) of known Western, Eastern, mixed, and inconclusive samples. Use it for regression testing to prevent rule drift when adding new orthography/morphology markers.
+
+- **Confidence Calibration Dashboard**: Add a lightweight report that shows how many items fall into `likely_western`, `likely_eastern`, and `inconclusive`, plus top evidence rules. This would make classifier tuning decisions data-driven.
+
 ---
 
 ## Audio Training Models: Data Requirements & Options
@@ -210,3 +236,32 @@
 - Do NOT use as training data (risk of overfitting to isolated word pronunciation patterns)
 - Source native speaker recordings for actual TTS fine-tuning instead
 - If repurposing Anki audio: extract, denoise, and segment into phonetic units for analysis only
+
+---
+
+## Reliability and Developer Experience Ideas (Extracted from Recent Work)
+
+- **CLI startup diagnostics standardization**:
+  - Add a shared utility for startup checks (required files, paths, model availability, port conflicts, env info).
+  - Apply first to `03-cli/letter_cards_viewer.py`, then to other frequently used scripts.
+
+- **Audio generation observability**:
+  - Add consistent per-run summary output for all audio generation scripts:
+    - total items attempted
+    - succeeded/failed counts
+    - failure reasons grouped by type
+    - output directory + runtime
+  - Persist summaries to `logs/` as JSON + human-readable TXT.
+
+- **Corpus build resilience improvements**:
+  - Introduce per-source retry with backoff in `wa_corpus.build_corpus`.
+  - Add `continue-on-error` mode that still aggregates successful sources.
+  - Emit source-level final status report (`success`, `partial`, `failed`) at end of run.
+
+- **Automated smoke tests for top workflows**:
+  - Add CI/local smoke checks for core commands that have recently failed in manual runs.
+  - Keep each check quick (<30s) and focused on startup/import/runtime wiring.
+
+- **Environment guardrails**:
+  - Add an explicit preflight check in CLI scripts for conda/base activation assumptions.
+  - Print a targeted fix hint when Python dependencies/environment are not ready.

@@ -1,6 +1,6 @@
 ﻿import sys
 sys.path.insert(0, '02-src')
-from lousardzag.phonetics import get_pronunciation_guide
+from lousardzag.core_shims.linguistics_core import get_pronunciation_guide
 
 test_words = ['Õ¸Ö‚Ö€', 'Õ²', 'Õ¼', 'ÕºÕ¥Õ¿Ö„', 'Õ´Õ¥Ö€']
 for word in test_words:

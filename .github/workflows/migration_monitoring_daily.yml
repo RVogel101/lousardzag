@@ -1,0 +1,86 @@
+name: Daily Migration Monitoring
+
+on:
+  schedule:
+    - cron: "15 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  monitor-migration:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install git+https://github.com/RVogel101/armenian-corpus-core@main
+
+      - name: Check for rollback indicators
+        shell: bash
+        run: |
+          set -euo pipefail
+          recent_matches="$(git log --since='24 hours ago' --oneline --regexp-ignore-case --grep='revert|rollback' || true)"
+          if [[ -n "$recent_matches" ]]; then
+            echo "Rollback/Revert indicators found in recent commits:"
+            echo "$recent_matches"
+            exit 1
+          fi
+          echo "No rollback/revert commit messages found in the last 24h."
+
+      - name: Check duplicate extraction scripts remain removed
+        shell: bash
+        run: |
+          set -euo pipefail
+          removed=(
+            export_core_contracts_jsonl.py
+            validate_contract_alignment.py
+            ingest_wa_fingerprints_to_contracts.py
+            merge_document_records.py
+            merge_document_records_with_profiles.py
+            extract_fingerprint_index.py
+            materialize_dialect_views.py
+            summarize_unified_documents.py
+          )
+
+          for f in "${removed[@]}"; do
+            if [[ -f "07-tools/extraction/$f" ]]; then
+              echo "Reintroduced duplicate script: 07-tools/extraction/$f"
+              exit 1
+            fi
+          done
+          echo "No duplicate extraction scripts were reintroduced."
+
+      - name: Validate central-default adapter behavior
+        run: python 07-tools/extraction/run_pipeline_adapter.py --dry-run
+
+      - name: Validate explicit fallback behavior
+        shell: bash
+        run: |
+          set -euo pipefail
+          LOUSARDZAG_USE_CENTRAL_PACKAGE=0 python 07-tools/extraction/run_pipeline_adapter.py --dry-run
+
+      - name: Run readiness checks
+        run: python 07-tools/extraction/check_step5_readiness.py
+
+      - name: Run integration validation
+        run: python -m pytest 04-tests/integration/test_central_package_integration.py -q
+
+      - name: Upload monitoring artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: migration-monitoring-artifacts
+          path: |
+            08-data/step5_readiness_report.json
+            08-data/pipeline_execution_report_adapter.json

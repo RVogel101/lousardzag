@@ -45,6 +45,7 @@ data/_wa_source_extract/
 
 # Data directory (08-data)
 08-data/*.json
+08-data/*.jsonl
 08-data/*.csv
 08-data/*.txt
 08-data/*.bak
